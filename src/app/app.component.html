@@ -1,0 +1,50 @@
+<mat-toolbar color="warn">
+  <button (click)="drawer.toggle()" mat-icon-button>
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span class="app-title">Raritan</span>
+  <span class="example-spacer"></span>
+  <button mat-icon-button class="reload-button" aria-label="Reload" (click)="reloadPage()">
+    <mat-icon>autorenew</mat-icon>
+  </button>
+  <button mat-icon-button class="share-button" aria-label="Share">
+    <mat-icon>share</mat-icon>
+  </button>
+</mat-toolbar>
+
+
+<mat-drawer-container autosize>
+  <mat-drawer #drawer opened="true" mode="side" position="start">
+    <mat-nav-list >
+      <mat-list-item routerLink="">
+        <button  color="accent" mat-button><mat-icon>dashboard</mat-icon> Dashboard</button>
+      </mat-list-item>
+      <mat-list-item routerLink="home" >
+        <button color="primary" mat-button><mat-icon>home</mat-icon> Home</button>
+      </mat-list-item>
+      <mat-list-item routerLink="outlets">
+        <button  mat-button>  <mat-icon>outlet</mat-icon> Outlets</button>
+      </mat-list-item>
+      <mat-list-item routerLink="inlets">
+        <button mat-button> <mat-icon>power_input</mat-icon> Inlets</button>
+      </mat-list-item>
+      <mat-list-item routerLink="ocps">
+        <button  mat-button>  <mat-icon>flash_on</mat-icon> OCPs</button>
+      </mat-list-item>
+      <mat-list-item routerLink="peripherals">
+        <button mat-button>  <mat-icon>devices_other</mat-icon> Peripherals</button>
+      </mat-list-item>
+      <mat-list-item>
+        <button color="warn" mat-button><mat-icon>settings</mat-icon> Settings</button>
+      </mat-list-item>
+      <mat-list-item routerLink="help">
+        <button color="primary" mat-button><mat-icon>help</mat-icon> Help</button>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-drawer>
+  <mat-drawer-content>
+    <div style="text-align: center;min-height: 600px;">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>

@@ -1,0 +1,19 @@
+/* Add this to your component's CSS file */
+.container {
+  padding: 20px;
+}
+
+.menu-button, .favorite-button, .share-button {
+  color: white;
+}
+
+.app-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-left: 16px;
+}
+
+.mat-toolbar {
+  position: relative;
+  z-index: 5;
+}
