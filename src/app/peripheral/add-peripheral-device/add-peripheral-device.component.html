@@ -1,0 +1,27 @@
+<h1 mat-dialog-title>Creating and connecting a new sensor</h1>
+<div mat-dialog-content>
+  <p>
+    <mat-form-field class="dialog-content">
+      <mat-label>Serial Number</mat-label>
+      <mat-select [(ngModel)]="local_data.serial_number" name="serial_number">
+        <mat-option *ngFor="let peripheral of peripherals" [value]="peripheral.serial_number">
+          {{peripheral.serial_number}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </p>
+  <p>
+    <mat-form-field class="dialog-content">
+      <mat-label>Sensor Type</mat-label>
+      <mat-select [(ngModel)]="local_data.type1" name="type">
+        <mat-option *ngFor="let sensor of sensors" [value]="sensor.type">
+          {{sensor.type}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="doAction()">Add a Device</button>
+  <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>
+</div>

@@ -1,0 +1,17 @@
+<div class="container sensor-list-container">
+  <h1>Supported Sensor Classes</h1>
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let sensor of sensors" [expanded]="sensor === selectedSensor">
+      <mat-expansion-panel-header>
+        {{ sensor.type }} | {{ sensor.name }}
+      </mat-expansion-panel-header>
+      <mat-list class="left-aligned-list">
+        <mat-list-item><strong> Name :  </strong> {{ sensor.name }}</mat-list-item>
+        <mat-list-item><strong>Type :  </strong> {{ sensor.type }}</mat-list-item>
+        <mat-list-item><strong>Generation : </strong> {{ sensor.generation }}</mat-list-item>
+        <mat-list-item><strong>Prefix :  </strong> {{ sensor.prefix }}</mat-list-item>
+        <mat-list-item><strong>Supported Methods:  </strong> {{ sensor.methods }}</mat-list-item>
+      </mat-list>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

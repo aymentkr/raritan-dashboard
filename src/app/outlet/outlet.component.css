@@ -1,0 +1,11 @@
+
+
+ .state-icon.on::before {
+   content: "\e8ac";
+   color: darkgreen;
+}
+
+.state-icon.off::before {
+  content: "\e8ac";
+  color: red;
+}
