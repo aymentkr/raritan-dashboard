@@ -1,4 +1,4 @@
-import {AfterViewInit, Injectable, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Inlet, Outlet, Peripheral, Pole} from "../model/interfaces";
 import {WebsocketService} from "./websocket.service";
 import {SensorService} from "./sensor.service";
@@ -8,6 +8,14 @@ import {SensorService} from "./sensor.service";
   providedIn: 'root',
 })
 export class DataService {
+  historicalInletData: any[] = [];
+
+  options: { name: string; isEnabled: boolean }[] = [
+    { name: '1', isEnabled: true },
+    { name: '2', isEnabled: true },
+    { name: '3', isEnabled: true }
+  ];
+
   constructor(private WSS: WebsocketService, private sensorData: SensorService) {
   }
   async fetchInletData(): Promise<Inlet> {
@@ -167,5 +175,14 @@ export class DataService {
 
   private delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+
+  updateHistoricalInletData(data: Inlet) {
+    this.historicalInletData.push(data);
+  }
+
+  getHistoricalInletData() {
+    return this.historicalInletData;
   }
 }

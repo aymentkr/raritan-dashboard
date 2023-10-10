@@ -1,0 +1,11 @@
+.example-user-input {
+  margin-right: 8px;
+}
+.example-form mat-slide-toggle {
+  margin: 8px 0;
+  display: block;
+}
+.chart-container {
+  width: 90%;
+  height: 350px;
+}

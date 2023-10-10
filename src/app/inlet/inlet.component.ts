@@ -1,7 +1,7 @@
-import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
-import {Inlet, Outlet} from "../model/interfaces";
+import {Inlet} from "../model/interfaces";
 import {MatSort, Sort} from "@angular/material/sort";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {DataService} from "../services/data.service";
@@ -27,7 +27,6 @@ export class InletComponent implements OnInit,AfterViewInit{
     private _snackBar: MatSnackBar,
     private cdRef: ChangeDetectorRef
   ) {}
-
 
   ngOnInit(): void {
     this.fetchData();
@@ -76,10 +75,10 @@ export class InletComponent implements OnInit,AfterViewInit{
   }
 
 
-  cancelEditInlet(rowIndex: number) {
+  cancelEditInlet() {
     this.editableRowIndexI = -1;
   }
-  cancelEditPole(rowIndex: number) {
+  cancelEditPole() {
     this.editableRowIndexP = -1;
   }
 
