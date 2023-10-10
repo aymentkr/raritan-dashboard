@@ -1,0 +1,26 @@
+
+<mat-grid-list cols="2" rowHeight="2:1">
+
+  <mat-grid-tile>
+    <mat-grid-tile-header>All Relay Boards</mat-grid-tile-header>
+    <mat-list>
+      <mat-list-item *ngFor="let option of options">
+        <mat-slide-toggle [(ngModel)]="option.isEnabled" (ngModelChange)="onToggleChange(option)">
+          Control {{ option.name }} is {{ option.isEnabled ? 'enabled' : 'disabled' }}
+        </mat-slide-toggle>
+      </mat-list-item>
+    </mat-list>
+  </mat-grid-tile>
+
+  <mat-grid-tile>
+    2
+  </mat-grid-tile>
+  <mat-grid-tile>
+    3
+  </mat-grid-tile>
+  <mat-grid-tile>
+    4
+  </mat-grid-tile>
+</mat-grid-list>
+
+

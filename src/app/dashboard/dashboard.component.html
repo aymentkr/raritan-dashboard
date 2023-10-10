@@ -1,0 +1,23 @@
+
+<mat-grid-list cols="2" rowHeight="2:1">
+
+  <mat-grid-tile>
+    <mat-grid-tile-header> Inlet l1</mat-grid-tile-header>
+
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-grid-tile-header> Overcurrent Protectors</mat-grid-tile-header>
+  </mat-grid-tile>
+
+  <mat-grid-tile>
+    <mat-grid-tile-header>Inlet History</mat-grid-tile-header>
+    <div class="chart-container">
+      <canvas  id="InletChart" >{{ chart }}</canvas>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-grid-tile-header>Alarms</mat-grid-tile-header>
+  </mat-grid-tile>
+</mat-grid-list>
+
+

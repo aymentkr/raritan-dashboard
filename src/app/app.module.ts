@@ -36,6 +36,12 @@ import {RouterLink, RouterOutlet} from "@angular/router";
 import {AppRoutingModule} from "./app-routing.module";
 import { HomeComponent } from './home/home.component';
 import { InfoComponent } from './info/info.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import {MatGridListModule} from "@angular/material/grid-list";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +53,9 @@ import { InfoComponent } from './info/info.component';
     AddPeripheralDeviceComponent,
     EditPeripheralDeviceComponent,
     HomeComponent,
-    InfoComponent
+    InfoComponent,
+    DashboardComponent,
+    SettingsComponent
   ],
   imports: [
     AppRoutingModule,
@@ -77,7 +85,11 @@ import { InfoComponent } from './info/info.component';
     ReactiveFormsModule,
     MatSidenavModule,
     RouterOutlet,
-    RouterLink
+    RouterLink,
+    MatTooltipModule,
+    MatButtonToggleModule,
+    MatGridListModule,
+    MatSlideToggleModule
   ],
   providers: [WebsocketService,DataService,SensorService],
   bootstrap: [AppComponent]
