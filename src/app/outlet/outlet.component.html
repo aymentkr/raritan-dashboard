@@ -1,3 +1,4 @@
+
 <div class="example-small-box mat-elevation-z4">
   <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
     <!-- Selection Column -->
@@ -148,4 +149,5 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index;"></tr>
   </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
 </div>

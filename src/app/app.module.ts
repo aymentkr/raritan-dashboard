@@ -42,7 +42,10 @@ import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import { SettingsComponent } from './settings/settings.component';
-
+import {KnobModule} from "primeng/knob";
+import {MatCardModule} from "@angular/material/card";
+import {MessagesModule} from "primeng/messages";
+import { SmartlockComponent } from './smartlock/smartlock.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -55,7 +58,8 @@ import { SettingsComponent } from './settings/settings.component';
     HomeComponent,
     InfoComponent,
     DashboardComponent,
-    SettingsComponent
+    SettingsComponent,
+    SmartlockComponent
   ],
   imports: [
     AppRoutingModule,
@@ -89,7 +93,10 @@ import { SettingsComponent } from './settings/settings.component';
     MatTooltipModule,
     MatButtonToggleModule,
     MatGridListModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    KnobModule,
+    MatCardModule,
+    MessagesModule
   ],
   providers: [WebsocketService,DataService,SensorService],
   bootstrap: [AppComponent]

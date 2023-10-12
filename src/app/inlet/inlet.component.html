@@ -1,4 +1,11 @@
-<div class="example-large-box mat-elevation-z4">
+<div class="card">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Inlets</mat-card-title>
+      <mat-card-subtitle>[ 1 ]</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-divider></mat-divider>
   <!-- Inlets Table -->
   <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
     <!-- Selection Column -->
@@ -13,13 +20,6 @@
                       [checked]="selection.isSelected(row)">
         </mat-checkbox>
       </td>
-    </ng-container>
-
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">
-        Device
-      </th>
-      <td mat-cell *matCellDef="let element">Inlet {{element.id}} </td>
     </ng-container>
 
     <ng-container matColumnDef="frequency">
@@ -111,7 +111,37 @@
               </ng-template>
             </td>
           </ng-container>
+          <ng-container matColumnDef="act_energy">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by voltage">
+              Active Energy
+            </th>
+            <td mat-cell *matCellDef="let pole; let rowIndex = index">
+              <ng-container *ngIf="editableRowIndexP !== rowIndex; else editMode">
+                {{ pole.act_energy }} Wh
+              </ng-container>
+              <ng-template #editMode>
+                <mat-form-field>
+                  <input matInput type="number" [(ngModel)]="pole.act_energy" >
+                </mat-form-field>
+              </ng-template>
+            </td>
+          </ng-container>
 
+          <ng-container matColumnDef="app_energy">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by voltage">
+              Apparent Energy
+            </th>
+            <td mat-cell *matCellDef="let pole; let rowIndex = index">
+              <ng-container *ngIf="editableRowIndexP !== rowIndex; else editMode">
+                {{ pole.app_energy }} VAh
+              </ng-container>
+              <ng-template #editMode>
+                <mat-form-field>
+                  <input matInput type="number" [(ngModel)]="pole.app_energy" >
+                </mat-form-field>
+              </ng-template>
+            </td>
+          </ng-container>
           <!-- edit Column -->
           <ng-container matColumnDef="editPole">
             <th mat-header-cell *matHeaderCellDef></th>
@@ -162,4 +192,8 @@
     <tr mat-header-row *matHeaderRowDef=inletsColumns></tr>
     <tr mat-row *matRowDef="let row; columns: inletsColumns; let i = index;"></tr>
   </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</mat-card-content>
+</mat-card>
 </div>
+

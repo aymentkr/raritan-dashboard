@@ -7,8 +7,11 @@
   <button mat-icon-button class="reload-button" aria-label="Reload" (click)="reloadPage()">
     <mat-icon>autorenew</mat-icon>
   </button>
-  <button mat-icon-button class="share-button" aria-label="Share">
-    <mat-icon>share</mat-icon>
+  <button mat-icon-button>
+    <mat-icon class="icon">notifications</mat-icon>
+  </button>
+  <button mat-icon-button class="share-button" aria-label="Settings" routerLink="settings">
+    <mat-icon>settings</mat-icon>
   </button>
 </mat-toolbar>
 
@@ -33,6 +36,9 @@
       </mat-list-item>
       <mat-list-item routerLink="peripherals">
         <button mat-button>  <mat-icon>devices_other</mat-icon> Peripherals</button>
+      </mat-list-item>
+      <mat-list-item routerLink="smartlock">
+        <button mat-button>  <mat-icon>lock</mat-icon> SmartLock</button>
       </mat-list-item>
       <mat-list-item routerLink="settings">
         <button color="warn" mat-button><mat-icon>settings</mat-icon> Settings</button>

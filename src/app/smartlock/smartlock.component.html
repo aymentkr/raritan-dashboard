@@ -1,18 +1,11 @@
+<!-- app.component.html -->
 <div class="card">
   <mat-card>
     <mat-card-header>
-      <mat-card-title> Sensorports</mat-card-title>
-      <mat-card-subtitle>[ 1 ]</mat-card-subtitle>
+      <mat-card-title> SmartLock Controllers</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <mat-divider></mat-divider>
-      <div class="container text-center">
-        <div class="button-container">
-          <button mat-icon-button color="warn" (click)="removeAllItems()" [hidden]="!isAllSelected()">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
-
         <table mat-table [dataSource]="dataSource" class="my-table mat-elevation-z8" matSort>
 
           <!-- Selection Column -->
@@ -28,6 +21,7 @@
               </mat-checkbox>
             </td>
           </ng-container>
+
           <!-- Define your columns once here -->
           <ng-container *ngFor="let column of columns">
             <ng-container [matColumnDef]="column">
@@ -35,19 +29,14 @@
               <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
             </ng-container>
           </ng-container>
+
           <!-- actions Column -->
-          <ng-container matColumnDef="actions">
+          <ng-container matColumnDef="edit">
             <th mat-header-cell *matHeaderCellDef="let element">
-              <button mat-icon-button color="warn" (click)="addDevice()">
-                <mat-icon>add</mat-icon>
-              </button>
             </th>
             <td mat-cell *matCellDef="let element" class="action-link">
               <button mat-icon-button color="primary" (click)="editDevice(element)">
                 <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button color="primary" (click)="infoDevice(element)">
-                <mat-icon>info</mat-icon>
               </button>
             </td>
           </ng-container>
@@ -55,8 +44,6 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
-      </div>
     </mat-card-content>
   </mat-card>
 </div>

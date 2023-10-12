@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import Chart from 'chart.js/auto';
-import {Inlet} from "../model/interfaces";
+import {Inlet, Pole} from "../model/interfaces";
 import { DateTime } from 'luxon';
 import {DataService} from "../services/data.service";
 
@@ -12,10 +12,20 @@ import {DataService} from "../services/data.service";
 export class DashboardComponent implements OnInit{
   chart: any;
   dateLabels: string[] = [];
+  PoleData : Pole = {
+    id : 0,
+    voltage: 0,
+    current: 0,
+    act_power: 0,
+    app_power: 0,
+    act_energy: 0,
+    app_energy: 0,
+  } ;
 
   constructor(
     private dataService: DataService,
-  ) {}
+  ) {
+  }
 
 
   ngOnInit(): void {
@@ -25,6 +35,7 @@ export class DashboardComponent implements OnInit{
   fetchData() {
     this.dataService.fetchInletData()
       .then((data: Inlet) => {
+        this.PoleData = data.poles[0];
         this.dataService.updateHistoricalInletData(data);
         this.generateDateLabels();
         this.createChart();

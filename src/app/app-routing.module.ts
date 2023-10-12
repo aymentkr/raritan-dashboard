@@ -8,6 +8,7 @@ import {HomeComponent} from "./home/home.component";
 import {InfoComponent} from "./info/info.component";
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {SettingsComponent} from "./settings/settings.component";
+import {SmartlockComponent} from "./smartlock/smartlock.component";
 
 
 const routes: Routes= [
@@ -17,6 +18,7 @@ const routes: Routes= [
   {path: 'inlets', component:InletComponent},
   {path: 'ocps', component:OcpsComponent},
   {path: 'peripherals', component:PeripheralComponent},
+  {path: 'smartlock', component:SmartlockComponent},
   {path: 'settings', component:SettingsComponent},
   {path: 'help', component:InfoComponent},
 ];

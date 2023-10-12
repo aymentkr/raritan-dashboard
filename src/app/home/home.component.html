@@ -1,1 +1,48 @@
-<p>home works!</p>
+<div class="card">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Envhubs</mat-card-title>
+      <mat-card-subtitle>[ 1 ]</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-divider></mat-divider>
+      <div class="container text-center">
+        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" color="accent" (selectedIndexChange)="tabChanged($event)">
+          <mat-tab *ngFor="let port of dataSource; let i = index" [label]="'Port ' + i">
+            <ng-container *ngIf="port && port.data && port.data.length > 0; else noData">
+              <table mat-table [dataSource]="port" matSort class="mat-elevation-z8">
+                <!-- Define your columns once here -->
+                <ng-container *ngFor="let column of displayedColumns">
+                  <ng-container [matColumnDef]="column">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column }}</th>
+                    <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
+                  </ng-container>
+                </ng-container>
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef="let element">
+                    <button mat-icon-button color="warn" (click)="addDevice(i)">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="action-link">
+                    <button mat-icon-button color="primary" (click)="editDevice(element)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="primary" (click)="infoDevice(element)">
+                      <mat-icon>info</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns.concat('actions')"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns.concat('actions')"></tr>
+              </table>
+            </ng-container>
+            <ng-template #noData>No device available</ng-template>
+          </mat-tab>
+        </mat-tab-group>
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

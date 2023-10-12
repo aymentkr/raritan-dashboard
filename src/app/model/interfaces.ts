@@ -14,6 +14,8 @@ export interface Pole {
   current: number;
   act_power: number;
   app_power: number;
+  act_energy: number;
+  app_energy: number;
 }
 
 export interface Inlet {
@@ -34,4 +36,7 @@ export interface Peripheral {
   name : string;
   type : string;
   serial_number : string;
+}
+export interface Envhub {
+  [key: number]: Peripheral[];
 }

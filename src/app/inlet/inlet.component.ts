@@ -15,8 +15,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 export class InletComponent implements OnInit,AfterViewInit{
 
   dataSource = new MatTableDataSource<Inlet>();
-  polesColumns: string[] = ['voltage', 'current', 'act_power', 'app_power','editPole'];
-  inletsColumns: string[] = ['select', 'name', 'frequency', 'poles', 'edit'];
+  polesColumns: string[] = ['voltage', 'current', 'act_power', 'app_power','act_energy','app_energy','editPole'];
+  inletsColumns: string[] = ['select', 'frequency', 'poles', 'edit'];
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
   editableRowIndexI: number = -1;
@@ -25,7 +25,7 @@ export class InletComponent implements OnInit,AfterViewInit{
     private _liveAnnouncer: LiveAnnouncer,
     private dataService: DataService,
     private _snackBar: MatSnackBar,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -113,5 +113,6 @@ export class InletComponent implements OnInit,AfterViewInit{
       this._liveAnnouncer.announce('Sorting cleared');
     }
   }
+
 
 }

@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {MatDialog} from "@angular/material/dialog";
 import {AddPeripheralDeviceComponent} from "./add-peripheral-device/add-peripheral-device.component";
@@ -20,7 +20,8 @@ import Swal from 'sweetalert2';
 })
 export class PeripheralComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<Peripheral>();
-  displayedColumns: string[] = ['select', 'id', 'name', 'type', 'serial_number', 'actions'];
+  columns : string[] = ['id', 'name', 'type', 'serial_number'];
+  displayedColumns: string[] = ['select', ...this.columns, 'actions'];
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
 

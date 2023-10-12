@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Inlet, Outlet, Peripheral, Pole} from "../model/interfaces";
+import {Envhub, Inlet, Outlet, Peripheral, Pole} from "../model/interfaces";
 import {WebsocketService} from "./websocket.service";
 import {SensorService} from "./sensor.service";
 
@@ -30,6 +30,8 @@ export class DataService {
         await this.WSS.sendMessage(`print(inlets[1]:getCurrent(${i}))`);
         await this.WSS.sendMessage(`print(inlets[1]:getActivePower(${i}))`);
         await this.WSS.sendMessage(`print(inlets[1]:getApparentPower(${i}))`);
+        await this.WSS.sendMessage(`print(inlets[1]:getActiveEnergy(${i}))`);
+        await this.WSS.sendMessage(`print(inlets[1]:getApparentEnergy(${i}))`);
       }
       await this.delay(50);
       const messages = this.cleanData(this.WSS.getMessages());
@@ -41,8 +43,10 @@ export class DataService {
           current: parseFloat(messages[index + 1]),
           act_power: parseFloat(messages[index + 2]),
           app_power: parseFloat(messages[index + 3]),
+          act_energy: parseFloat(messages[index + 4]),
+          app_energy: parseFloat(messages[index + 5]),
         });
-        index += 4;
+        index += 6;
       }
 
       return {
@@ -99,9 +103,29 @@ export class DataService {
     this.WSS.clearMessages();
     await this.WSS.sendMessage(`print(sensorports[1]:listDevices())`);
     await this.delay(50);
-    const peripherals: Peripheral[] = [];
-    let i = 1;
     const lines = this.WSS.getMessages().toString().split('\n');
+    return this.convertLinesToPeripherals(lines);
+  }
+
+  async fetchEnvhubsData() {
+    await this.WSS.sendMessage('help()');
+    await this.delay(50);
+    this.WSS.clearMessages();
+    const peripherals:Envhub = {};
+    for (let i = 0; i < 4; i++) {
+      await this.WSS.sendMessage(`print(envhubs[1]:getPort(${i}):listDevices())`);
+      await this.delay(50);
+      peripherals[i] = this.convertLinesToPeripherals(this.WSS.getMessages()[i].toString().split('\n'));
+    }
+    return {
+      ...peripherals,
+    };
+  }
+
+
+  convertLinesToPeripherals(lines: string[]):Peripheral[]{
+    const peripherals: Peripheral[] = [];
+    let index=1;
     for (const line of lines) {
       const match = line.match(/([A-Z0-9_]+): ([A-Z0-9]+)/);
       if (match) {
@@ -109,19 +133,31 @@ export class DataService {
         const serialNumber = match[2];
         this.sensorData.getSensors().filter(item => {
           if (item.type === type) {
-              peripherals.push({
-                id : i,
-                name: item.name,
-                type: item.type,
-                serial_number: serialNumber,
+            peripherals.push({
+              id: index,
+              name: item.name,
+              type: item.type,
+              serial_number: serialNumber,
             });
-              i++;
+            index++;
           }
         });
       }
     }
     return peripherals;
   }
+  async fetchSmartLockData() {
+    const type = 'DX2_DH2C2';
+    let peripherals = await this.fetchPeripheralData();
+    let envhubs = await this.fetchEnvhubsData();
+    peripherals = peripherals.filter((peripheral) => peripheral.type === type);
+    const filteredEnvhubData = envhubs[0]
+      .concat(envhubs[1], envhubs[2], envhubs[3])
+      .filter((peripheral) => peripheral.type === type);
+    return peripherals.concat(filteredEnvhubData);
+  }
+
+
 
 
   async editOutlet(outlet: Outlet): Promise<void> {
@@ -152,6 +188,8 @@ export class DataService {
       await this.WSS.sendMessage(`inlets[${inlet.id}]:setCurrent(${pole.id},${pole.current});`);
       await this.WSS.sendMessage(`inlets[${inlet.id}]:setActivePower(${pole.id},${pole.act_power});`);
       await this.WSS.sendMessage(`inlets[${inlet.id}]:setApparentPower(${pole.id},${pole.app_power});`);
+      await this.WSS.sendMessage(`inlets[${inlet.id}]:addActiveEnergy(${pole.id},${pole.act_energy});`);
+      await this.WSS.sendMessage(`inlets[${inlet.id}]:addApparentEnergy(${pole.id},${pole.app_energy});`);
     } else {
       throw new Error('pole is null');
     }
