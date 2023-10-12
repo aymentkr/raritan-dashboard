@@ -1,3 +1,4 @@
+<script src="home.component.ts"></script>
 <div class="card">
   <mat-card>
     <mat-card-header>
@@ -9,7 +10,7 @@
       <div class="container text-center">
         <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" color="accent" >
           <mat-tab *ngFor="let port of dataSource; let i = index" [label]="'Port ' + i">
-            <ng-container *ngIf="port && port.data && port.data.length > 0; else noData">
+            <ng-container *ngIf="port && port.data">
               <table mat-table [dataSource]="port" matSort class="mat-elevation-z8">
                 <!-- Define your columns once here -->
                 <ng-container *ngFor="let column of displayedColumns">
@@ -38,10 +39,21 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns.concat('actions')"></tr>
               </table>
             </ng-container>
-            <ng-template #noData>No device available</ng-template>
+            <ng-container *ngIf="port.data.length === 0">
+              <h2>No device available</h2>
+            </ng-container>
+            <div class="custom-container">
+              <mat-form-field>
+                <mat-label>State</mat-label>
+                <mat-select [(ngModel)]="state" disableRipple>
+                  <mat-option value="true">True</mat-option>
+                  <mat-option value="false">False</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <button mat-raised-button color="accent" (click)="setFuseState(i)">Set Fuse State</button>
+            </div>
           </mat-tab>
         </mat-tab-group>
-        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
       </div>
     </mat-card-content>
   </mat-card>

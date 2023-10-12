@@ -48,4 +48,26 @@
     </mat-card-content>
   </mat-card>
 </div>
-
+<div class="card">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Information </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            {{ sensor.type }} | {{ sensor.name }}
+          </mat-expansion-panel-header>
+          <mat-list class="left-aligned-list">
+            <mat-list-item><strong> Name :  </strong> {{ sensor.name }}</mat-list-item>
+            <mat-list-item><strong>Type :  </strong> {{ sensor.type }}</mat-list-item>
+            <mat-list-item><strong>Generation : </strong> {{ sensor.generation }}</mat-list-item>
+            <mat-list-item><strong>Prefix :  </strong> {{ sensor.prefix }}</mat-list-item>
+            <mat-list-item><strong>Supported Methods:  </strong> {{ sensor.methods }}</mat-list-item>
+          </mat-list>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </mat-card-content>
+  </mat-card>
+</div>

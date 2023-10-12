@@ -46,6 +46,7 @@ import {KnobModule} from "primeng/knob";
 import {MatCardModule} from "@angular/material/card";
 import {MessagesModule} from "primeng/messages";
 import { SmartlockComponent } from './smartlock/smartlock.component';
+import { AddToEnvhubComponent } from './home/add-to-envhub/add-to-envhub.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -59,7 +60,8 @@ import { SmartlockComponent } from './smartlock/smartlock.component';
     InfoComponent,
     DashboardComponent,
     SettingsComponent,
-    SmartlockComponent
+    SmartlockComponent,
+    AddToEnvhubComponent
   ],
   imports: [
     AppRoutingModule,

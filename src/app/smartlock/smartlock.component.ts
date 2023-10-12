@@ -20,6 +20,7 @@ export class SmartlockComponent implements OnInit, AfterViewInit{
   displayedColumns: string[] = ['select', ...this.columns, 'edit'];
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
+  sensor: any ;
 
   constructor(
     private dialog: MatDialog,
@@ -28,6 +29,7 @@ export class SmartlockComponent implements OnInit, AfterViewInit{
     private _snackBar: MatSnackBar,
     private dataService: DataService
   ) {
+    this.sensor = this.ss.getSensors().find(sensor => sensor.type === 'DX2_DH2C2')
   }
 
   ngOnInit(): void {

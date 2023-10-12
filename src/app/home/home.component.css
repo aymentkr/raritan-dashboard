@@ -15,3 +15,15 @@ input.example-right-align::-webkit-inner-spin-button {
 input.example-right-align {
   -moz-appearance: textfield;
 }
+
+.custom-container {
+  margin: 20px;
+}
+
+.custom-container mat-form-field {
+  margin-right: 10px;
+}
+
+.custom-container button {
+  margin-left: 10px;
+}

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Peripheral, SensorElement} from '../model/interfaces';
 import { WebsocketService } from './websocket.service';
+import Swal from "sweetalert2";
 
 @Injectable({
   providedIn: 'root'
@@ -142,14 +143,36 @@ export class SensorService {
     return this.sensors;
   }
 
-  async save(obj: any): Promise<boolean> {
-    this.WSS.sendMessage(`
+  async save(obj: any):  Promise<void>{
+    await this.WSS.sendMessage(`
     new_sensor = emu.${obj.type1}:create(tfw_core)
     parent = emu.${obj.type2}:cast(sensorports[1]:findDevice("${obj.serial_number}"))
     new_sensor:connect(parent)
     `);
-    return !(await this.WSS.getResult('print(#sensorports[1]:listDevices())')).includes('error');
   }
+
+  async saveToEnvhub(type: string, p: number ) {
+    await this.WSS.sendMessage(`
+    new_sensor = emu.${type}:create(tfw_core)
+    new_sensor:connect(envhubs[1]:getPort(${p}))
+    `);
+  }
+
+
+   infoDevice = (obj: Peripheral): void => {
+    let selectedSensor = this.getSensors().find(sensor => sensor.type === obj.type);
+    if (selectedSensor) {
+      const formattedMethods = selectedSensor.methods.join('\n');
+
+      Swal.fire({
+        title: 'Peripheral Device ID: ' + obj.id,
+        html: '<mark>' + 'Methods:' + '</mark>' + '<pre>' + formattedMethods + '</pre>',
+        icon: 'info'
+      });
+    } else {
+      Swal.fire('Peripheral Device ID: ' + obj.id, 'Sensor not found', 'error');
+    }
+  };
 
   removeAll() {
     this.WSS.sendMessage('sensorports[1]:removeAll()');
@@ -159,5 +182,7 @@ export class SensorService {
     this.WSS.sendMessage(`emu.${data.device.type}:cast(sensorports[1]:findDevice("${data.device.serial_number}")):${data.methodName}`);
   }
 
-
+  setFuseState(i: number, state: boolean) {
+    this.WSS.sendMessage(`envhubs[1]:setFuseState(${i}, ${state})`);
+  }
 }

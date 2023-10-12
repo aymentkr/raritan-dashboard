@@ -74,7 +74,8 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
   }
 
   async addRowData(obj: any) {
-    if (obj.type1 != "" && obj.type2 != "" && obj.serial_number.length == 10 && await this.ss.save(obj)) {
+    if (obj.type1 != "" && obj.type2 != "" && obj.serial_number.length == 10 ) {
+      await this.ss.save(obj)
       this.fetchData();
       this._snackBar.open(`New Device ${obj.serial_number} saved successfully`, 'OK', {
         duration: 3000,
@@ -97,19 +98,7 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
   }
 
   public infoDevice = (obj: Peripheral): void => {
-    let selectedSensor = this.ss.getSensors().find(sensor => sensor.type === obj.type);
-    if (selectedSensor) {
-      const formattedMethods = selectedSensor.methods.join('\n'); // Format methods as a list
-
-      Swal.fire({
-        title: 'Peripheral Device ID: ' + obj.id,
-        html: '<mark>' + 'Methods:' + '</mark>' + '<pre>' + formattedMethods + '</pre>', // Display methods in a <pre> element for better formatting
-        icon: 'info'
-      });
-    } else {
-      // Handle the case when the sensor is not found
-      Swal.fire('Peripheral Device ID: ' + obj.id, 'Sensor not found', 'error');
-    }
+    this.ss.infoDevice(obj);
   };
 
 

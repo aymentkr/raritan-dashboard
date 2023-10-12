@@ -32,8 +32,8 @@ export class DataService {
         await this.WSS.sendMessage(`print(inlets[1]:getApparentPower(${i}))`);
         await this.WSS.sendMessage(`print(inlets[1]:getActiveEnergy(${i}))`);
         await this.WSS.sendMessage(`print(inlets[1]:getApparentEnergy(${i}))`);
+        await this.delay(50);
       }
-      await this.delay(50);
       const messages = this.cleanData(this.WSS.getMessages());
       let index = 0;
       for (let i = 0; i < 3; i++) {
@@ -74,6 +74,7 @@ export class DataService {
         await this.WSS.sendMessage(`print(outlets[${i}]:getCurrent())`);
         await this.WSS.sendMessage(`print(outlets[${i}]:getActivePower())`);
         await this.WSS.sendMessage(`print(outlets[${i}]:getApparentPower())`);
+        // await this.delay(50);
       }
       await this.delay(50);
       let i = 0, id = 1;
