@@ -113,9 +113,10 @@ export class DataService {
     this.WSS.clearMessages();
     const peripherals:Envhub = {};
     for (let i = 0; i < 4; i++) {
-      await this.WSS.sendMessage(`print(envhubs[1]:getPort(${i}):listDevices())`);
-      await this.delay(50);
-      peripherals[i] = this.convertLinesToPeripherals(this.WSS.getMessages()[i].toString().split('\n'));
+      await this.WSS.getResult(`print(envhubs[1]:getPort(${i}):listDevices())`).then((data:string) => {
+            peripherals[i] = this.convertLinesToPeripherals(data.split('\n'));
+      })
+        await this.delay(50);
     }
     return {
       ...peripherals,

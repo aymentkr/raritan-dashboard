@@ -19,7 +19,6 @@ import Swal from "sweetalert2";
 export class HomeComponent implements OnInit, AfterViewInit{
   displayedColumns: string[] = ['id', 'name', 'type', 'serial_number'];
   dataSource: MatTableDataSource<Peripheral>[] = [];
-  selectedTabIndex: number = 0;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
@@ -44,10 +43,6 @@ export class HomeComponent implements OnInit, AfterViewInit{
     this.dataService
       .fetchEnvhubsData()
       .then((data: Envhub) => {
-        // Clear existing data source
-        this.dataSource = [];
-
-        // Loop through each port and create a MatTableDataSource
         for (let i = 0; i < 4; i++) {
           if (data[i]) {
             this.dataSource[i] = new MatTableDataSource<Peripheral>(data[i]);
