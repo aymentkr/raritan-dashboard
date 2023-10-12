@@ -1,175 +1,35 @@
 <h1 mat-dialog-title>Changing sensor readings</h1>
 <div mat-dialog-content>
-  <p><sub>for</sub> Peripheral Device {{local_data.id}}</p>
-  <p>
-    <mat-form-field class="dialog-content">
-      <mat-label>Select a sensor method</mat-label>
-      <mat-select [(ngModel)]="selectedSensorMethod">
-        <mat-option *ngFor="let sensor of selectedSensor?.methods" [value]="sensor">
-          {{ sensor }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </p>
-  <ng-container [ngSwitch]="selectedSensorMethod">
-    <ng-container *ngSwitchCase="'setAirFlow'">
+  <p><sub>for</sub> Peripheral Device {{ local_data.id }}</p>
+
+  <mat-form-field class="dialog-content">
+    <mat-label>Select a sensor method</mat-label>
+    <mat-select [(ngModel)]="selectedSensorMethod">
+      <mat-option *ngFor="let sensor of selectedSensor?.methods" [value]="sensor">
+        {{ sensor }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <ng-container *ngIf="selectedSensorMethod">
+    <ng-container *ngFor="let paramType of methodParameters[selectedSensorMethod]">
       <mat-form-field class="dialog-content">
-        <mat-label>Enter a number</mat-label>
-        <input matInput type="number" [formControl]="_numberValue" placeholder="meters per sec (m/s)" required>
+        <mat-label>{{ getParamLabel(paramType) }}</mat-label>
+        <ng-container [ngSwitch]="paramType">
+          <input *ngSwitchCase="'number'" matInput type="number" [formControl]="getParamFormControl(paramType)" [placeholder]="getParamPlaceholder(paramType)" required>
+          <input *ngSwitchCase="'str'" matInput type="text" [formControl]="getParamFormControl(paramType)" [placeholder]="getParamPlaceholder(paramType)" required>
+          <mat-select *ngSwitchCase="'bool'" [formControl]="getParamFormControl(paramType)" required>
+            <mat-option [value]="true">True</mat-option>
+            <mat-option [value]="false">False</mat-option>
+          </mat-select>
+        </ng-container>
       </mat-form-field>
     </ng-container>
-
-    <ng-container *ngSwitchCase="'setTemperature'">
-      <mat-form-field class="dialog-content">
-        <mat-label>Enter a number</mat-label>
-        <input matInput type="number" [formControl]="_numberValue" placeholder="celsius (°C)" required>
-      </mat-form-field>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="'setAirPressure'">
-      <mat-form-field class="dialog-content">
-        <mat-label>Enter a number</mat-label>
-        <input matInput type="number" [formControl]="_numberValue" placeholder="pascal (Pa)" required>
-      </mat-form-field>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="'setHumidity'">
-      <mat-form-field class="dialog-content">
-        <mat-label>Enter a number</mat-label>
-        <input matInput type="number" [formControl]="_numberValue" placeholder="humidity percentage (%)" required>
-      </mat-form-field>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="'setContactClosure'">
-      <mat-form-field class="dialog-content">
-        <mat-label>Enter a number</mat-label>
-        <input matInput type="number" [formControl]="_numberValue" placeholder="0..4" required min="0" max="4">
-      </mat-form-field>
-      <mat-form-field class="dialog-content">
-        <mat-label>Select a value</mat-label>
-        <mat-select [formControl]="_boolValue" required>
-          <mat-option [value]="true">True</mat-option>
-          <mat-option [value]="false">False</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="'setContactClosure2'">
-      <mat-form-field class="dialog-content">
-        <mat-label>Select a value</mat-label>
-        <mat-select [formControl]="_boolValue" required>
-          <mat-option [value]="true">True</mat-option>
-          <mat-option [value]="false">False</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="'setDryContact'">
-      <mat-form-field class="dialog-content">
-        <mat-label>Enter a number</mat-label>
-        <input matInput type="number" [formControl]="_numberValue" placeholder="0..1" required min="0" max="1">
-      </mat-form-field>
-      <mat-form-field class="dialog-content">
-        <mat-label>Select a value</mat-label>
-        <mat-select [formControl]="_boolValue" required>
-          <mat-option [value]="true">True</mat-option>
-          <mat-option [value]="false">False</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="'setMagneticContact'">
-      <mat-form-field class="dialog-content">
-        <mat-label>Select a value</mat-label>
-        <mat-select [formControl]="_boolValue" required>
-          <mat-option [value]="true">True</mat-option>
-          <mat-option [value]="false">False</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="'setMotionDetected'">
-      <mat-form-field class="dialog-content">
-        <mat-label>Select a value</mat-label>
-        <mat-select [formControl]="_boolValue" required>
-          <mat-option [value]="true">True</mat-option>
-          <mat-option [value]="false">False</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="'setTamperAlarm'">
-      <mat-form-field class="dialog-content">
-        <mat-label>Select a value</mat-label>
-        <mat-select [formControl]="_boolValue" required>
-          <mat-option [value]="true">True</mat-option>
-          <mat-option [value]="false">False</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
-
-    <!-- Previous cases... -->
-
-    <ng-container *ngSwitchCase="'setDoorState'">
-      <mat-form-field class="dialog-content">
-        <mat-label>Enter a number</mat-label>
-        <input matInput type="number" [formControl]="_numberValue" placeholder="0..1" required min="0" max="1">
-      </mat-form-field>
-      <mat-form-field class="dialog-content">
-        <mat-label>Select a value</mat-label>
-        <mat-select [formControl]="_boolValue" required>
-          <mat-option [value]="true">True</mat-option>
-          <mat-option [value]="false">False</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="'setHandleState'">
-      <mat-form-field class="dialog-content">
-        <mat-label>Enter a number</mat-label>
-        <input matInput type="number" [formControl]="_numberValue" placeholder="0..1" required min="0" max="1">
-      </mat-form-field>
-      <mat-form-field class="dialog-content">
-        <mat-label>Select a value</mat-label>
-        <mat-select [formControl]="_boolValue" required>
-          <mat-option [value]="true">True</mat-option>
-          <mat-option [value]="false">False</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="'setCardId'">
-      <mat-form-field class="dialog-content">
-        <mat-label>Enter a number</mat-label>
-        <input matInput type="number" [formControl]="_numberValue" placeholder="0..1" required min="0" max="1">
-      </mat-form-field>
-      <mat-form-field class="dialog-content">
-        <mat-label>Enter ID Number</mat-label>
-        <input matInput type="text" [formControl]="_strValue" placeholder="12345678" required>
-      </mat-form-field>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="'setPIN'">
-      <mat-form-field class="dialog-content">
-        <mat-label>Enter a number</mat-label>
-        <input matInput type="number" [formControl]="_numberValue" placeholder="0..1" required min="0" max="1">
-      </mat-form-field>
-      <mat-form-field class="dialog-content">
-        <mat-label>Enter PIN</mat-label>
-        <input matInput type="password" [formControl]="_strValue" placeholder="12345678" required>
-      </mat-form-field>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="'setVibration'">
-      <mat-form-field class="dialog-content">
-        <mat-label>Enter a number</mat-label>
-        <input matInput type="number" [formControl]="_numberValue" placeholder="g" required>
-      </mat-form-field>
-    </ng-container>
-
   </ng-container>
+
 </div>
+
 <div mat-dialog-actions>
-  <button mat-button (click)="setSensorValue()" [disabled]="!isFormValid()" >Set value</button>
+  <button mat-button (click)="setSensorValue()" [disabled]="!isFormValid()">Set value</button>
   <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>
 </div>

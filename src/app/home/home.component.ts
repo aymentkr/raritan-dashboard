@@ -1,7 +1,7 @@
 import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {Envhub, Peripheral} from "../model/interfaces";
-import {MatSort, Sort} from "@angular/material/sort";
+import {MatSort} from "@angular/material/sort";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {MatDialog} from "@angular/material/dialog";
 import {SensorService} from "../services/sensor.service";
@@ -52,11 +52,6 @@ export class HomeComponent implements OnInit, AfterViewInit{
       .catch((error) => {
         console.error('Data fetching failed:', error);
       });
-  }
-  tabChanged(event: any): void {
-    if (!this.dataSource[event]) {
-      this.fetchData();
-    }
   }
 
   addDevice(i:number) {
@@ -116,13 +111,8 @@ export class HomeComponent implements OnInit, AfterViewInit{
       Swal.fire('Peripheral Device ID: ' + obj.id, 'Sensor not found', 'error');
     }
   };
-
-  announceSortChange(sortState: Sort) {
-    if (sortState.direction) {
-      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
-    } else {
-      this._liveAnnouncer.announce('Sorting cleared');
+    getDataSourceLengths(): number[] {
+        return this.dataSource.map((item) => item.data.length);
     }
-  }
 
 }

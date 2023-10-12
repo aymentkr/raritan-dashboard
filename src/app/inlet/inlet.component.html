@@ -2,7 +2,7 @@
   <mat-card>
     <mat-card-header>
       <mat-card-title> Inlets</mat-card-title>
-      <mat-card-subtitle>[ 1 ]</mat-card-subtitle>
+      <mat-card-subtitle> [ {{ dataSource.data.length}} ] </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <mat-divider></mat-divider>
@@ -192,7 +192,6 @@
     <tr mat-header-row *matHeaderRowDef=inletsColumns></tr>
     <tr mat-row *matRowDef="let row; columns: inletsColumns; let i = index;"></tr>
   </table>
-      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
 </mat-card-content>
 </mat-card>
 </div>

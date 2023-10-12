@@ -5,7 +5,8 @@ import {SelectionModel} from "@angular/cdk/collections";
 import {DataService} from "../services/data.service";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {Outlet, Peripheral} from "../model/interfaces";
+import {Outlet} from "../model/interfaces";
+import {MatPaginator} from "@angular/material/paginator";
 
 
 @Component({
@@ -27,8 +28,11 @@ export class OutletComponent implements OnInit,AfterViewInit {
     'edit',
   ];
   selection = new SelectionModel<any>(true, []);
-  editableRowIndex: number = -1;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  pageSizeOptions: number[] = [5,10, 15,20, 30,35,40];
+  pageSize: number = 10;
+  editableRowIndex: number = -1;
   constructor(private _liveAnnouncer: LiveAnnouncer,
               private dataService: DataService,
               private _snackBar: MatSnackBar,
@@ -39,7 +43,10 @@ export class OutletComponent implements OnInit,AfterViewInit {
   }
   ngAfterViewInit() {
     this.cdRef.detectChanges();
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.paginator.pageSize = this.pageSize;
   }
+
 
   fetchData() {
     this.dataService.fetchOutletData()
@@ -74,7 +81,7 @@ export class OutletComponent implements OnInit,AfterViewInit {
   }
 
 
-  cancelEdit(rowIndex: number) {
+  cancelEdit() {
     this.editableRowIndex = -1; // Exit edit mode
   }
 
@@ -96,4 +103,8 @@ export class OutletComponent implements OnInit,AfterViewInit {
       this._liveAnnouncer.announce('Sorting cleared');
     }
   }
+  onPageSizeChange(event: any) {
+    this.pageSize = event.pageSize;
+  }
+
 }
