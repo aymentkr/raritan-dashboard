@@ -38,21 +38,4 @@ export class SettingsComponent  implements OnInit {
   clearNotifications() {
     this.notificationService.clearAllHistory();
   }
-
-
-  getIcon(alert: string): string {
-    switch (alert) {
-      case 'error':
-        return 'error';
-      case 'info':
-        return 'info';
-      case 'success':
-        return 'check_circle';
-      case 'warning':
-        return 'warning';
-      default:
-        return '';
-    }
-  }
-
 }

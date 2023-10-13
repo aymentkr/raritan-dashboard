@@ -143,22 +143,6 @@ export class SensorService {
     return this.sensors;
   }
 
-  async save(obj: any):  Promise<void>{
-    await this.WSS.sendMessage(`
-    new_sensor = emu.${obj.type1}:create(tfw_core)
-    parent = emu.${obj.type2}:cast(sensorports[1]:findDevice("${obj.serial_number}"))
-    new_sensor:connect(parent)
-    `);
-  }
-
-  async saveToEnvhub(type: string, p: number ) {
-    await this.WSS.sendMessage(`
-    new_sensor = emu.${type}:create(tfw_core)
-    new_sensor:connect(envhubs[1]:getPort(${p}))
-    `);
-  }
-
-
    infoDevice = (obj: Peripheral): void => {
     let selectedSensor = this.getSensors().find(sensor => sensor.type === obj.type);
     if (selectedSensor) {
@@ -178,8 +162,25 @@ export class SensorService {
     this.WSS.sendMessage('sensorports[1]:removeAll()');
   }
 
-  callMethod(data: any) {
+  async saveToSensorPorts(obj: any):  Promise<void>{
+    await this.WSS.sendMessage(`
+    new_sensor = emu.${obj.type1}:create(tfw_core)
+    parent = emu.${obj.type2}:cast(sensorports[1]:findDevice("${obj.serial_number}"))
+    new_sensor:connect(parent)
+    `);
+  }
+
+  async saveToEnvhubs(type: string, p: number ) {
+    await this.WSS.sendMessage(`
+    new_sensor = emu.${type}:create(tfw_core)
+    new_sensor:connect(envhubs[1]:getPort(${p}))
+    `);
+  }
+  callMethodinSensorPorts(data: any) {
     this.WSS.sendMessage(`emu.${data.device.type}:cast(sensorports[1]:findDevice("${data.device.serial_number}")):${data.methodName}`);
+  }
+  callMethodinEnvhubs(data: any) {
+    this.WSS.sendMessage(`emu.${data.device.type}:cast(envhubs[1]:findDevice("${data.device.serial_number}")):${data.methodName}`);
   }
 
   setFuseState(i: number, state: boolean) {

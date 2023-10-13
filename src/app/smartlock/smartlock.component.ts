@@ -17,7 +17,7 @@ import {NotificationService} from "../services/notification.service";
 export class SmartlockComponent implements OnInit, AfterViewInit{
   dataSource = new MatTableDataSource<Peripheral>();
   columns : string[] = [ 'name', 'type', 'serial_number'];
-  displayedColumns: string[] = ['select', ...this.columns, 'edit'];
+  displayedColumns: string[] = ['select', ...this.columns, ];
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
   sensor: any ;
@@ -50,25 +50,6 @@ export class SmartlockComponent implements OnInit, AfterViewInit{
         console.error('Data fetching failed:', error);
       });
   }
-  editDevice(obj: Peripheral) {
-    const dialogRef = this.dialog.open(EditPeripheralDeviceComponent, {
-      data: obj
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) this.editRowData(result.data);
-    });
-  }
-  private editRowData(data: any) {
-    this.ss.callMethod(data);
-    this.notificationService.openToastr(
-      `Device has been successfully updated from SmartLock,
-      Serial of the device : ${data.device.serial_number},
-      Method : ${data.methodName}`,
-      'Modification on existing dh2c2 ',
-      'done'
-    );
-  }
-
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;

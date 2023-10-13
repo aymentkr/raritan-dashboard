@@ -75,7 +75,7 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
 
   async addRowData(obj: any) {
     if (obj.type1 != "" && obj.type2 != "" && obj.serial_number.length == 10 ) {
-      await this.ss.save(obj)
+      await this.ss.saveToSensorPorts(obj)
       this.fetchData();
       this._snackBar.open(`New Device ${obj.serial_number} saved successfully`, 'OK', {
         duration: 3000,
@@ -90,7 +90,7 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
   }
 
   private editRowData(data: any) {
-    this.ss.callMethod(data);
+    this.ss.callMethodinSensorPorts(data);
     this._snackBar.open(`Device has been successfully updated`, 'OK', {
       duration: 3000,
       panelClass: ['success-snackbar'],

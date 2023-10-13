@@ -70,7 +70,7 @@ export class HomeComponent implements OnInit, AfterViewInit{
 
   async addRowData(type: string, p: number ) {
     if (type != '' ) {
-      await this.ss.saveToEnvhub(type,p);
+      await this.ss.saveToEnvhubs(type, p);
       this.fetchData();
       this._snackBar.open(`New Devic with type ${type} in Port ${p} saved successfully`, 'OK', {
         duration: 3000,
@@ -85,7 +85,7 @@ export class HomeComponent implements OnInit, AfterViewInit{
   }
 
   private editRowData(data: any) {
-    this.ss.callMethod(data);
+    this.ss.callMethodinEnvhubs(data);
     this._snackBar.open(`Device has been successfully updated`, 'OK', {
       duration: 3000,
       panelClass: ['success-snackbar'],
