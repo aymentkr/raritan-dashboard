@@ -189,7 +189,6 @@ export class DataService {
 
   async editInlet(inlet: Inlet): Promise<void> {
     if (inlet!=null) {
-      console.log(inlet.id + inlet.frequency + inlet.poles.length);
       await this.WSS.sendMessage(`inlets[${inlet.id}]:setFrequency(${inlet.frequency});`);
     } else {
       throw new Error('inlet is null');

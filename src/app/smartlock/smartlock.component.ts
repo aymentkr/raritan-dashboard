@@ -5,9 +5,9 @@ import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
 import {MatDialog} from "@angular/material/dialog";
 import {SensorService} from "../services/sensor.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
 import {DataService} from "../services/data.service";
 import {EditPeripheralDeviceComponent} from "../peripheral/edit-peripheral-device/edit-peripheral-device.component";
+import {NotificationService} from "../services/notification.service";
 
 @Component({
   selector: 'app-smartlock',
@@ -16,7 +16,7 @@ import {EditPeripheralDeviceComponent} from "../peripheral/edit-peripheral-devic
 })
 export class SmartlockComponent implements OnInit, AfterViewInit{
   dataSource = new MatTableDataSource<Peripheral>();
-  columns : string[] = ['id', 'name', 'type', 'serial_number'];
+  columns : string[] = [ 'name', 'type', 'serial_number'];
   displayedColumns: string[] = ['select', ...this.columns, 'edit'];
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
@@ -26,7 +26,7 @@ export class SmartlockComponent implements OnInit, AfterViewInit{
     private dialog: MatDialog,
     private ss: SensorService,
     private cdr: ChangeDetectorRef,
-    private _snackBar: MatSnackBar,
+    private notificationService: NotificationService,
     private dataService: DataService
   ) {
     this.sensor = this.ss.getSensors().find(sensor => sensor.type === 'DX2_DH2C2')
@@ -60,10 +60,13 @@ export class SmartlockComponent implements OnInit, AfterViewInit{
   }
   private editRowData(data: any) {
     this.ss.callMethod(data);
-    this._snackBar.open(`Device has been successfully updated`, 'OK', {
-      duration: 3000,
-      panelClass: ['success-snackbar'],
-    });
+    this.notificationService.openToastr(
+      `Device has been successfully updated from SmartLock,
+      Serial of the device : ${data.device.serial_number},
+      Method : ${data.methodName}`,
+      'Modification on existing dh2c2 ',
+      'done'
+    );
   }
 
   isAllSelected() {

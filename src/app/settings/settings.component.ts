@@ -1,25 +1,58 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {WebsocketService} from "../services/websocket.service";
 import {DataService} from "../services/data.service";
+import {NotificationService} from "../services/notification.service";
+import {Notification} from "../model/interfaces";
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
-export class SettingsComponent {
+export class SettingsComponent  implements OnInit {
+  notifications!: Notification[] ;
+  displayedColumns : string[] = ['title', 'time', 'message','alert'];
 
-  constructor(private WSS: WebsocketService,private _dataService: DataService) {
+  ngOnInit(): void {
+    this.notificationService.getNotifications().subscribe(notifications =>
+      this.notifications = notifications
+    );
   }
+
+  constructor(
+    private WSS: WebsocketService,
+    private _dataService: DataService,
+    private notificationService: NotificationService
+  ) {}
 
 
   options = this._dataService.options;
-  onToggleChange(option: { name: string; isEnabled: boolean }) {
+  async onToggleChange(option: { name: string; isEnabled: boolean }) {
     if (option.isEnabled)
-
-      this.WSS.sendMessage(`ctrls[${option.name}]:enable()`);
+      await this.WSS.sendMessage(`ctrls[${option.name}]:enable()`);
     else
-      this.WSS.sendMessage(`ctrls[${option.name}]:disable()`);
+      await this.WSS.sendMessage(`ctrls[${option.name}]:disable()`);
+  }
+
+
+  clearNotifications() {
+    this.notificationService.clearAllHistory();
+  }
+
+
+  getIcon(alert: string): string {
+    switch (alert) {
+      case 'error':
+        return 'error';
+      case 'info':
+        return 'info';
+      case 'success':
+        return 'check_circle';
+      case 'warning':
+        return 'warning';
+      default:
+        return '';
+    }
   }
 
 }

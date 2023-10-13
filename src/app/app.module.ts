@@ -47,6 +47,12 @@ import {MatCardModule} from "@angular/material/card";
 import {MessagesModule} from "primeng/messages";
 import { SmartlockComponent } from './smartlock/smartlock.component';
 import { AddToEnvhubComponent } from './home/add-to-envhub/add-to-envhub.component';
+import {MatBadgeModule} from "@angular/material/badge";
+import {ToastrModule} from "ngx-toastr";
+import {OrderListModule} from "primeng/orderlist";
+import {VirtualScrollerModule} from "primeng/virtualscroller";
+import {PanelModule} from "primeng/panel";
+import {ButtonModule} from "primeng/button";
 @NgModule({
   declarations: [
     AppComponent,
@@ -66,6 +72,7 @@ import { AddToEnvhubComponent } from './home/add-to-envhub/add-to-envhub.compone
   imports: [
     AppRoutingModule,
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     MatTableModule,
     MatDialogModule,
@@ -98,7 +105,13 @@ import { AddToEnvhubComponent } from './home/add-to-envhub/add-to-envhub.compone
     MatSlideToggleModule,
     KnobModule,
     MatCardModule,
-    MessagesModule
+    MessagesModule,
+    MatBadgeModule,
+    ToastrModule.forRoot(),
+    OrderListModule,
+    VirtualScrollerModule,
+    PanelModule,
+    ButtonModule,
   ],
   providers: [WebsocketService,DataService,SensorService],
   bootstrap: [AppComponent]

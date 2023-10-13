@@ -40,3 +40,10 @@ export interface Peripheral {
 export interface Envhub {
   [key: number]: Peripheral[];
 }
+
+export interface Notification {
+  title: string;
+  time : string;
+  message: string;
+  alert: string;
+}

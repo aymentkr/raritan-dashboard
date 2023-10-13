@@ -1,0 +1,5 @@
+.NotifyList {
+  height: 75%!important;
+  width: 90%!important;
+  overflow: auto;
+}

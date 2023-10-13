@@ -7,9 +7,32 @@
   <button mat-icon-button class="reload-button" aria-label="Reload" (click)="reloadPage()">
     <mat-icon>autorenew</mat-icon>
   </button>
-  <button mat-icon-button>
-    <mat-icon class="icon">notifications</mat-icon>
+
+  <button mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon [matBadge]="(notifications | async)?.length" matBadgeColor="warn" aria-hidden="false">notifications</mat-icon>
   </button>
+  <mat-menu #menu="matMenu">
+    <ng-container *ngIf="(notifications | async) as notifs">
+      <ng-container *ngIf="notifs.length; else noNotifications">
+        <mat-list>
+          <mat-list-item *ngFor="let notification of notifs">
+            <span matListItemTitle>
+              {{ notification.title }}
+              <mat-icon class="material-icons">{{ notification.alert }}</mat-icon>
+            </span>
+            <span matListItemLine>{{ notification.message }} </span>
+            <mat-divider [inset]="true"></mat-divider>
+          </mat-list-item>
+        </mat-list>
+      </ng-container>
+    </ng-container>
+    <ng-template #noNotifications>
+      <mat-list>
+        <mat-list-item> No notifications</mat-list-item>
+      </mat-list>
+    </ng-template>
+  </mat-menu>
+
   <button mat-icon-button class="share-button" aria-label="Settings" routerLink="settings">
     <mat-icon>settings</mat-icon>
   </button>
@@ -49,7 +72,7 @@
     </mat-nav-list>
   </mat-drawer>
   <mat-drawer-content>
-    <div style="text-align: center;min-height: 600px;">
+    <div style="text-align: center;min-height: 1000px;">
       <router-outlet></router-outlet>
     </div>
   </mat-drawer-content>

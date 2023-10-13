@@ -1,11 +1,11 @@
 import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
-import {Inlet} from "../model/interfaces";
+import {Inlet, Pole} from "../model/interfaces";
 import {MatSort, Sort} from "@angular/material/sort";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {DataService} from "../services/data.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import {NotificationService} from "../services/notification.service";
 
 @Component({
   selector: 'app-inlet',
@@ -24,8 +24,8 @@ export class InletComponent implements OnInit,AfterViewInit{
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     private dataService: DataService,
-    private _snackBar: MatSnackBar,
     private cdRef: ChangeDetectorRef,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -52,7 +52,7 @@ export class InletComponent implements OnInit,AfterViewInit{
     this.editableRowIndexP = rowIndex;
   }
 
-  saveInlet(rowData: any) {
+  saveInlet(rowData: Inlet) {
     this.dataService.editInlet(rowData)
       .then(() => {
         this.editableRowIndexI = -1;
@@ -63,7 +63,7 @@ export class InletComponent implements OnInit,AfterViewInit{
       });
   }
 
-  savePole(inlet: any,pole: any) {
+  savePole(inlet: Inlet,pole: Pole) {
     this.dataService.editPole(inlet,pole)
       .then(() => {
         this.editableRowIndexP = -1;
@@ -83,17 +83,11 @@ export class InletComponent implements OnInit,AfterViewInit{
   }
 
   showSuccessSnackBar() {
-    this._snackBar.open('Data saved successfully', 'OK', {
-      duration: 3000, // Adjust the duration as needed
-      panelClass: ['success-snackbar'], // Optional: Add a custom CSS class for styling
-    });
+    this.notificationService.openToastr('Data saved successfully','Modification on Inlet 1','done');
   }
 
   showErrorSnackBar() {
-    this._snackBar.open('Failed to save data', 'OK', {
-      duration: 3000, // Adjust the duration as needed
-      panelClass: ['error-snackbar'], // Optional: Add a custom CSS class for styling
-    });
+    this.notificationService.openToastr('Failed to save data','Modification on Inlet 1','error');
   }
 
   isAllSelected() {
