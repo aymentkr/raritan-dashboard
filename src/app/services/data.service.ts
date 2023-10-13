@@ -62,32 +62,44 @@ export class DataService {
 
   async fetchOutletData(): Promise<Outlet[]> {
     try {
-      await  this.WSS.sendMessage('help()');
-      await this.delay(50);
-      const index = parseFloat(await this.WSS.getResult(`print(#outlets)`));
       this.WSS.clearMessages();
       const outlets: Outlet[] = [];
-      for (let i = 1; i <= index; i++) {
+      for (let i = 1; i <= 36; i++) {
         await this.WSS.sendMessage(`print(outlets[${i}]:getState())`);
         await this.WSS.sendMessage(`print(outlets[${i}]:getVoltage())`);
         await this.WSS.sendMessage(`print(outlets[${i}]:getFrequency())`);
         await this.WSS.sendMessage(`print(outlets[${i}]:getCurrent())`);
         await this.WSS.sendMessage(`print(outlets[${i}]:getActivePower())`);
         await this.WSS.sendMessage(`print(outlets[${i}]:getApparentPower())`);
-        // await this.delay(50);
       }
       await this.delay(50);
-      let i = 0, id = 1;
+      let i = 0,
+        id = 1;
       const messages = this.cleanData(this.WSS.getMessages());
       while (i < messages.length) {
+        const voltage = parseFloat(messages[i + 1]);
+        const frequency = parseFloat(messages[i + 2]);
+        const current = parseFloat(messages[i + 3]);
+        const act_power = parseFloat(messages[i + 4]);
+        const app_power = parseFloat(messages[i + 5]);
+        if (
+          isNaN(voltage) ||
+          isNaN(frequency) ||
+          isNaN(current) ||
+          isNaN(act_power) ||
+          isNaN(app_power)
+        ) {
+          return this.fetchOutletData();
+        }
+
         outlets.push({
           id: id,
           state: messages[i] === 'true',
-          voltage: parseFloat(messages[i + 1]),
-          frequency: parseFloat(messages[i + 2]),
-          current: parseFloat(messages[i + 3]),
-          act_power: parseFloat(messages[i + 4]),
-          app_power: parseFloat(messages[i + 5]),
+          voltage: voltage,
+          frequency: frequency,
+          current: current,
+          act_power: act_power,
+          app_power: app_power,
         });
         i += 6;
         id++;
@@ -95,9 +107,10 @@ export class DataService {
       return outlets;
     } catch (error) {
       console.error('Error fetching outlet data:', error);
-      throw error; // Rethrow the error to handle it in the catch block
+      throw error;
     }
   }
+
   async fetchPeripheralData() {
     await  this.WSS.sendMessage('help()');
     await this.delay(50);
