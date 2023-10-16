@@ -87,10 +87,6 @@ export class HomeComponent implements OnInit, AfterViewInit{
   public infoDevice = (obj: Peripheral): void => {
     this.ss.infoDevice(obj);
   };
-    getDataSourceLengths(): number[] {
-        return this.dataSource.map((item) => item.data.length);
-    }
-
   setFuseState(i: number) {
       if (this.state){
         this.ss.setFuseState(i,this.state);

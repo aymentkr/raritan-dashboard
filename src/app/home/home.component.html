@@ -3,13 +3,12 @@
   <mat-card>
     <mat-card-header>
       <mat-card-title>Envhubs</mat-card-title>
-      <mat-card-subtitle> [ {{ getDataSourceLengths().join(', ') }} ] </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <mat-divider></mat-divider>
       <div class="container text-center">
         <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" color="accent" >
-          <mat-tab *ngFor="let port of dataSource; let i = index" [label]="'Port ' + i">
+          <mat-tab *ngFor="let port of dataSource; let i = index" [label]="'Port ' + i + ': ' + port.data.length " >
             <ng-container *ngIf="port && port.data">
               <table mat-table [dataSource]="port" matSort class="mat-elevation-z8">
                 <!-- Define your columns once here -->
