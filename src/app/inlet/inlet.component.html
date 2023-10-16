@@ -49,7 +49,7 @@
         <!-- Nested Table for Poles -->
         <table mat-table [dataSource]="element.poles" class="mat-elevation-z8">
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">
+            <th mat-header-cell *matHeaderCellDef >
               Name
             </th>
             <td mat-cell *matCellDef="let pole; ">
@@ -58,7 +58,7 @@
           </ng-container>
 
           <ng-container matColumnDef="voltage">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by voltage">
+            <th mat-header-cell *matHeaderCellDef>
               Voltage
             </th>
             <td mat-cell *matCellDef="let pole; let rowIndex = index">
@@ -74,7 +74,7 @@
           </ng-container>
 
           <ng-container matColumnDef="current">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by voltage">
+            <th mat-header-cell *matHeaderCellDef >
               Current
             </th>
             <td mat-cell *matCellDef="let pole; let rowIndex = index">
@@ -90,7 +90,7 @@
           </ng-container>
 
           <ng-container matColumnDef="act_power">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by voltage">
+            <th mat-header-cell *matHeaderCellDef >
               Active Power
             </th>
             <td mat-cell *matCellDef="let pole; let rowIndex = index">
@@ -106,7 +106,7 @@
           </ng-container>
 
           <ng-container matColumnDef="app_power">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by voltage">
+            <th mat-header-cell *matHeaderCellDef >
               Apparent Power
             </th>
             <td mat-cell *matCellDef="let pole; let rowIndex = index">
@@ -121,7 +121,7 @@
             </td>
           </ng-container>
           <ng-container matColumnDef="act_energy">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by voltage">
+            <th mat-header-cell *matHeaderCellDef >
               Active Energy
             </th>
             <td mat-cell *matCellDef="let pole; let rowIndex = index">
@@ -137,7 +137,7 @@
           </ng-container>
 
           <ng-container matColumnDef="app_energy">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by voltage">
+            <th mat-header-cell *matHeaderCellDef >
               Apparent Energy
             </th>
             <td mat-cell *matCellDef="let pole; let rowIndex = index">

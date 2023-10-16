@@ -18,71 +18,89 @@ export class DataService {
 
   constructor(private WSS: WebsocketService, private sensorData: SensorService) {
   }
-  async fetchInletData(): Promise<Inlet> {
+  async fetchInletData(): Promise<Inlet[]> {
     try {
       await  this.WSS.sendMessage('help()');
+      const index = parseFloat(await this.WSS.getResult('print(#inlets)'));
       await this.delay(50);
-      const frequency = parseFloat(await this.WSS.getResult(`print(inlets[1]:getFrequency())`));
-      this.WSS.clearMessages();
-      const poleData = [];
-      for (let i = 0; i < 6; i++) {
-        await this.WSS.sendMessage(`print(inlets[1]:getVoltage(${i}))`);
-        await this.WSS.sendMessage(`print(inlets[1]:getCurrent(${i}))`);
-        await this.WSS.sendMessage(`print(inlets[1]:getActivePower(${i}))`);
-        await this.WSS.sendMessage(`print(inlets[1]:getApparentPower(${i}))`);
-        await this.WSS.sendMessage(`print(inlets[1]:getActiveEnergy(${i}))`);
-        await this.WSS.sendMessage(`print(inlets[1]:getApparentEnergy(${i}))`);
-      }
-      await this.delay(50);
-      let i = 0, id = 0;
-      const pole_numbers =['L1','L2','L3','L1-L3','L2-L3','L3-L1'];
-      const messages = this.cleanData(this.WSS.getMessages());
-      while (i < messages.length) {
-        const voltage = parseFloat(messages[i]);
-        const current = parseFloat(messages[i + 1]);
-        const act_power = parseFloat(messages[i + 2]);
-        const app_power = parseFloat(messages[i + 3]);
-        const act_energy = parseFloat(messages[i + 4]);
-        const app_energy = parseFloat(messages[i + 5]);
-        if (
-          isNaN(voltage) ||
-          isNaN(current) ||
-          isNaN(act_power) ||
-          isNaN(app_power) ||
-          isNaN(act_energy) ||
-          isNaN(app_energy)
-        ) {
-          return this.fetchInletData();
+      const inlets: Inlet[] = [];
+      for (let i =1 ; i<= index;i++ ){
+        const frequency = parseFloat(await this.WSS.getResult(`print(inlets[${i}]:getFrequency())`));
+        if (isNaN(frequency)) return this.fetchInletData();
+        else {
+          await this.fetchPoleData(i)
+            .then(async (data: Pole[]) => {
+                inlets.push({
+                  id: i,
+                  frequency: frequency,
+                  poles: data,
+                });
+              }
+            )
         }
-        poleData.push({
-          id: id,
-          name: pole_numbers[id],
-          voltage: voltage,
-          current: current,
-          act_power: act_power,
-          app_power: app_power,
-          act_energy: act_energy,
-          app_energy: app_energy,
-        });
-        i += 6;
-        id++;
-      }
-      return {
-        id: 1,
-        frequency,
-        poles: poleData,
-      };
+        }
+      return inlets
     } catch (error) {
       console.error('Error fetching inlet data:', error);
       throw error; // Rethrow the error to handle it in the catch block
     }
   }
 
+
+  async fetchPoleData(size:number): Promise<Pole[]> {
+    this.WSS.clearMessages();
+    const poles: Pole[] = [];
+    for (let i = 0; i < 6; i++) {
+      await this.WSS.sendMessage(`print(inlets[${size}]:getVoltage(${i}))`);
+      await this.WSS.sendMessage(`print(inlets[${size}]:getCurrent(${i}))`);
+      await this.WSS.sendMessage(`print(inlets[${size}]:getActivePower(${i}))`);
+      await this.WSS.sendMessage(`print(inlets[${size}]:getApparentPower(${i}))`);
+      await this.WSS.sendMessage(`print(inlets[${size}]:getActiveEnergy(${i}))`);
+      await this.WSS.sendMessage(`print(inlets[${size}]:getApparentEnergy(${i}))`);
+    }
+    await this.delay(50);
+    let i = 0, id = 0;
+    const pole_numbers =['L1','L2','L3','L1-L3','L2-L3','L3-L1'];
+    const messages = this.cleanData(this.WSS.getMessages());
+    while (i < messages.length) {
+      const voltage = parseFloat(messages[i]);
+      const current = parseFloat(messages[i + 1]);
+      const act_power = parseFloat(messages[i + 2]);
+      const app_power = parseFloat(messages[i + 3]);
+      const act_energy = parseFloat(messages[i + 4]);
+      const app_energy = parseFloat(messages[i + 5]);
+      if (
+        isNaN(voltage) ||
+        isNaN(current) ||
+        isNaN(act_power) ||
+        isNaN(app_power) ||
+        isNaN(act_energy) ||
+        isNaN(app_energy)
+      ) {
+        return this.fetchPoleData(size);
+      }
+      poles.push({
+        id: id,
+        name: pole_numbers[id],
+        voltage: voltage,
+        current: current,
+        act_power: act_power,
+        app_power: app_power,
+        act_energy: act_energy,
+        app_energy: app_energy,
+      });
+      i += 6;
+      id++;
+    }
+    return poles;
+  }
+
   async fetchOutletData(): Promise<Outlet[]> {
     try {
       this.WSS.clearMessages();
+      const index = parseFloat(await this.WSS.getResult('print(#outlets)'));
       const outlets: Outlet[] = [];
-      for (let i = 1; i <= 36; i++) {
+      for (let i = 1; i <= index; i++) {
         await this.WSS.sendMessage(`print(outlets[${i}]:getState())`);
         await this.WSS.sendMessage(`print(outlets[${i}]:getVoltage())`);
         await this.WSS.sendMessage(`print(outlets[${i}]:getFrequency())`);

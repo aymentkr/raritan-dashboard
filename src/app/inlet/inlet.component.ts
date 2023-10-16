@@ -37,8 +37,8 @@ export class InletComponent implements OnInit,AfterViewInit{
 
   fetchData() {
     this.dataService.fetchInletData()
-      .then((data: Inlet) => {
-        this.dataSource.data = [data];
+      .then((data: Inlet[]) => {
+        this.dataSource.data = data;
         this.dataSource.sort = this.sort;
       })
       .catch((error) => {
@@ -56,7 +56,7 @@ export class InletComponent implements OnInit,AfterViewInit{
     this.dataService.editInlet(rowData)
       .then(() => {
         this.editableRowIndexI = -1;
-        this.notificationService.openToastr(`Inlet data successfully saved: Inlet 1 - Frequency value to ${rowData.frequency}`, 'Inlet Modification', 'done');
+        this.notificationService.openToastr(`Inlet data successfully saved: Inlet ${rowData.id} - Frequency value to ${rowData.frequency}`, 'Inlet Modification', 'done');
       })
       .catch(error => {
         this.showErrorSnackBar(error);
@@ -67,7 +67,7 @@ export class InletComponent implements OnInit,AfterViewInit{
     this.dataService.editPole(inlet, pole)
       .then(() => {
         this.editableRowIndexP = -1;
-        this.notificationService.openToastr(`Pole data successfully saved: Inlet 1 - Pole  ${pole.name}`, 'Pole Modification', 'done');
+        this.notificationService.openToastr(`Pole data successfully saved: Inlet ${inlet.id} - Pole  ${pole.name}`, 'Pole Modification', 'done');
       })
       .catch(error => {
         this.showErrorSnackBar(error);
