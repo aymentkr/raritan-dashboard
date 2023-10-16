@@ -2,31 +2,6 @@
 
   <mat-grid-tile>
     <mat-grid-tile-header> Inlet 1: L1</mat-grid-tile-header>
-    <div class="mat-card-container">
-      <mat-card class="mat-card">
-        <mat-card-content>
-          <h2> {{ PoleData.act_power }} W</h2>
-          <h2>{{ PoleData.app_power }} VA</h2>
-          <mat-divider></mat-divider>
-          <br>
-          <h4> Active Energy:  {{ PoleData.act_energy }} Wh </h4>
-          <h4> Apparent Energy:{{ PoleData.app_energy }} VAh </h4>
-        </mat-card-content>
-      </mat-card>
-    </div>
-    <div class="mat-card-container">
-    <mat-card class="mat-card">
-      <mat-card-content>
-      <p-knob [(ngModel)]="PoleData.current" [min]="0" [max]="32" class="non-interactive-knob" [rangeColor] ="PoleData.current > 25 ? 'red' : 'Lavender'"  [valueColor]="PoleData.current > 32 ? '' : 'DeepPink'"></p-knob>
-      <div class="subtitle">Current (A)</div>
-      <div *ngIf="PoleData.current > 32">Maximum: 32 A</div>
-        <br>
-        <mat-divider></mat-divider>
-        <br>
-      <h4>RMS Voltage: {{ PoleData.voltage }} V</h4>
-      </mat-card-content>
-    </mat-card>
-    </div>
   </mat-grid-tile>
 
   <mat-grid-tile>
@@ -35,9 +10,7 @@
 
   <mat-grid-tile>
     <mat-grid-tile-header>Inlet History</mat-grid-tile-header>
-    <div class="chart-container">
-      <canvas  id="InletChart" >{{ chart }}</canvas>
-    </div>
+
   </mat-grid-tile>
   <mat-grid-tile>
     <mat-grid-tile-header>Alarms</mat-grid-tile-header>

@@ -67,22 +67,7 @@ export class InletComponent implements OnInit,AfterViewInit{
     this.dataService.editPole(inlet, pole)
       .then(() => {
         this.editableRowIndexP = -1;
-        let message = `Pole data successfully saved: Inlet 1 - Pole  ${pole.name}`;
-        let messageType: 'error' | 'info' | 'done' | 'warning' = 'done';
-        if (pole.voltage > 254 || pole.current > 25.6) {
-          message += ' (Upper Critical)';
-          messageType = 'error';
-        } else if (pole.voltage > 247 || pole.current > 20.8) {
-          message += ' (Upper Warning)';
-          messageType = 'warning';
-        } else if (pole.voltage < 188) {
-          message += ' (Lower Critical)';
-          messageType = 'error';
-        } else if (pole.voltage < 194) {
-          message += ' (Lower Warning)';
-          messageType = 'warning';
-        }
-        this.notificationService.openToastr(message, 'Pole Modification', messageType);
+        this.notificationService.openToastr(`Pole data successfully saved: Inlet 1 - Pole  ${pole.name}`, 'Pole Modification', 'done');
       })
       .catch(error => {
         this.showErrorSnackBar(error);
