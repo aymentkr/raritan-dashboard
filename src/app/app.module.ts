@@ -46,7 +46,6 @@ import {KnobModule} from "primeng/knob";
 import {MatCardModule} from "@angular/material/card";
 import {MessagesModule} from "primeng/messages";
 import { SmartlockComponent } from './smartlock/smartlock.component';
-import { AddToEnvhubComponent } from './home/add-to-envhub/add-to-envhub.component';
 import {MatBadgeModule} from "@angular/material/badge";
 import {ToastrModule} from "ngx-toastr";
 import {OrderListModule} from "primeng/orderlist";
@@ -67,7 +66,6 @@ import {ButtonModule} from "primeng/button";
     DashboardComponent,
     SettingsComponent,
     SmartlockComponent,
-    AddToEnvhubComponent
   ],
   imports: [
     AppRoutingModule,

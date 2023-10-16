@@ -162,11 +162,10 @@ export class SensorService {
     this.WSS.sendMessage('sensorports[1]:removeAll()');
   }
 
-  async saveToSensorPorts(obj: any):  Promise<void>{
+  async saveToSensorPorts(type: string):  Promise<void>{
     await this.WSS.sendMessage(`
-    new_sensor = emu.${obj.type1}:create(tfw_core)
-    parent = emu.${obj.type2}:cast(sensorports[1]:findDevice("${obj.serial_number}"))
-    new_sensor:connect(parent)
+    new_sensor = emu.${type}:create(tfw_core)
+    new_sensor:connect(sensorports[1])
     `);
   }
 

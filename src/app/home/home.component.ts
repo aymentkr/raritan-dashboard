@@ -4,10 +4,10 @@ import {Envhub, Peripheral} from "../model/interfaces";
 import {MatSort} from "@angular/material/sort";
 import {MatDialog} from "@angular/material/dialog";
 import {SensorService} from "../services/sensor.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
 import {DataService} from "../services/data.service";
 import {EditPeripheralDeviceComponent} from "../peripheral/edit-peripheral-device/edit-peripheral-device.component";
-import {AddToEnvhubComponent} from "./add-to-envhub/add-to-envhub.component";
+import {NotificationService} from "../services/notification.service";
+import {AddPeripheralDeviceComponent} from "../peripheral/add-peripheral-device/add-peripheral-device.component";
 
 @Component({
   selector: 'app-home',
@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit, AfterViewInit{
       private dialog: MatDialog,
       private ss: SensorService,
       private cdr: ChangeDetectorRef,
-      private _snackBar: MatSnackBar,
+      private notificationService: NotificationService,
       private dataService: DataService
   ) {}
 
@@ -52,7 +52,7 @@ export class HomeComponent implements OnInit, AfterViewInit{
   }
 
   addDevice(i:number) {
-    const dialogRef = this.dialog.open(AddToEnvhubComponent);
+    const dialogRef = this.dialog.open(AddPeripheralDeviceComponent);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) this.addRowData(result.data,i);
@@ -72,24 +72,16 @@ export class HomeComponent implements OnInit, AfterViewInit{
     if (type != '' ) {
       await this.ss.saveToEnvhubs(type, p);
       this.fetchData();
-      this._snackBar.open(`New Devic with type ${type} in Port ${p} saved successfully`, 'OK', {
-        duration: 3000,
-        panelClass: ['success-snackbar'],
-      });
+      this.notificationService.openToastr(`New Device with type ${type} in Port ${p} saved successfully`, 'Adding Device to Envhubs','done');
     } else {
-      this._snackBar.open('Failed to save data', 'OK', {
-        duration: 3000,
-        panelClass: ['error-snackbar'],
-      });
+      this.notificationService.openToastr('Failed to save data','Adding Device to Envhubs','error');
     }
   }
 
+
   private editRowData(data: any) {
     this.ss.callMethodinEnvhubs(data);
-    this._snackBar.open(`Device has been successfully updated`, 'OK', {
-      duration: 3000,
-      panelClass: ['success-snackbar'],
-    });
+    this.notificationService.openToastr('Device has been successfully updated (Envhubs), Virtual sensor operations for QEMU ','Device Modification ','done')
   }
 
   public infoDevice = (obj: Peripheral): void => {
@@ -102,15 +94,9 @@ export class HomeComponent implements OnInit, AfterViewInit{
   setFuseState(i: number) {
       if (this.state){
         this.ss.setFuseState(i,this.state);
-        this._snackBar.open(`State in Port ${i} has been successfully updated`, 'OK', {
-          duration: 3000,
-          panelClass: ['success-snackbar'],
-        });
+        this.notificationService.openToastr(`Fuse State in Port ${i} has been successfully updated`, `Envhubs: Modification in Port ${i}`, 'done');
       } else  {
-        this._snackBar.open('You have to select an option first', 'OK', {
-        duration: 3000,
-            panelClass: ['error-snackbar'],
-      });
+        this.notificationService.openToastr('You have to select an option first','Envhubs : setFuseState(true/false)','info')
       }
   }
 }

@@ -1,6 +1,6 @@
 import { Component, Inject, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Peripheral, SensorElement } from '../../model/interfaces';
+import { SensorElement } from '../../model/interfaces';
 import { SensorService } from '../../services/sensor.service';
 
 @Component({
@@ -9,31 +9,23 @@ import { SensorService } from '../../services/sensor.service';
   styleUrls: ['./add-peripheral-device.component.css']
 })
 export class AddPeripheralDeviceComponent {
-  local_data: { type2: string; serial_number: string; type1: string } = {
-    type1: '',
-    type2: '',
-    serial_number: ''
-  };
   sensors: SensorElement[] = [];
-  peripherals: Peripheral[] = [];
+  type ='';
 
   constructor(
     public dialogRef: MatDialogRef<AddPeripheralDeviceComponent>,
     ss: SensorService,
-    // @Optional() is used to prevent an error if no data is passed
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: Peripheral[]
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: string
   ) {
     this.sensors = ss.getSensors();
-    this.peripherals = data;
   }
 
   doAction() {
-    const device: Peripheral | undefined = this.peripherals.find(device => device.serial_number === this.local_data.serial_number);
-    this.local_data.type2 = <string>device?.type;
-    this.dialogRef.close({ data: this.local_data });
+    this.dialogRef.close({ data: this.type });
   }
 
   closeDialog() {
     this.dialogRef.close();
   }
+
 }

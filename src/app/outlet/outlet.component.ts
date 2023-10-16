@@ -67,7 +67,16 @@ export class OutletComponent implements OnInit,AfterViewInit {
     this.dataService.editOutlet(rowData)
       .then(() => {
         this.editableRowIndex = -1;
-        this.notificationService.openToastr(`Outlet  ${rowData.id} saved successfully`, 'Outlet Modification', 'done');
+        let message  = `Outlet  ${rowData.id} saved successfully`;
+        let messageType: 'error' | 'info' | 'done' | 'warning' = 'done';
+        if (rowData.current>8) {
+          message += ' (Upper Critical)';
+          messageType = 'error';
+        } else if (rowData.current>6.5) {
+          message+= ' (Upper Warning)';
+          messageType = 'warning';
+        }
+        this.notificationService.openToastr(message, 'Outlet Modification', messageType);
       })
       .catch(error => {
         this.notificationService.openToastr(`Failed to save data ${error}`,'Outlet Modification','error');

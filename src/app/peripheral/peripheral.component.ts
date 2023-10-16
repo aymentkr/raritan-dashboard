@@ -7,10 +7,10 @@ import {MatSort, Sort} from "@angular/material/sort";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {Peripheral} from "../model/interfaces";
 import {SensorService} from "../services/sensor.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
 import {DataService} from "../services/data.service";
 import {EditPeripheralDeviceComponent} from "./edit-peripheral-device/edit-peripheral-device.component";
 import Swal from 'sweetalert2';
+import {NotificationService} from "../services/notification.service";
 
 
 @Component({
@@ -30,7 +30,7 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog,
     private ss: SensorService,
     private cdr: ChangeDetectorRef,
-    private _snackBar: MatSnackBar,
+    private notificationService: NotificationService,
     private dataService: DataService
   ) {
   }
@@ -73,28 +73,19 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
     });
   }
 
-  async addRowData(obj: any) {
-    if (obj.type1 != "" && obj.type2 != "" && obj.serial_number.length == 10 ) {
-      await this.ss.saveToSensorPorts(obj)
+  async addRowData(type:string) {
+    if (type != "") {
+      await this.ss.saveToSensorPorts(type)
       this.fetchData();
-      this._snackBar.open(`New Device ${obj.serial_number} saved successfully`, 'OK', {
-        duration: 3000,
-        panelClass: ['success-snackbar'],
-      });
+      this.notificationService.openToastr(`New Device with type ${type} saved successfully`, 'Adding Device to Sensorports','done');
     } else {
-      this._snackBar.open('Failed to save data', 'OK', {
-        duration: 3000,
-        panelClass: ['error-snackbar'],
-      });
+      this.notificationService.openToastr('Failed to save data','Adding Device to Sensorports','error');
     }
   }
 
   private editRowData(data: any) {
     this.ss.callMethodinSensorPorts(data);
-    this._snackBar.open(`Device has been successfully updated`, 'OK', {
-      duration: 3000,
-      panelClass: ['success-snackbar'],
-    });
+    this.notificationService.openToastr('Device has been successfully updated (Sensorports), Virtual sensor operations for QEMU ','Device Modification ','done')
   }
 
   public infoDevice = (obj: Peripheral): void => {
