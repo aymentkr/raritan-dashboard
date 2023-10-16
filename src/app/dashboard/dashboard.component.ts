@@ -13,6 +13,7 @@ export class DashboardComponent implements OnInit{
   chart: any;
   dateLabels: string[] = [];
   PoleData : Pole = {
+    name :"",
     id : 0,
     voltage: 0,
     current: 0,

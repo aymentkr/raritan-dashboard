@@ -3,10 +3,8 @@ import {MatTableDataSource} from "@angular/material/table";
 import {Peripheral} from "../model/interfaces";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
-import {MatDialog} from "@angular/material/dialog";
 import {SensorService} from "../services/sensor.service";
 import {DataService} from "../services/data.service";
-import {EditPeripheralDeviceComponent} from "../peripheral/edit-peripheral-device/edit-peripheral-device.component";
 import {NotificationService} from "../services/notification.service";
 
 @Component({
@@ -23,7 +21,6 @@ export class SmartlockComponent implements OnInit, AfterViewInit{
   sensor: any ;
 
   constructor(
-    private dialog: MatDialog,
     private ss: SensorService,
     private cdr: ChangeDetectorRef,
     private notificationService: NotificationService,

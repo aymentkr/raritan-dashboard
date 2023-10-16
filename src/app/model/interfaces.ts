@@ -10,6 +10,7 @@ export interface Outlet {
 
 export interface Pole {
   id : number;
+  name : string;
   voltage: number;
   current: number;
   act_power: number;

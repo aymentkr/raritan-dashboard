@@ -25,30 +25,48 @@ export class DataService {
       const frequency = parseFloat(await this.WSS.getResult(`print(inlets[1]:getFrequency())`));
       this.WSS.clearMessages();
       const poleData = [];
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 6; i++) {
         await this.WSS.sendMessage(`print(inlets[1]:getVoltage(${i}))`);
         await this.WSS.sendMessage(`print(inlets[1]:getCurrent(${i}))`);
         await this.WSS.sendMessage(`print(inlets[1]:getActivePower(${i}))`);
         await this.WSS.sendMessage(`print(inlets[1]:getApparentPower(${i}))`);
         await this.WSS.sendMessage(`print(inlets[1]:getActiveEnergy(${i}))`);
         await this.WSS.sendMessage(`print(inlets[1]:getApparentEnergy(${i}))`);
-        await this.delay(50);
       }
+      await this.delay(50);
+      let i = 0, id = 0;
+      const pole_numbers =['L1','L2','L3','L1-L3','L2-L3','L3-L1'];
       const messages = this.cleanData(this.WSS.getMessages());
-      let index = 0;
-      for (let i = 0; i < 3; i++) {
+      while (i < messages.length) {
+        const voltage = parseFloat(messages[i]);
+        const current = parseFloat(messages[i + 1]);
+        const act_power = parseFloat(messages[i + 2]);
+        const app_power = parseFloat(messages[i + 3]);
+        const act_energy = parseFloat(messages[i + 4]);
+        const app_energy = parseFloat(messages[i + 5]);
+        if (
+          isNaN(voltage) ||
+          isNaN(current) ||
+          isNaN(act_power) ||
+          isNaN(app_power) ||
+          isNaN(act_energy) ||
+          isNaN(app_energy)
+        ) {
+          return this.fetchInletData();
+        }
         poleData.push({
-          id: i,
-          voltage: parseFloat(messages[index]),
-          current: parseFloat(messages[index + 1]),
-          act_power: parseFloat(messages[index + 2]),
-          app_power: parseFloat(messages[index + 3]),
-          act_energy: parseFloat(messages[index + 4]),
-          app_energy: parseFloat(messages[index + 5]),
+          id: id,
+          name: pole_numbers[id],
+          voltage: voltage,
+          current: current,
+          act_power: act_power,
+          app_power: app_power,
+          act_energy: act_energy,
+          app_energy: app_energy,
         });
-        index += 6;
+        i += 6;
+        id++;
       }
-
       return {
         id: 1,
         frequency,
@@ -73,8 +91,7 @@ export class DataService {
         await this.WSS.sendMessage(`print(outlets[${i}]:getApparentPower())`);
       }
       await this.delay(50);
-      let i = 0,
-        id = 1;
+      let i = 0, id = 1;
       const messages = this.cleanData(this.WSS.getMessages());
       while (i < messages.length) {
         const voltage = parseFloat(messages[i + 1]);

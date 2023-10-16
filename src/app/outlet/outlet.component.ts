@@ -4,9 +4,9 @@ import { MatSort, Sort } from '@angular/material/sort';
 import {SelectionModel} from "@angular/cdk/collections";
 import {DataService} from "../services/data.service";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
-import { MatSnackBar } from '@angular/material/snack-bar';
 import {Outlet} from "../model/interfaces";
 import {MatPaginator} from "@angular/material/paginator";
+import {NotificationService} from "../services/notification.service";
 
 
 @Component({
@@ -35,7 +35,7 @@ export class OutletComponent implements OnInit,AfterViewInit {
   editableRowIndex: number = -1;
   constructor(private _liveAnnouncer: LiveAnnouncer,
               private dataService: DataService,
-              private _snackBar: MatSnackBar,
+              private notificationService: NotificationService,
               private cdRef: ChangeDetectorRef
   ) {}
   ngOnInit(): void {
@@ -67,16 +67,10 @@ export class OutletComponent implements OnInit,AfterViewInit {
     this.dataService.editOutlet(rowData)
       .then(() => {
         this.editableRowIndex = -1;
-        this._snackBar.open(`Outlet ${rowData.id} saved successfully`, 'OK', {
-          duration: 3000,
-          panelClass: ['success-snackbar'],
-        });
+        this.notificationService.openToastr(`Outlet  ${rowData.id} saved successfully`, 'Outlet Modification', 'done');
       })
       .catch(error => {
-        this._snackBar.open('Failed to save data', 'OK', {
-          duration: 3000,
-          panelClass: ['error-snackbar'],
-        });
+        this.notificationService.openToastr(`Failed to save data ${error}`,'Outlet Modification','error');
       });
   }
 

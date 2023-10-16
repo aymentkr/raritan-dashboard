@@ -15,7 +15,7 @@ import {NotificationService} from "../services/notification.service";
 export class InletComponent implements OnInit,AfterViewInit{
 
   dataSource = new MatTableDataSource<Inlet>();
-  polesColumns: string[] = ['voltage', 'current', 'act_power', 'app_power','act_energy','app_energy','editPole'];
+  polesColumns: string[] = ['name','voltage', 'current', 'act_power', 'app_power','act_energy','app_energy','editPole'];
   inletsColumns: string[] = ['select', 'frequency', 'poles', 'edit'];
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
@@ -56,24 +56,38 @@ export class InletComponent implements OnInit,AfterViewInit{
     this.dataService.editInlet(rowData)
       .then(() => {
         this.editableRowIndexI = -1;
-        this.showSuccessSnackBar();
+        this.notificationService.openToastr(`Inlet data successfully saved: Inlet 1 - Frequency value to ${rowData.frequency}`, 'Inlet Modification', 'done');
       })
       .catch(error => {
-        this.showErrorSnackBar();
+        this.showErrorSnackBar(error);
       });
   }
 
-  savePole(inlet: Inlet,pole: Pole) {
-    this.dataService.editPole(inlet,pole)
+  savePole(inlet: Inlet, pole: Pole) {
+    this.dataService.editPole(inlet, pole)
       .then(() => {
         this.editableRowIndexP = -1;
-        this.showSuccessSnackBar();
+        let message = `Pole data successfully saved: Inlet 1 - Pole  ${pole.name}`;
+        let messageType: 'error' | 'info' | 'done' | 'warning' = 'done';
+        if (pole.voltage > 254 || pole.current > 25.6) {
+          message += ' (Upper Critical)';
+          messageType = 'error';
+        } else if (pole.voltage > 247 || pole.current > 20.8) {
+          message += ' (Upper Warning)';
+          messageType = 'warning';
+        } else if (pole.voltage < 188) {
+          message += ' (Lower Critical)';
+          messageType = 'error';
+        } else if (pole.voltage < 194) {
+          message += ' (Lower Warning)';
+          messageType = 'warning';
+        }
+        this.notificationService.openToastr(message, 'Pole Modification', messageType);
       })
       .catch(error => {
-        this.showErrorSnackBar();
+        this.showErrorSnackBar(error);
       });
   }
-
 
   cancelEditInlet() {
     this.editableRowIndexI = -1;
@@ -82,12 +96,8 @@ export class InletComponent implements OnInit,AfterViewInit{
     this.editableRowIndexP = -1;
   }
 
-  showSuccessSnackBar() {
-    this.notificationService.openToastr('Data saved successfully','Modification on Inlet 1','done');
-  }
-
-  showErrorSnackBar() {
-    this.notificationService.openToastr('Failed to save data','Modification on Inlet 1','error');
+  showErrorSnackBar(error:string) {
+    this.notificationService.openToastr(`Failed to save data ${error}`,'Inlet Modification','error');
   }
 
   isAllSelected() {
