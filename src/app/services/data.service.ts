@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Envhub, Inlet, Outlet, Peripheral, Pole} from "../model/interfaces";
+import {Envhub, Inlet, Ocp, Outlet, Peripheral, Pole} from "../model/interfaces";
 import {WebsocketService} from "./websocket.service";
 import {SensorService} from "./sensor.service";
 
@@ -147,9 +147,12 @@ export class DataService {
 
   async fetchOutletData(): Promise<Outlet[]> {
     try {
-      this.WSS.clearMessages();
-      const index = parseFloat(await this.WSS.getResult('print(#outlets)'));
       const outlets: Outlet[] = [];
+      await  this.WSS.sendMessage('help()');
+      await this.delay(50);
+      const index = parseFloat(await this.WSS.getResult('print(#outlets)'));
+      await this.delay(50);
+      this.WSS.clearMessages();
       for (let i = 1; i <= index; i++) {
         await this.WSS.sendMessage(`print(outlets[${i}]:getState())`);
         await this.WSS.sendMessage(`print(outlets[${i}]:getVoltage())`);
@@ -257,6 +260,54 @@ export class DataService {
     return peripherals.concat(filteredEnvhubData);
   }
 
+  async fetchOcpData() : Promise<Ocp[]> {
+    try {
+      const ocps: Ocp[] = [];
+      await this.WSS.sendMessage('help()');
+      await this.delay(50);
+      const index = parseFloat(await this.WSS.getResult('print(#ocps)'));
+      await this.delay(50);
+      this.WSS.clearMessages();
+      for (let i = 1; i <= index; i++) {
+        await this.WSS.sendMessage(`print(ocps[${i}]:getCurrent())`);
+        await this.WSS.sendMessage(`print(ocps[${i}]:getPeakCurrent())`);
+      }
+      await this.delay(50);
+      let i = 0, id = 1;
+      const messages = this.cleanData(this.WSS.getMessages());
+      while (i < messages.length) {
+        const current = parseFloat(messages[i]);
+        const peak_current = parseFloat(messages[i+1]);
+        if ( isNaN(current) || isNaN(peak_current)) {
+          return this.fetchOcpData();
+        }
+
+        ocps.push({
+          id : id,
+          current: current,
+          peak_current: peak_current,
+        });
+        i += 2;
+        id++;
+      }
+      return ocps;
+    } catch (error) {
+      console.error('Error fetching ocp data:', error);
+      throw error;
+    }
+  }
+
+
+
+  async editOcp(ocp: Ocp) {
+    if (ocp != null) {
+      await this.WSS.sendMessage(`ocps[${ocp.id}]:setCurrent(${ocp.current});`);
+      await this.WSS.sendMessage(`ocps[${ocp.id}]:setPeakCurrent(${ocp.peak_current});`);
+    } else {
+      throw new Error('outlet is null');
+    }
+  }
+
 
 
 
@@ -281,14 +332,23 @@ export class DataService {
   }
 
 
-  async editPole(inlet: Inlet,pole: Pole): Promise<void> {
+  async editPole(inlet: Inlet,pole: Pole, hasPoles:boolean): Promise<void> {
     if (pole!=null && inlet!=null) {
-      await this.WSS.sendMessage(`inlets[${inlet.id}]:setVoltage(${pole.id},${pole.voltage});`);
-      await this.WSS.sendMessage(`inlets[${inlet.id}]:setCurrent(${pole.id},${pole.current});`);
-      await this.WSS.sendMessage(`inlets[${inlet.id}]:setActivePower(${pole.id},${pole.act_power});`);
-      await this.WSS.sendMessage(`inlets[${inlet.id}]:setApparentPower(${pole.id},${pole.app_power});`);
-      await this.WSS.sendMessage(`inlets[${inlet.id}]:addActiveEnergy(${pole.id},${pole.act_energy});`);
-      await this.WSS.sendMessage(`inlets[${inlet.id}]:addApparentEnergy(${pole.id},${pole.app_energy});`);
+      if (hasPoles) {
+        await this.WSS.sendMessage(`inlets[${inlet.id}]:setVoltage(${pole.id},${pole.voltage});`);
+        await this.WSS.sendMessage(`inlets[${inlet.id}]:setCurrent(${pole.id},${pole.current});`);
+        await this.WSS.sendMessage(`inlets[${inlet.id}]:setActivePower(${pole.id},${pole.act_power});`);
+        await this.WSS.sendMessage(`inlets[${inlet.id}]:setApparentPower(${pole.id},${pole.app_power});`);
+        await this.WSS.sendMessage(`inlets[${inlet.id}]:addActiveEnergy(${pole.id},${pole.act_energy});`);
+        await this.WSS.sendMessage(`inlets[${inlet.id}]:addApparentEnergy(${pole.id},${pole.app_energy});`);
+      } else {
+        await this.WSS.sendMessage(`inlets[${inlet.id}]:setVoltage(${pole.voltage});`);
+        await this.WSS.sendMessage(`inlets[${inlet.id}]:setCurrent(${pole.current});`);
+        await this.WSS.sendMessage(`inlets[${inlet.id}]:setActivePower(${pole.act_power});`);
+        await this.WSS.sendMessage(`inlets[${inlet.id}]:setApparentPower(${pole.app_power});`);
+        await this.WSS.sendMessage(`inlets[${inlet.id}]:addActiveEnergy(${pole.act_energy});`);
+        await this.WSS.sendMessage(`inlets[${inlet.id}]:addApparentEnergy(${pole.app_energy});`);
+      }
     } else {
       throw new Error('pole is null');
     }
@@ -313,17 +373,8 @@ export class DataService {
   delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
-
-
-  updateHistoricalInletData(data: Inlet) {
-    this.historicalInletData.push(data);
-  }
-
-  getHistoricalInletData() {
-    return this.historicalInletData;
-  }
-
   isInlet_P() {
     return false;
   }
+
 }

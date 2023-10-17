@@ -69,7 +69,7 @@ export class InletComponent implements OnInit,AfterViewInit{
   }
 
   savePole(inlet: Inlet, pole: Pole) {
-    this.dataService.editPole(inlet, pole)
+    this.dataService.editPole(inlet, pole, this.hasPoles)
       .then(() => {
         this.editableRowIndexP = -1;
         this.notificationService.openToastr(`Pole data successfully saved: Inlet ${inlet.id} - Pole  ${pole.name}`, 'Pole Modification', 'done');

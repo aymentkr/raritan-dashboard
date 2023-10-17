@@ -48,3 +48,9 @@ export interface Notification {
   message: string;
   alert: string;
 }
+
+export interface Ocp {
+  id : number,
+  current : number,
+  peak_current : number
+}
