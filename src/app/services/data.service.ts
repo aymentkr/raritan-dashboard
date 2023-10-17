@@ -269,6 +269,7 @@ export class DataService {
       await this.delay(50);
       this.WSS.clearMessages();
       for (let i = 1; i <= index; i++) {
+        await this.WSS.sendMessage(`print(ocps[${i}]:isClosed())`);
         await this.WSS.sendMessage(`print(ocps[${i}]:getCurrent())`);
         await this.WSS.sendMessage(`print(ocps[${i}]:getPeakCurrent())`);
       }
@@ -276,18 +277,19 @@ export class DataService {
       let i = 0, id = 1;
       const messages = this.cleanData(this.WSS.getMessages());
       while (i < messages.length) {
-        const current = parseFloat(messages[i]);
-        const peak_current = parseFloat(messages[i+1]);
+        const current = parseFloat(messages[i+1]);
+        const peak_current = parseFloat(messages[i+2]);
         if ( isNaN(current) || isNaN(peak_current)) {
           return this.fetchOcpData();
         }
 
         ocps.push({
           id : id,
+          status: messages[i] === 'true',
           current: current,
           peak_current: peak_current,
         });
-        i += 2;
+        i += 3;
         id++;
       }
       return ocps;
@@ -374,7 +376,7 @@ export class DataService {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
   isInlet_P() {
-    return false;
+    return this.hasPoles;
   }
 
 }

@@ -18,6 +18,7 @@ export class OcpsComponent implements OnInit,AfterViewInit {
   displayedColumns: string[] = [
     'select',
     'name',
+    'status',
     'current',
     'peak_current',
     'edit',

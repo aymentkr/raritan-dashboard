@@ -51,6 +51,7 @@ export interface Notification {
 
 export interface Ocp {
   id : number,
+  status : boolean,
   current : number,
-  peak_current : number
+  peak_current : number,
 }
