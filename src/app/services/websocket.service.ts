@@ -110,12 +110,19 @@ export class WebsocketService implements OnDestroy {
       });
     });
   }
-  async getResult(msgToSend: string): Promise<string> {
-    this.send(msgToSend);
-    return new Promise((resolve) => {
-      this.messages.subscribe((message) => {
-        resolve(message);
-      });
+  async getResult(msgToSend: string): Promise<number> {
+    this.clearMessages();
+    return new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        try {
+          this.send(msgToSend);
+          this.messages.subscribe(() => {
+            resolve(parseFloat(this.messageList[0]));
+          });
+        } catch (error) {
+          reject(error);
+        }
+      }, 50);
     });
   }
 

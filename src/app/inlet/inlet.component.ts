@@ -21,7 +21,7 @@ export class InletComponent implements OnInit,AfterViewInit{
   @ViewChild(MatSort) sort!: MatSort;
   editableRowIndexI: number = -1;
   editableRowIndexP: number = -1;
-  hasPoles : boolean = true;
+  hasPoles ?: boolean;
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     private dataService: DataService,
@@ -34,7 +34,6 @@ export class InletComponent implements OnInit,AfterViewInit{
   async ngOnInit(): Promise<void> {
     this.fetchData();
     this.hasPoles = this.dataService.isInlet_P();
-    console.log(this.hasPoles);
   }
   ngAfterViewInit() {
     this.cdRef.detectChanges();
@@ -69,6 +68,7 @@ export class InletComponent implements OnInit,AfterViewInit{
   }
 
   savePole(inlet: Inlet, pole: Pole) {
+    if (this.hasPoles)
     this.dataService.editPole(inlet, pole, this.hasPoles)
       .then(() => {
         this.editableRowIndexP = -1;

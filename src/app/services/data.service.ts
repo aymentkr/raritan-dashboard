@@ -8,7 +8,6 @@ import {SensorService} from "./sensor.service";
   providedIn: 'root',
 })
 export class DataService {
-  historicalInletData: any[] = [];
   hasPoles : boolean= true;
 
   options: { name: string; isEnabled: boolean }[] = [
@@ -19,13 +18,36 @@ export class DataService {
 
   constructor(private WSS: WebsocketService, private sensorData: SensorService) {
   }
+
+  async init() {
+    await this.WSS.sendMessage('help()');
+    await this.delay(50);
+  }
   async fetchInletData(): Promise<Inlet[]> {
+    await this.init();
     const inlets: Inlet[] = [];
-    const test = parseFloat(await this.WSS.getResult(`print(inlets[1]:getVoltage(0))`));
+    const index = await this.WSS.getResult('print(#inlets)');
+    const test = await this.WSS.getResult(`print(inlets[1]:getVoltage(0))`);
     this.hasPoles = !isNaN(test);
-    const index = parseFloat(await this.WSS.getResult('print(#inlets)'));
     if (index > 0) {
-      if (!this.hasPoles) {
+      if (this.hasPoles) {
+        for (let i = 1; i <= index; i++) {
+          const frequency = await this.WSS.getResult(`print(inlets[${i}]:getFrequency())`);
+          await this.delay(50);
+          if (isNaN(frequency)) return this.fetchInletData();
+          else {
+            await this.fetchPoleData(i)
+              .then(async (data: Pole[]) => {
+                  inlets.push({
+                    id: i,
+                    frequency: frequency,
+                    poles: data,
+                  });
+                }
+              )
+          }
+        }
+      } else {
         this.WSS.clearMessages();
         for (let i = 1; i <= index; i++) {
           await this.WSS.sendMessage(`print(inlets[${i}]:getFrequency())`);
@@ -74,22 +96,6 @@ export class DataService {
           });
           i += 7;
           id++;
-        }
-      } else {
-        for (let i = 1; i <= index; i++) {
-          const frequency = parseFloat(await this.WSS.getResult(`print(inlets[${i}]:getFrequency())`));
-          if (isNaN(frequency)) return this.fetchInletData();
-          else {
-            await this.fetchPoleData(i)
-              .then(async (data: Pole[]) => {
-                  inlets.push({
-                    id: i,
-                    frequency: frequency,
-                    poles: data,
-                  });
-                }
-              )
-          }
         }
       }
     }
@@ -147,11 +153,9 @@ export class DataService {
 
   async fetchOutletData(): Promise<Outlet[]> {
     try {
+      await this.init();
       const outlets: Outlet[] = [];
-      await  this.WSS.sendMessage('help()');
-      await this.delay(50);
-      const index = parseFloat(await this.WSS.getResult('print(#outlets)'));
-      await this.delay(50);
+      const index = await this.WSS.getResult('print(#outlets)');
       this.WSS.clearMessages();
       for (let i = 1; i <= index; i++) {
         await this.WSS.sendMessage(`print(outlets[${i}]:getState())`);
@@ -200,8 +204,7 @@ export class DataService {
   }
 
   async fetchPeripheralData() {
-    await  this.WSS.sendMessage('help()');
-    await this.delay(50);
+    await this.init();
     this.WSS.clearMessages();
     await this.WSS.sendMessage(`print(sensorports[1]:listDevices())`);
     await this.delay(50);
@@ -210,15 +213,13 @@ export class DataService {
   }
 
   async fetchEnvhubsData() {
-    await this.WSS.sendMessage('help()');
-    await this.delay(50);
+    await this.init();
     this.WSS.clearMessages();
     const peripherals:Envhub = {};
     for (let i = 0; i < 4; i++) {
-      await this.WSS.getResult(`print(envhubs[1]:getPort(${i}):listDevices())`).then((data:string) => {
-            peripherals[i] = this.convertLinesToPeripherals(data.split('\n'));
-      })
-        await this.delay(50);
+      await this.WSS.sendMessage(`print(envhubs[1]:getPort(${i}):listDevices())`)
+      await this.delay(50);
+      peripherals[i] = this.convertLinesToPeripherals(this.WSS.getMessages()[i].split('\n'));
     }
     return {
       ...peripherals,
@@ -262,11 +263,9 @@ export class DataService {
 
   async fetchOcpData() : Promise<Ocp[]> {
     try {
+      await this.init();
       const ocps: Ocp[] = [];
-      await this.WSS.sendMessage('help()');
-      await this.delay(50);
-      const index = parseFloat(await this.WSS.getResult('print(#ocps)'));
-      await this.delay(50);
+      const index = await this.WSS.getResult('print(#ocps)')
       this.WSS.clearMessages();
       for (let i = 1; i <= index; i++) {
         await this.WSS.sendMessage(`print(ocps[${i}]:isClosed())`);
