@@ -21,15 +21,20 @@ export class InletComponent implements OnInit,AfterViewInit{
   @ViewChild(MatSort) sort!: MatSort;
   editableRowIndexI: number = -1;
   editableRowIndexP: number = -1;
+  hasPoles : boolean = true;
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     private dataService: DataService,
     private cdRef: ChangeDetectorRef,
     private notificationService: NotificationService
-  ) {}
+  ) {
 
-  ngOnInit(): void {
+  }
+
+  async ngOnInit(): Promise<void> {
     this.fetchData();
+    this.hasPoles = this.dataService.isInlet_P();
+    console.log(this.hasPoles);
   }
   ngAfterViewInit() {
     this.cdRef.detectChanges();

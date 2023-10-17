@@ -9,6 +9,7 @@ import {SensorService} from "./sensor.service";
 })
 export class DataService {
   historicalInletData: any[] = [];
+  hasPoles : boolean= true;
 
   options: { name: string; isEnabled: boolean }[] = [
     { name: '1', isEnabled: true },
@@ -19,31 +20,80 @@ export class DataService {
   constructor(private WSS: WebsocketService, private sensorData: SensorService) {
   }
   async fetchInletData(): Promise<Inlet[]> {
-    try {
-      await  this.WSS.sendMessage('help()');
-      const index = parseFloat(await this.WSS.getResult('print(#inlets)'));
-      await this.delay(50);
-      const inlets: Inlet[] = [];
-      for (let i =1 ; i<= index;i++ ){
-        const frequency = parseFloat(await this.WSS.getResult(`print(inlets[${i}]:getFrequency())`));
-        if (isNaN(frequency)) return this.fetchInletData();
-        else {
-          await this.fetchPoleData(i)
-            .then(async (data: Pole[]) => {
-                inlets.push({
-                  id: i,
-                  frequency: frequency,
-                  poles: data,
-                });
-              }
-            )
+    const inlets: Inlet[] = [];
+    const test = parseFloat(await this.WSS.getResult(`print(inlets[1]:getVoltage(0))`));
+    this.hasPoles = !isNaN(test);
+    const index = parseFloat(await this.WSS.getResult('print(#inlets)'));
+    if (index > 0) {
+      if (!this.hasPoles) {
+        this.WSS.clearMessages();
+        for (let i = 1; i <= index; i++) {
+          await this.WSS.sendMessage(`print(inlets[${i}]:getFrequency())`);
+          await this.WSS.sendMessage(`print(inlets[${i}]:getVoltage())`);
+          await this.WSS.sendMessage(`print(inlets[${i}]:getCurrent())`);
+          await this.WSS.sendMessage(`print(inlets[${i}]:getActivePower())`);
+          await this.WSS.sendMessage(`print(inlets[${i}]:getApparentPower())`);
+          await this.WSS.sendMessage(`print(inlets[${i}]:getActiveEnergy())`);
+          await this.WSS.sendMessage(`print(inlets[${i}]:getApparentEnergy())`);
         }
+        await this.delay(50);
+        let i = 0, id = 1;
+        const messages = this.cleanData(this.WSS.getMessages());
+        while (i < messages.length) {
+          const frequency = parseFloat(messages[i]);
+          const voltage = parseFloat(messages[i + 1]);
+          const current = parseFloat(messages[i + 2]);
+          const act_power = parseFloat(messages[i + 3]);
+          const app_power = parseFloat(messages[i + 4]);
+          const act_energy = parseFloat(messages[i + 5]);
+          const app_energy = parseFloat(messages[i + 6]);
+          if (
+            isNaN(voltage) ||
+            isNaN(frequency) ||
+            isNaN(current) ||
+            isNaN(act_power) ||
+            isNaN(app_power) ||
+            isNaN(act_energy) ||
+            isNaN(app_energy)
+          ) {
+            return this.fetchInletData();
+          }
+          inlets.push({
+            id: id,
+            frequency: frequency,
+            poles : [{
+              id : id,
+              name : 'L0',
+              voltage: voltage,
+              current: current,
+              act_power: act_power,
+              app_power: app_power,
+              act_energy: act_energy,
+              app_energy:app_energy
+            }]
+          });
+          i += 7;
+          id++;
         }
-      return inlets
-    } catch (error) {
-      console.error('Error fetching inlet data:', error);
-      throw error; // Rethrow the error to handle it in the catch block
+      } else {
+        for (let i = 1; i <= index; i++) {
+          const frequency = parseFloat(await this.WSS.getResult(`print(inlets[${i}]:getFrequency())`));
+          if (isNaN(frequency)) return this.fetchInletData();
+          else {
+            await this.fetchPoleData(i)
+              .then(async (data: Pole[]) => {
+                  inlets.push({
+                    id: i,
+                    frequency: frequency,
+                    poles: data,
+                  });
+                }
+              )
+          }
+        }
+      }
     }
+      return inlets
   }
 
 
@@ -260,7 +310,7 @@ export class DataService {
     return dataList;
   }
 
-  private delay(ms: number) {
+  delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
@@ -271,5 +321,9 @@ export class DataService {
 
   getHistoricalInletData() {
     return this.historicalInletData;
+  }
+
+  isInlet_P() {
+    return false;
   }
 }
