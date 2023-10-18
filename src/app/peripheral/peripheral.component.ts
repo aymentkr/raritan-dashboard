@@ -33,8 +33,7 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private notificationService: NotificationService,
     private dataService: DataService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.fetchData();
@@ -77,7 +76,7 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
 
   async addRowData(type:string) {
     if (type != "") {
-      await this.ss.saveToSensorPorts(type)
+      await this.ss.saveDevice('sensorports[1]',type)
       this.fetchData();
       this.notificationService.openToastr(`New Device with type ${type} saved successfully`, 'Adding Device to Sensorports','done');
     } else {
@@ -86,7 +85,7 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
   }
 
   private editRowData(data: any) {
-    this.ss.callMethodinSensorPorts(data);
+    this.ss.callMethod('sensorports[1]',data);
     this.notificationService.openToastr('Device has been successfully updated (Sensorports), Virtual sensor operations for QEMU ','Device Modification ','done')
   }
 
@@ -94,12 +93,6 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
     this.ss.infoDevice(obj);
   };
 
-
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
   masterToggle() {
     this.isAllSelected() ?
       this.selection.clear() :
@@ -114,10 +107,21 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
     }
   }
 
-  removeAllItems() {
+  deleteSelectedItems() {
+    const selectedItems = this.selection.selected;
+    let title,text: string;
+
+    if (this.isAllSelected()) {
+      title = 'Are you sure?';
+      text = 'you want to remove all devices?';
+    } else {
+      title = 'Are you sure?';
+      text = 'You want to remove the selected device(s)?';
+    }
+
     Swal.fire({
-      title: 'Are you sure?',
-      text: "you want to remove all devices?",
+      title: title,
+      text: text,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -125,14 +129,38 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.ss.removeAll();
+        if (this.isAllSelected()) {
+          this.ss.removeAll();
+        } else {
+          selectedItems.forEach(item => {
+            this.ss.removeDevice('sensorports[1]', item);
+          });
+        }
+        this.selection.clear();
         this.fetchData();
-        Swal.fire(
-          'Deleted!',
-          'Your file has been deleted.',
-          'success'
-        )
+        if (this.isAllSelected()) {
+          Swal.fire(
+            'Deleted!',
+            'All devices deleted successfully',
+            'success'
+          )
+          this.notificationService.openToastr('All devices deleted successfully from Sensorports in Peripĥerals', 'Deleting Devices', 'warning');
+        } else {
+          Swal.fire(
+            'Deleted!',
+            'Selected device(s) deleted successfully',
+            'success'
+          )
+          this.notificationService.openToastr('Selected device(s) deleted successfully from Sensorports in Peripĥerals', 'Deleting Devices', 'warning');
+        }
       }
-    })
+    });
+  }
+
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
   }
 }

@@ -72,7 +72,8 @@ export class HomeComponent implements OnInit, AfterViewInit{
 
   async addRowData(type: string, p: number ) {
     if (type != '' ) {
-      await this.ss.saveToEnvhubs(type, p);
+
+      await this.ss.saveDevice('envhubs[1]:getPort('+p+')',type);
       this.fetchData();
       this.notificationService.openToastr(`New Device with type ${type} in Port ${p} saved successfully`, 'Adding Device to Envhubs','done');
     } else {
@@ -82,7 +83,7 @@ export class HomeComponent implements OnInit, AfterViewInit{
 
 
   private editRowData(data: any) {
-    this.ss.callMethodinEnvhubs(data);
+    this.ss.callMethod('envhubs[1]',data);
     this.notificationService.openToastr('Device has been successfully updated (Envhubs), Virtual sensor operations for QEMU ','Device Modification ','done')
   }
 

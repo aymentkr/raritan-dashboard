@@ -161,28 +161,21 @@ export class SensorService {
   removeAll() {
     this.WSS.sendMessage('sensorports[1]:removeAll()');
   }
-
-  async saveToSensorPorts(type: string):  Promise<void>{
+  async saveDevice(table:string,type: string ) {
     await this.WSS.sendMessage(`
     new_sensor = emu.${type}:create(tfw_core)
-    new_sensor:connect(sensorports[1])
+    new_sensor:connect(${table})
     `);
   }
-
-  async saveToEnvhubs(type: string, p: number ) {
-    await this.WSS.sendMessage(`
-    new_sensor = emu.${type}:create(tfw_core)
-    new_sensor:connect(envhubs[1]:getPort(${p}))
-    `);
-  }
-  callMethodinSensorPorts(data: any) {
-    this.WSS.sendMessage(`emu.${data.device.type}:cast(sensorports[1]:findDevice("${data.device.serial_number}")):${data.methodName}`);
-  }
-  callMethodinEnvhubs(data: any) {
-    this.WSS.sendMessage(`emu.${data.device.type}:cast(envhubs[1]:findDevice("${data.device.serial_number}")):${data.methodName}`);
+  callMethod(table:string, data: any) {
+    this.WSS.sendMessage(`emu.${data.device.type}:cast(${table}:findDevice("${data.device.serial_number}")):${data.methodName}`);
   }
 
   setFuseState(i: number, state: boolean) {
     this.WSS.sendMessage(`envhubs[1]:setFuseState(${i}, ${state})`);
+  }
+
+  removeDevice(table : string, peripheral: Peripheral) {
+    this.WSS.sendMessage(`emu.${peripheral.type}:cast(${table}:findDevice("${peripheral.serial_number}")):disconnect();`);
   }
 }
