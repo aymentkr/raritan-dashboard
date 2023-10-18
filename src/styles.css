@@ -35,3 +35,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin-bottom: 1rem;
 }
 
+.spinner-container {
+  display: inline-table;
+  justify-content: center;
+  align-items: center;
+
+}
+
+
+
+

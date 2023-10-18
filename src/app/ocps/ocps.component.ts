@@ -27,6 +27,7 @@ export class OcpsComponent implements OnInit,AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   editableRowIndex: number = -1;
+  isLoading: boolean = true;
   constructor(private _liveAnnouncer: LiveAnnouncer,
               private dataService: DataService,
               private notificationService: NotificationService,
@@ -47,6 +48,7 @@ export class OcpsComponent implements OnInit,AfterViewInit {
       .then((data: Ocp[]) => {
         this.dataSource.data = data;
         this.dataSource.sort = this.sort;
+        this.isLoading = false;
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);

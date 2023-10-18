@@ -19,6 +19,7 @@ import {NotificationService} from "../services/notification.service";
   styleUrls: ['./peripheral.component.css'],
 })
 export class PeripheralComponent implements OnInit, AfterViewInit {
+  isLoading: boolean = true;
   dataSource = new MatTableDataSource<Peripheral>();
   columns : string[] = ['id', 'name', 'type', 'serial_number'];
   displayedColumns: string[] = ['select', ...this.columns, 'actions'];
@@ -48,6 +49,7 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
       .then((data: Peripheral[]) => {
         this.dataSource.data = data;
         this.dataSource.sort = this.sort;
+        this.isLoading = false;
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);

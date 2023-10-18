@@ -76,7 +76,6 @@ export class WebsocketService implements OnDestroy {
         console.error('WebSocket error: ', err);
       },
       complete: () => {
-        // Handle completion here if needed
       },
       next: (data: any) => {
         if (ws.readyState === WebSocket.OPEN) {

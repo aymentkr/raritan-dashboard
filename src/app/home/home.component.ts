@@ -15,6 +15,7 @@ import {AddPeripheralDeviceComponent} from "../peripheral/add-peripheral-device/
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, AfterViewInit{
+  isLoading: boolean = true;
   displayedColumns: string[] = ['id', 'name', 'type', 'serial_number'];
   state!: boolean;
   dataSource: MatTableDataSource<Peripheral>[] = [];
@@ -45,6 +46,7 @@ export class HomeComponent implements OnInit, AfterViewInit{
             this.dataSource[i] = new MatTableDataSource<Peripheral>(data[i]);
           }
         }
+        this.isLoading = false;
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);

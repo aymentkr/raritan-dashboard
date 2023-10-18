@@ -22,6 +22,7 @@ export class InletComponent implements OnInit,AfterViewInit{
   editableRowIndexI: number = -1;
   editableRowIndexP: number = -1;
   hasPoles ?: boolean;
+  isLoading: boolean = true;
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     private dataService: DataService,
@@ -44,6 +45,7 @@ export class InletComponent implements OnInit,AfterViewInit{
       .then((data: Inlet[]) => {
         this.dataSource.data = data;
         this.dataSource.sort = this.sort;
+        this.isLoading = false;
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);

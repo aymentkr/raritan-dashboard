@@ -5,6 +5,10 @@
       <mat-card-subtitle> [ {{ dataSource.data.length}} ] </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
+      <div  class="spinner-container" *ngIf="isLoading; else datatable">
+        <mat-spinner></mat-spinner>
+      </div>
+      <ng-template #datatable>
       <mat-divider></mat-divider>
       <div class="container text-center">
         <div class="button-container">
@@ -55,8 +59,8 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
       </div>
+      </ng-template>
     </mat-card-content>
   </mat-card>
 </div>

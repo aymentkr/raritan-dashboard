@@ -20,7 +20,7 @@ export class DataService {
   }
 
   async init() {
-    await this.WSS.sendMessage('help()');
+    await this.WSS.sendMessage('print()');
     await this.delay(50);
   }
   async fetchInletData(): Promise<Inlet[]> {
@@ -206,7 +206,7 @@ export class DataService {
   async fetchPeripheralData() {
     await this.init();
     this.WSS.clearMessages();
-    await this.WSS.sendMessage(`print(sensorports[1]:listDevices())`);
+    await this.WSS.sendMessage('print(sensorports[1]:listDevices())');
     await this.delay(50);
     const lines = this.WSS.getMessages().toString().split('\n');
     return this.convertLinesToPeripherals(lines);
@@ -217,9 +217,10 @@ export class DataService {
     this.WSS.clearMessages();
     const peripherals:Envhub = {};
     for (let i = 0; i < 4; i++) {
-      await this.WSS.sendMessage(`print(envhubs[1]:getPort(${i}):listDevices())`)
+      await this.WSS.sendMessage(`print(envhubs[1]:getPort(${i}):listDevices())`);
       await this.delay(50);
-      peripherals[i] = this.convertLinesToPeripherals(this.WSS.getMessages()[i].split('\n'));
+      const lines = this.WSS.getMessages()[i];
+      if (lines) peripherals[i] = this.convertLinesToPeripherals(lines.split('\n'));
     }
     return {
       ...peripherals,
@@ -260,6 +261,7 @@ export class DataService {
       .filter((peripheral) => peripheral.type === type);
     return peripherals.concat(filteredEnvhubData);
   }
+
 
   async fetchOcpData() : Promise<Ocp[]> {
     try {

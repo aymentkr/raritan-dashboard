@@ -5,6 +5,10 @@
       <mat-card-subtitle> [ {{ dataSource.data.length}} ] </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
+      <div  class="spinner-container" *ngIf="isLoading; else datatable">
+        <mat-spinner></mat-spinner>
+      </div>
+      <ng-template #datatable>
       <mat-divider></mat-divider>
       <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
         <!-- Selection Column -->
@@ -99,6 +103,7 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index;"></tr>
       </table>
+      </ng-template>
     </mat-card-content>
   </mat-card>
 </div>

@@ -13,6 +13,7 @@ import {NotificationService} from "../services/notification.service";
   styleUrls: ['./smartlock.component.css']
 })
 export class SmartlockComponent implements OnInit, AfterViewInit{
+  isLoading: boolean = true;
   dataSource = new MatTableDataSource<Peripheral>();
   columns : string[] = [ 'name', 'type', 'serial_number'];
   displayedColumns: string[] = ['select', ...this.columns, ];
@@ -42,6 +43,7 @@ export class SmartlockComponent implements OnInit, AfterViewInit{
       .then((data: Peripheral[]) => {
         this.dataSource.data = data;
         this.dataSource.sort = this.sort;
+        this.isLoading = false;
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);

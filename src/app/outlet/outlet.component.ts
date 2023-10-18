@@ -28,11 +28,12 @@ export class OutletComponent implements OnInit,AfterViewInit {
     'edit',
   ];
   selection = new SelectionModel<any>(true, []);
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort!: MatSort;
   pageSizeOptions: number[] = [5,10, 15,20, 30,35,40];
   pageSize: number = 10;
   editableRowIndex: number = -1;
+  isLoading: boolean = true;
   constructor(private _liveAnnouncer: LiveAnnouncer,
               private dataService: DataService,
               private notificationService: NotificationService,
@@ -42,17 +43,16 @@ export class OutletComponent implements OnInit,AfterViewInit {
     this.fetchData();
   }
   ngAfterViewInit() {
-    this.cdRef.detectChanges();
     this.dataSource.paginator = this.paginator;
-    this.dataSource.paginator.pageSize = this.pageSize;
+    this.cdRef.detectChanges();
   }
-
 
   fetchData() {
     this.dataService.fetchOutletData()
       .then((data: Outlet[]) => {
         this.dataSource.data = data;
         this.dataSource.sort = this.sort;
+        this.isLoading = false;
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);
