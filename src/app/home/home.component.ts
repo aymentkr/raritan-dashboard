@@ -8,6 +8,8 @@ import {DataService} from "../services/data.service";
 import {EditPeripheralDeviceComponent} from "../peripheral/edit-peripheral-device/edit-peripheral-device.component";
 import {NotificationService} from "../services/notification.service";
 import {AddPeripheralDeviceComponent} from "../peripheral/add-peripheral-device/add-peripheral-device.component";
+import {SelectionModel} from "@angular/cdk/collections";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-home',
@@ -16,9 +18,11 @@ import {AddPeripheralDeviceComponent} from "../peripheral/add-peripheral-device/
 })
 export class HomeComponent implements OnInit, AfterViewInit{
   isLoading: boolean = true;
-  displayedColumns: string[] = ['id', 'name', 'type', 'serial_number'];
+  columns: string[] = ['id', 'name', 'type', 'serial_number'];
+  displayedColumns: string[] = ['select' ,...this.columns,'actions']
   state!: boolean;
   dataSource: MatTableDataSource<Peripheral>[] = [];
+  selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
@@ -97,5 +101,66 @@ export class HomeComponent implements OnInit, AfterViewInit{
       } else  {
         this.notificationService.openToastr('You have to select an option first','Envhubs : setFuseState(true/false)','info')
       }
+  }
+  masterToggle(i: number) {
+    this.isAllSelected(i) ?
+      this.selection.clear() :
+      this.dataSource[i].data.forEach(row => this.selection.select(row));
+  }
+
+  isAllSelected(i : number) {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource[i].data.length;
+    return numSelected === numRows;
+  }
+
+  deleteSelectedItems(i:number){
+    const selectedItems = this.selection.selected;
+    let title,text: string;
+
+    if (this.isAllSelected(i)) {
+      title = 'Are you sure?';
+      text = 'you want to remove all devices?';
+    } else {
+      title = 'Are you sure?';
+      text = 'You want to remove the selected device(s)?';
+    }
+
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (this.isAllSelected(i)) {
+          this.ss.removeAll(`envhubs[1]:getPort(${i})`);
+        } else {
+          selectedItems.forEach(item => {
+            this.ss.removeDevice('envhubs[1]', item);
+          });
+        }
+        this.selection.clear();
+        this.fetchData();
+        if (this.isAllSelected(i)) {
+          Swal.fire(
+            'Deleted!',
+            'All devices deleted successfully',
+            'success'
+          )
+          this.notificationService.openToastr('All devices deleted successfully from Envhubs', 'Deleting Devices', 'warning');
+        } else {
+          Swal.fire(
+            'Deleted!',
+            'Selected device(s) deleted successfully',
+            'success'
+          )
+          this.notificationService.openToastr('Selected device(s) deleted successfully from Envhubs', 'Deleting Devices', 'warning');
+        }
+      }
+    });
   }
 }

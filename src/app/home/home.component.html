@@ -14,9 +14,25 @@
         <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" color="accent" >
           <mat-tab *ngFor="let port of dataSource; let i = index" [label]="'Port ' + i + ': ' + port.data.length " >
             <ng-container *ngIf="port && port.data">
+              <button mat-icon-button color="warn" (click)="deleteSelectedItems(i)" [hidden]="!selection.hasValue()">
+                <mat-icon>delete</mat-icon>
+              </button>
               <table mat-table [dataSource]="port" matSort class="mat-elevation-z8">
+                <!-- Selection Column -->
+                <ng-container matColumnDef="select">
+                  <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox color="warn" (change)="$event ? masterToggle(i) : null" [checked]="selection.hasValue() && isAllSelected(i)"
+                                  [indeterminate]="selection.hasValue() && !isAllSelected(i)">
+                    </mat-checkbox>
+                  </th>
+                  <td mat-cell *matCellDef="let row">
+                    <mat-checkbox color="warn" (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                                  [checked]="selection.isSelected(row)">
+                    </mat-checkbox>
+                  </td>
+                </ng-container>
                 <!-- Define your columns once here -->
-                <ng-container *ngFor="let column of displayedColumns">
+                <ng-container *ngFor="let column of columns">
                   <ng-container [matColumnDef]="column">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column.toUpperCase() }}</th>
                     <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
@@ -38,8 +54,8 @@
                     </button>
                   </td>
                 </ng-container>
-                <tr mat-header-row *matHeaderRowDef="displayedColumns.concat('actions')"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns.concat('actions')"></tr>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
               </table>
             </ng-container>
             <ng-container *ngIf="port.data.length === 0">

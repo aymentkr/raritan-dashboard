@@ -10,13 +10,9 @@
       </div>
       <ng-template #datatable>
       <mat-divider></mat-divider>
-      <div class="container text-center">
-        <div class="button-container">
-          <button mat-icon-button color="warn" (click)="deleteSelectedItems()" [hidden]="!selection.hasValue()">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
-
+        <button mat-icon-button color="warn" (click)="deleteSelectedItems()" [hidden]="!selection.hasValue()">
+          <mat-icon>delete</mat-icon>
+        </button>
         <table mat-table [dataSource]="dataSource" class="my-table mat-elevation-z8" matSort>
 
           <!-- Selection Column -->
@@ -59,7 +55,6 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-      </div>
       </ng-template>
     </mat-card-content>
   </mat-card>

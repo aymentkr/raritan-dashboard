@@ -158,8 +158,8 @@ export class SensorService {
     }
   };
 
-  removeAll() {
-    this.WSS.sendMessage('sensorports[1]:removeAll()');
+  removeAll(table:string) {
+    this.WSS.sendMessage(table+':removeAll()');
   }
   async saveDevice(table:string,type: string ) {
     await this.WSS.sendMessage(`
@@ -176,6 +176,7 @@ export class SensorService {
   }
 
   removeDevice(table : string, peripheral: Peripheral) {
+    console.log(peripheral);
     this.WSS.sendMessage(`emu.${peripheral.type}:cast(${table}:findDevice("${peripheral.serial_number}")):disconnect();`);
   }
 }

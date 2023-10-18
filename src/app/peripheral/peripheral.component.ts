@@ -3,8 +3,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {MatDialog} from "@angular/material/dialog";
 import {AddPeripheralDeviceComponent} from "./add-peripheral-device/add-peripheral-device.component";
 import {SelectionModel} from "@angular/cdk/collections";
-import {MatSort, Sort} from "@angular/material/sort";
-import {LiveAnnouncer} from "@angular/cdk/a11y";
+import {MatSort} from "@angular/material/sort";
 import {Peripheral} from "../model/interfaces";
 import {SensorService} from "../services/sensor.service";
 import {DataService} from "../services/data.service";
@@ -27,7 +26,6 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
-    private _liveAnnouncer: LiveAnnouncer,
     private dialog: MatDialog,
     private ss: SensorService,
     private cdr: ChangeDetectorRef,
@@ -98,15 +96,6 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
       this.selection.clear() :
       this.dataSource.data.forEach(row => this.selection.select(row));
   }
-
-  announceSortChange(sortState: Sort) {
-    if (sortState.direction) {
-      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
-    } else {
-      this._liveAnnouncer.announce('Sorting cleared');
-    }
-  }
-
   deleteSelectedItems() {
     const selectedItems = this.selection.selected;
     let title,text: string;
@@ -130,7 +119,7 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
     }).then((result) => {
       if (result.isConfirmed) {
         if (this.isAllSelected()) {
-          this.ss.removeAll();
+          this.ss.removeAll('sensorports[1]');
         } else {
           selectedItems.forEach(item => {
             this.ss.removeDevice('sensorports[1]', item);
