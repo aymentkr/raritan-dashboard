@@ -56,6 +56,9 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
       </ng-template>
+      <ng-container *ngIf="dataSource.data.length === 0">
+        <h2>No device available</h2>
+      </ng-container>
     </mat-card-content>
   </mat-card>
 </div>

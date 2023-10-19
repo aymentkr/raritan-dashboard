@@ -204,23 +204,31 @@ export class DataService {
   }
 
   async fetchPeripheralData() {
+    let peripherals: Peripheral[] = [];
     await this.init();
-    this.WSS.clearMessages();
-    await this.WSS.sendMessage('print(sensorports[1]:listDevices())');
-    await this.delay(50);
-    const lines = this.WSS.getMessages().toString().split('\n');
-    return this.convertLinesToPeripherals(lines);
+    const index = await this.WSS.getResult('print(#sensorports)');
+    if (index == 1){
+      this.WSS.clearMessages();
+      await this.WSS.sendMessage('print(sensorports[1]:listDevices())');
+      await this.delay(50);
+      const lines = this.WSS.getMessages().toString().split('\n');
+      peripherals = this.convertLinesToPeripherals(lines);
+    }
+    return peripherals;
   }
 
   async fetchEnvhubsData() {
-    await this.init();
-    this.WSS.clearMessages();
     const peripherals:Envhub = {};
-    for (let i = 0; i < 4; i++) {
-      await this.WSS.sendMessage(`print(envhubs[1]:getPort(${i}):listDevices())`);
-      await this.delay(50);
-      const lines = this.WSS.getMessages()[i];
-      if (lines) peripherals[i] = this.convertLinesToPeripherals(lines.split('\n'));
+    await this.init();
+    const index = await this.WSS.getResult('print(#envhubs)');
+    if (index == 1){
+      this.WSS.clearMessages();
+      for (let i = 0; i < 4; i++) {
+        await this.WSS.sendMessage(`print(envhubs[1]:getPort(${i}):listDevices())`);
+        await this.delay(50);
+        const lines = this.WSS.getMessages()[i];
+        if (lines) peripherals[i] = this.convertLinesToPeripherals(lines.split('\n'));
+      }
     }
     return {
       ...peripherals,
@@ -255,11 +263,15 @@ export class DataService {
     const type = 'DX2_DH2C2';
     let peripherals = await this.fetchPeripheralData();
     let envhubs = await this.fetchEnvhubsData();
-    peripherals = peripherals.filter((peripheral) => peripheral.type === type);
-    const filteredEnvhubData = envhubs[0]
-      .concat(envhubs[1], envhubs[2], envhubs[3])
-      .filter((peripheral) => peripheral.type === type);
-    return peripherals.concat(filteredEnvhubData);
+    if (peripherals.length === 0 && Object.keys(envhubs).length === 0){
+      return [];
+    } else {
+      peripherals = peripherals.filter((peripheral) => peripheral.type === type);
+      const filteredEnvhubData = envhubs[0]
+        .concat(envhubs[1], envhubs[2], envhubs[3])
+        .filter((peripheral) => peripheral.type === type);
+      return peripherals.concat(filteredEnvhubData);
+    }
   }
 
 

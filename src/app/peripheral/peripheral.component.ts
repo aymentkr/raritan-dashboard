@@ -54,13 +54,17 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
   }
 
   addDevice() {
-    const dialogRef = this.dialog.open(AddPeripheralDeviceComponent, {
-      data: this.dataSource.data
-    });
+    if (!this.isEmpty){
+      const dialogRef = this.dialog.open(AddPeripheralDeviceComponent, {
+        data: this.dataSource.data
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) this.addRowData(result.data);
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) this.addRowData(result.data);
+      });
+    } else {
+      this.notificationService.openToastr("Sorry! You can't add any virtual peripheral device in QEMU currently :(",'Adding Device to Sensorports','info');
+    }
   }
 
   editDevice(obj: Peripheral) {
@@ -151,5 +155,9 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
     return numSelected === numRows;
+  }
+
+  async isEmpty() {
+    return await this.ss.getLength('sensorports') === 0;
   }
 }

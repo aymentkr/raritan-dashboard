@@ -46,9 +46,8 @@ export class HomeComponent implements OnInit, AfterViewInit{
       .fetchEnvhubsData()
       .then((data: Envhub) => {
         for (let i = 0; i < 4; i++) {
-          if (data[i]) {
-            this.dataSource[i] = new MatTableDataSource<Peripheral>(data[i]);
-          }
+          this.dataSource[i] = new MatTableDataSource<Peripheral>(data[i]);
+          this.dataSource[i].sort = this.sort;
         }
         this.isLoading = false;
       })
@@ -58,11 +57,15 @@ export class HomeComponent implements OnInit, AfterViewInit{
   }
 
   addDevice(i:number) {
-    const dialogRef = this.dialog.open(AddPeripheralDeviceComponent);
+    if (!this.isEmpty()){
+      const dialogRef = this.dialog.open(AddPeripheralDeviceComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) this.addRowData(result.data,i);
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) this.addRowData(result.data,i);
+      });
+    } else {
+      this.notificationService.openToastr("Sorry! You can't add any virtual peripheral device in QEMU currently :(",'Adding Device to Sensorports','info');
+    }
   }
 
   editDevice(obj: Peripheral) {
@@ -76,7 +79,6 @@ export class HomeComponent implements OnInit, AfterViewInit{
 
   async addRowData(type: string, p: number ) {
     if (type != '' ) {
-
       await this.ss.saveDevice('envhubs[1]:getPort('+p+')',type);
       this.fetchData();
       this.notificationService.openToastr(`New Device with type ${type} in Port ${p} saved successfully`, 'Adding Device to Envhubs','done');
@@ -84,7 +86,6 @@ export class HomeComponent implements OnInit, AfterViewInit{
       this.notificationService.openToastr('Failed to save data','Adding Device to Envhubs','error');
     }
   }
-
 
   private editRowData(data: any) {
     this.ss.callMethod('envhubs[1]',data);
@@ -162,5 +163,9 @@ export class HomeComponent implements OnInit, AfterViewInit{
         }
       }
     });
+  }
+
+  async isEmpty() {
+    return await this.ss.getLength('envhubs') === 0;
   }
 }

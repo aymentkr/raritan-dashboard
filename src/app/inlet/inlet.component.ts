@@ -110,5 +110,4 @@ export class InletComponent implements OnInit,AfterViewInit{
     }
   }
 
-
 }
