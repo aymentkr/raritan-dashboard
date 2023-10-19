@@ -207,6 +207,9 @@
           <tr mat-row *matRowDef="let row; columns: inletsColumns; let i = index;"></tr>
         </table>
       </ng-template>
+      <ng-container *ngIf="dataSource.data.length === 0">
+        <h2>No Inlet available</h2>
+      </ng-container>
     </mat-card-content>
   </mat-card>
 </div>
