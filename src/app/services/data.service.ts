@@ -33,7 +33,6 @@ export class DataService {
       if (this.hasPoles) {
         for (let i = 1; i <= index; i++) {
           const frequency = await this.WSS.getResult(`print(inlets[${i}]:getFrequency())`);
-          await this.delay(50);
           if (isNaN(frequency)) return this.fetchInletData();
           else {
             await this.fetchPoleData(i)
