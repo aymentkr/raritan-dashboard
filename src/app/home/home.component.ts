@@ -165,7 +165,16 @@ export class HomeComponent implements OnInit, AfterViewInit{
     });
   }
 
-  async isEmpty() {
-    return await this.ss.getLength('envhubs') === 0;
+  isEmpty():boolean {
+    let numericValue ;
+    this.ss.getLength('envhubs')
+      .then(data => {
+        numericValue = Number(data);
+      })
+      .catch(error => {
+        console.error('An error occurred: ', error);
+      });
+    return numericValue === 0;
   }
+
 }

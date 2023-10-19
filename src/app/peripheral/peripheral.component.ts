@@ -54,16 +54,15 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
   }
 
   addDevice() {
-    if (!this.isEmpty){
+    if (this.isEmpty())
+      this.notificationService.openToastr("Sorry! You can't add any virtual peripheral device in QEMU currently :(",'Adding Device to Sensorports','info');
+     else {
       const dialogRef = this.dialog.open(AddPeripheralDeviceComponent, {
         data: this.dataSource.data
       });
-
       dialogRef.afterClosed().subscribe(result => {
         if (result) this.addRowData(result.data);
       });
-    } else {
-      this.notificationService.openToastr("Sorry! You can't add any virtual peripheral device in QEMU currently :(",'Adding Device to Sensorports','info');
     }
   }
 
@@ -157,7 +156,16 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
     return numSelected === numRows;
   }
 
-  async isEmpty() {
-    return await this.ss.getLength('sensorports') === 0;
+   isEmpty():boolean {
+    let numericValue ;
+     this.ss.getLength('sensorports')
+       .then(data => {
+         numericValue = Number(data);
+       })
+       .catch(error => {
+         console.error('An error occurred: ', error);
+       });
+     return numericValue === 0;
   }
+
 }
