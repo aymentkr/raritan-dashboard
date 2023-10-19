@@ -225,9 +225,16 @@ export class DataService {
       this.WSS.clearMessages();
       for (let i = 0; i < 4; i++) {
         await this.WSS.sendMessage(`print(envhubs[1]:getPort(${i}):listDevices())`);
-        await this.delay(50);
-        const lines = this.WSS.getMessages()[i];
-        if (lines) peripherals[i] = this.convertLinesToPeripherals(lines.split('\n'));
+      }
+      await this.delay(50);
+      let i=0,  p = 0;
+      while (i < this.WSS.getMessages().length){
+        if (this.WSS.getMessages()[i].length > 3){
+          const lines = this.WSS.getMessages()[i].split('\n');
+          peripherals[p] = this.convertLinesToPeripherals(lines);
+          p++;
+        }
+        i++;
       }
     }
     return {

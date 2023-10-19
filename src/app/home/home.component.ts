@@ -57,15 +57,16 @@ export class HomeComponent implements OnInit, AfterViewInit{
   }
 
   addDevice(i:number) {
-    if (!this.isEmpty()){
-      const dialogRef = this.dialog.open(AddPeripheralDeviceComponent);
-
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) this.addRowData(result.data,i);
-      });
-    } else {
-      this.notificationService.openToastr("Sorry! You can't add any virtual peripheral device in QEMU currently :(",'Adding Device to Sensorports','info');
-    }
+    this.isEmpty().then(_bool => {
+      if (_bool)
+        this.notificationService.openToastr("Sorry! You can't add any virtual peripheral device in QEMU currently :(", 'Adding Device to Sensorports', 'info');
+      else {
+        const dialogRef = this.dialog.open(AddPeripheralDeviceComponent);
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) this.addRowData(result.data, i);
+        });
+      }
+    })
   }
 
   editDevice(obj: Peripheral) {
@@ -165,16 +166,8 @@ export class HomeComponent implements OnInit, AfterViewInit{
     });
   }
 
-  isEmpty():boolean {
-    let numericValue ;
-    this.ss.getLength('envhubs')
-      .then(data => {
-        numericValue = Number(data);
-      })
-      .catch(error => {
-        console.error('An error occurred: ', error);
-      });
-    return numericValue === 0;
+  async isEmpty(): Promise<boolean> {
+    return await this.ss.getLength('envhubs') == 0;
   }
 
 }

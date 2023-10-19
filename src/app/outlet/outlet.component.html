@@ -160,7 +160,7 @@
       <ng-container *ngIf="dataSource.data.length === 0">
         <h2>No Outlet available</h2>
       </ng-container>
-      <mat-paginator [hidden]="dataSource.data.length === 0" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onPageSizeChange($event)" showFirstLastButtons></mat-paginator>
+      <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onPageSizeChange($event)" showFirstLastButtons></mat-paginator>
     </mat-card-content>
   </mat-card>
 </div>

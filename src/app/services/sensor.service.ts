@@ -176,11 +176,10 @@ export class SensorService {
   }
 
   removeDevice(table : string, peripheral: Peripheral) {
-    console.log(peripheral);
     this.WSS.sendMessage(`emu.${peripheral.type}:cast(${table}:findDevice("${peripheral.serial_number}")):disconnect();`);
   }
 
-  getLength(table:string) {
-    return  this.WSS.getResult(`print(#${table})`)
+  async getLength(table: string): Promise<number> {
+    return await this.WSS.getResult(`print(#${table})`)
   }
 }
