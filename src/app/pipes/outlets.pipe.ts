@@ -11,7 +11,6 @@ export class OutletsPipe implements PipeTransform {
   constructor(private WSS: WebsocketService,private ds: DataService) {
   }
 
-
   async fetchOutletData(): Promise<Outlet[]> {
     try {
       const outlets: Outlet[] = [];

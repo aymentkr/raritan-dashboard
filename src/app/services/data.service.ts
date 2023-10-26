@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {Envhub, Ocp, Peripheral} from "../model/interfaces";
 import {WebsocketService} from "./websocket.service";
-import {SensorsPipe} from "../pipes/sensors.pipe";
+import {SensorClass} from "../model/SensorClass";
 
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataService {
-
+  sensors = new SensorClass().getSensors();
 
   options: { name: string; isEnabled: boolean }[] = [
     { name: '1', isEnabled: true },
@@ -16,9 +16,8 @@ export class DataService {
     { name: '3', isEnabled: true }
   ];
 
-  constructor(private WSS: WebsocketService, private sp: SensorsPipe,) {
+  constructor(private WSS: WebsocketService) {
   }
-
 
   async fetchPeripheralData() {
     let peripherals: Peripheral[] = [];
@@ -57,7 +56,6 @@ export class DataService {
     };
   }
 
-
   convertLinesToPeripherals(lines: string[]):Peripheral[]{
     const peripherals: Peripheral[] = [];
     let index=1;
@@ -66,7 +64,7 @@ export class DataService {
       if (match) {
         const type = match[1];
         const serialNumber = match[2];
-        this.sp.getSensors().filter(item => {
+        this.sensors.filter(item => {
           if (item.type === type) {
             peripherals.push({
               id: index,
@@ -141,11 +139,6 @@ export class DataService {
       throw new Error('outlet is null');
     }
   }
-
-
-
-
-
 
   cleanData(dataList: string[]): string[] {
     // Regular expression to match numbers, "true," or "false"
