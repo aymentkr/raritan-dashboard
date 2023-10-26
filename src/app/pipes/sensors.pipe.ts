@@ -1,13 +1,12 @@
-import { Injectable } from '@angular/core';
-import {Peripheral, SensorElement} from '../model/interfaces';
-import { WebsocketService } from './websocket.service';
+import { Pipe, PipeTransform } from '@angular/core';
+import {Peripheral, SensorElement} from "../model/interfaces";
+import {WebsocketService} from "../services/websocket.service";
 import Swal from "sweetalert2";
 
-@Injectable({
-  providedIn: 'root'
+@Pipe({
+  name: 'sensors'
 })
-export class SensorService {
-
+export class SensorsPipe implements PipeTransform {
   sensors: SensorElement[] = [
     {
       name: 'Air Flow 1',
@@ -136,15 +135,13 @@ export class SensorService {
       methods: ['setVibration', 'setContactClosure2', 'setVibrationInvalid']
     },
   ];
-
   constructor(private WSS: WebsocketService) {}
 
-  getSensors() {
-    return this.sensors;
-  }
 
-   infoDevice = (obj: Peripheral): void => {
-    let selectedSensor = this.getSensors().find(sensor => sensor.type === obj.type);
+
+
+  infoDevice = (obj: Peripheral): void => {
+    let selectedSensor = this.sensors.find(sensor => sensor.type === obj.type);
     if (selectedSensor) {
       const formattedMethods = selectedSensor.methods.join('\n');
 
@@ -181,5 +178,18 @@ export class SensorService {
 
   async getLength(table: string): Promise<number> {
     return await this.WSS.getResult(`print(#${table})`)
+  }
+
+  filterSensorsByType(type: string): SensorElement | undefined {
+    return this.sensors.find(sensor => sensor.type === type);
+  }
+
+  transform(value: any, ...args: any[]): any {
+    return this.sensors;
+  }
+
+
+  getSensors() {
+    return this.sensors;
   }
 }

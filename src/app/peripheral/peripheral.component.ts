@@ -5,11 +5,11 @@ import {AddPeripheralDeviceComponent} from "./add-peripheral-device/add-peripher
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
 import {Peripheral} from "../model/interfaces";
-import {SensorService} from "../services/sensor.service";
 import {DataService} from "../services/data.service";
 import {EditPeripheralDeviceComponent} from "./edit-peripheral-device/edit-peripheral-device.component";
 import Swal from 'sweetalert2';
 import {NotificationService} from "../services/notification.service";
+import {SensorsPipe} from "../pipes/sensors.pipe";
 
 
 @Component({
@@ -27,7 +27,7 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
 
   constructor(
     private dialog: MatDialog,
-    private ss: SensorService,
+    private sp: SensorsPipe,
     private cdr: ChangeDetectorRef,
     private notificationService: NotificationService,
     private dataService: DataService
@@ -79,7 +79,7 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
 
   async addRowData(type:string) {
     if (type != "") {
-      await this.ss.saveDevice('sensorports[1]',type)
+      await this.sp.saveDevice('sensorports[1]',type)
       this.fetchData();
       this.notificationService.openToastr(`New Device with type ${type} saved successfully`, 'Adding Device to Sensorports','done');
     } else {
@@ -88,12 +88,12 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
   }
 
   private editRowData(data: any) {
-    this.ss.callMethod('sensorports[1]',data);
+    this.sp.callMethod('sensorports[1]',data);
     this.notificationService.openToastr('Device has been successfully updated (Sensorports), Virtual sensor operations for QEMU ','Device Modification ','done')
   }
 
   public infoDevice = (obj: Peripheral): void => {
-    this.ss.infoDevice(obj);
+    this.sp.infoDevice(obj);
   };
 
   masterToggle() {
@@ -124,10 +124,10 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
     }).then((result) => {
       if (result.isConfirmed) {
         if (this.isAllSelected()) {
-          this.ss.removeAll('sensorports[1]');
+          this.sp.removeAll('sensorports[1]');
         } else {
           selectedItems.forEach(item => {
-            this.ss.removeDevice('sensorports[1]', item);
+            this.sp.removeDevice('sensorports[1]', item);
           });
         }
         this.selection.clear();
@@ -159,6 +159,6 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
   }
 
   async isEmpty() {
-    return  await this.ss.getLength('sensorports') == 0;
+    return  await this.sp.getLength('sensorports') == 0;
   }
 }

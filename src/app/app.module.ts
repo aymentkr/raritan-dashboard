@@ -26,7 +26,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatExpansionModule} from "@angular/material/expansion";
 import { AddPeripheralDeviceComponent } from './peripheral/add-peripheral-device/add-peripheral-device.component';
 import {MatDialogModule} from "@angular/material/dialog";
-import {SensorService} from "./services/sensor.service";
 import {DialogModule} from "@angular/cdk/dialog";
 import {MatListModule} from "@angular/material/list";
 import {MatSelectModule} from "@angular/material/select";
@@ -52,6 +51,9 @@ import {OrderListModule} from "primeng/orderlist";
 import {VirtualScrollerModule} from "primeng/virtualscroller";
 import {PanelModule} from "primeng/panel";
 import {ButtonModule} from "primeng/button";
+import { OutletsPipe } from './pipes/outlets.pipe';
+import { InletsPipe } from './pipes/inlets.pipe';
+import { SensorsPipe } from './pipes/sensors.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -66,6 +68,9 @@ import {ButtonModule} from "primeng/button";
     DashboardComponent,
     SettingsComponent,
     SmartlockComponent,
+    OutletsPipe,
+    InletsPipe,
+    SensorsPipe,
   ],
   imports: [
     AppRoutingModule,
@@ -111,7 +116,7 @@ import {ButtonModule} from "primeng/button";
     PanelModule,
     ButtonModule,
   ],
-  providers: [WebsocketService,DataService,SensorService],
+  providers: [WebsocketService,DataService,SensorsPipe,OutletsPipe,InletsPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

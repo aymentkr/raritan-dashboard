@@ -3,13 +3,13 @@ import {MatTableDataSource} from "@angular/material/table";
 import {Envhub, Peripheral} from "../model/interfaces";
 import {MatSort} from "@angular/material/sort";
 import {MatDialog} from "@angular/material/dialog";
-import {SensorService} from "../services/sensor.service";
 import {DataService} from "../services/data.service";
 import {EditPeripheralDeviceComponent} from "../peripheral/edit-peripheral-device/edit-peripheral-device.component";
 import {NotificationService} from "../services/notification.service";
 import {AddPeripheralDeviceComponent} from "../peripheral/add-peripheral-device/add-peripheral-device.component";
 import {SelectionModel} from "@angular/cdk/collections";
 import Swal from "sweetalert2";
+import {SensorsPipe} from "../pipes/sensors.pipe";
 
 @Component({
   selector: 'app-home',
@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit, AfterViewInit{
 
   constructor(
       private dialog: MatDialog,
-      private ss: SensorService,
+      private sp: SensorsPipe,
       private cdr: ChangeDetectorRef,
       private notificationService: NotificationService,
       private dataService: DataService
@@ -80,7 +80,7 @@ export class HomeComponent implements OnInit, AfterViewInit{
 
   async addRowData(type: string, p: number ) {
     if (type != '' ) {
-      await this.ss.saveDevice('envhubs[1]:getPort('+p+')',type);
+      await this.sp.saveDevice('envhubs[1]:getPort('+p+')',type);
       this.fetchData();
       this.notificationService.openToastr(`New Device with type ${type} in Port ${p} saved successfully`, 'Adding Device to Envhubs','done');
     } else {
@@ -89,16 +89,16 @@ export class HomeComponent implements OnInit, AfterViewInit{
   }
 
   private editRowData(data: any) {
-    this.ss.callMethod('envhubs[1]',data);
+    this.sp.callMethod('envhubs[1]',data);
     this.notificationService.openToastr('Device has been successfully updated (Envhubs), Virtual sensor operations for QEMU ','Device Modification ','done')
   }
 
   public infoDevice = (obj: Peripheral): void => {
-    this.ss.infoDevice(obj);
+    this.sp.infoDevice(obj);
   };
   setFuseState(i: number) {
       if (this.state){
-        this.ss.setFuseState(i,this.state);
+        this.sp.setFuseState(i,this.state);
         this.notificationService.openToastr(`Fuse State in Port ${i} has been successfully updated`, `Envhubs: Modification in Port ${i}`, 'done');
       } else  {
         this.notificationService.openToastr('You have to select an option first','Envhubs : setFuseState(true/false)','info')
@@ -139,10 +139,10 @@ export class HomeComponent implements OnInit, AfterViewInit{
     }).then((result) => {
       if (result.isConfirmed) {
         if (this.isAllSelected(i)) {
-          this.ss.removeAll(`envhubs[1]:getPort(${i})`);
+          this.sp.removeAll(`envhubs[1]:getPort(${i})`);
         } else {
           selectedItems.forEach(item => {
-            this.ss.removeDevice('envhubs[1]', item);
+            this.sp.removeDevice('envhubs[1]', item);
           });
         }
         this.selection.clear();
@@ -167,7 +167,7 @@ export class HomeComponent implements OnInit, AfterViewInit{
   }
 
   async isEmpty(): Promise<boolean> {
-    return await this.ss.getLength('envhubs') == 0;
+    return await this.sp.getLength('envhubs') == 0;
   }
 
 }

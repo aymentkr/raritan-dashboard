@@ -1,8 +1,8 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { Peripheral, SensorElement } from "../../model/interfaces";
-import { SensorService } from "../../services/sensor.service";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import {SensorsPipe} from "../../pipes/sensors.pipe";
 
 @Component({
   selector: 'app-edit-peripheral-device',
@@ -13,7 +13,6 @@ import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
 export class EditPeripheralDeviceComponent implements AfterViewInit {
   sensorForm: FormGroup;
   selectedSensorMethod: string = '';
-  sensors: SensorElement[] = [];
   local_data: Peripheral;
   selectedSensor?: SensorElement;
 
@@ -40,13 +39,13 @@ export class EditPeripheralDeviceComponent implements AfterViewInit {
   constructor(
       public dialogRef: MatDialogRef<EditPeripheralDeviceComponent>,
       @Inject(MAT_DIALOG_DATA) public data: Peripheral,
-      private ss: SensorService,
+      sp: SensorsPipe,
       private cdr: ChangeDetectorRef,
       private fb: FormBuilder,
   ) {
     this.local_data = { ...data };
-    this.sensors = this.ss.getSensors();
-    this.selectedSensor = this.sensors.find((sensor) => sensor.type === this.local_data.type);
+
+    this.selectedSensor = sp.filterSensorsByType(this.local_data.type);
 
     this.sensorForm = this.fb.group({
       _numberValue: [null, Validators.nullValidator],

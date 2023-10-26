@@ -3,8 +3,8 @@ import {MatTableDataSource} from "@angular/material/table";
 import {Peripheral} from "../model/interfaces";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
-import {SensorService} from "../services/sensor.service";
 import {DataService} from "../services/data.service";
+import {SensorsPipe} from "../pipes/sensors.pipe";
 
 @Component({
   selector: 'app-smartlock',
@@ -21,11 +21,11 @@ export class SmartlockComponent implements OnInit, AfterViewInit{
   sensor: any ;
 
   constructor(
-    private ss: SensorService,
+    sp: SensorsPipe,
     private cdr: ChangeDetectorRef,
     private dataService: DataService
   ) {
-    this.sensor = this.ss.getSensors().find(sensor => sensor.type === 'DX2_DH2C2')
+    this.sensor = sp.filterSensorsByType('DX2_DH2C2');
   }
 
   ngOnInit(): void {

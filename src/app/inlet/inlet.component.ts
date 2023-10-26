@@ -6,6 +6,8 @@ import {MatSort, Sort} from "@angular/material/sort";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {DataService} from "../services/data.service";
 import {NotificationService} from "../services/notification.service";
+import {OutletsPipe} from "../pipes/outlets.pipe";
+import {InletsPipe} from "../pipes/inlets.pipe";
 
 @Component({
   selector: 'app-inlet',
@@ -25,7 +27,7 @@ export class InletComponent implements OnInit,AfterViewInit{
   isLoading: boolean = true;
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
-    private dataService: DataService,
+    private inletsPipe: InletsPipe,
     private cdRef: ChangeDetectorRef,
     private notificationService: NotificationService
   ) {
@@ -34,14 +36,14 @@ export class InletComponent implements OnInit,AfterViewInit{
 
   async ngOnInit(): Promise<void> {
     this.fetchData();
-    this.hasPoles = this.dataService.isInlet_P();
+    this.hasPoles = this.inletsPipe.isInlet_P();
   }
   ngAfterViewInit() {
     this.cdRef.detectChanges();
   }
 
   fetchData() {
-    this.dataService.fetchInletData()
+    this.inletsPipe.transform()
       .then((data: Inlet[]) => {
         this.dataSource.data = data;
         this.dataSource.sort = this.sort;
@@ -59,7 +61,7 @@ export class InletComponent implements OnInit,AfterViewInit{
   }
 
   saveInlet(rowData: Inlet) {
-    this.dataService.editInlet(rowData)
+    this.inletsPipe.editInlet(rowData)
       .then(() => {
         this.editableRowIndexI = -1;
         this.notificationService.openToastr(`Inlet data successfully saved: Inlet ${rowData.id} - Frequency value to ${rowData.frequency}`, 'Inlet Modification', 'done');
@@ -71,7 +73,7 @@ export class InletComponent implements OnInit,AfterViewInit{
 
   savePole(inlet: Inlet, pole: Pole) {
     if (this.hasPoles)
-    this.dataService.editPole(inlet, pole, this.hasPoles)
+    this.inletsPipe.editPole(inlet, pole, this.hasPoles)
       .then(() => {
         this.editableRowIndexP = -1;
         this.notificationService.openToastr(`Pole data successfully saved: Inlet ${inlet.id} - Pole  ${pole.name}`, 'Pole Modification', 'done');

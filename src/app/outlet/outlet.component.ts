@@ -7,6 +7,7 @@ import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {Outlet} from "../model/interfaces";
 import {MatPaginator} from "@angular/material/paginator";
 import {NotificationService} from "../services/notification.service";
+import {OutletsPipe} from "../pipes/outlets.pipe";
 
 
 @Component({
@@ -35,7 +36,7 @@ export class OutletComponent implements OnInit,AfterViewInit {
   editableRowIndex: number = -1;
   isLoading: boolean = true;
   constructor(private _liveAnnouncer: LiveAnnouncer,
-              private dataService: DataService,
+              private outletsPipe: OutletsPipe,
               private notificationService: NotificationService,
               private cdRef: ChangeDetectorRef
   ) {}
@@ -48,7 +49,7 @@ export class OutletComponent implements OnInit,AfterViewInit {
   }
 
   fetchData() {
-    this.dataService.fetchOutletData()
+    this.outletsPipe.transform()
       .then((data: Outlet[]) => {
         this.dataSource.data = data;
         this.dataSource.sort = this.sort;
@@ -64,7 +65,7 @@ export class OutletComponent implements OnInit,AfterViewInit {
   }
 
   saveItem(rowData: any) {
-    this.dataService.editOutlet(rowData)
+    this.outletsPipe.editOutlet(rowData)
       .then(() => {
         this.editableRowIndex = -1;
         this.notificationService.openToastr(`Outlet  ${rowData.id} saved successfully`, 'Outlet Modification', 'done');
