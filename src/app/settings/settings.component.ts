@@ -29,9 +29,9 @@ export class SettingsComponent  implements OnInit {
   options = this._dataService.options;
   async onToggleChange(option: { name: string; isEnabled: boolean }) {
     if (option.isEnabled)
-      await this.WSS.sendMessage(`ctrls[${option.name}]:enable()`);
+       this.WSS.sendMessage(`ctrls[${option.name}]:enable()`);
     else
-      await this.WSS.sendMessage(`ctrls[${option.name}]:disable()`);
+       this.WSS.sendMessage(`ctrls[${option.name}]:disable()`);
   }
 
 

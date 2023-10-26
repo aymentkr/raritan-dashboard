@@ -57,7 +57,7 @@ export class WebsocketService implements OnDestroy {
     let observable = new Observable((obs: Observer<Blob>) => {
       ws.onmessage = async (event) => {
         const message = await blobToText(event.data); // Await the promise
-        this.messageList.push(message);
+        if (!message.includes('help()')) this.messageList.push(message);
         obs.next(new Blob([event.data]));
       };
 

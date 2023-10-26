@@ -5,7 +5,6 @@ import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
 import {SensorService} from "../services/sensor.service";
 import {DataService} from "../services/data.service";
-import {NotificationService} from "../services/notification.service";
 
 @Component({
   selector: 'app-smartlock',
@@ -24,7 +23,6 @@ export class SmartlockComponent implements OnInit, AfterViewInit{
   constructor(
     private ss: SensorService,
     private cdr: ChangeDetectorRef,
-    private notificationService: NotificationService,
     private dataService: DataService
   ) {
     this.sensor = this.ss.getSensors().find(sensor => sensor.type === 'DX2_DH2C2')

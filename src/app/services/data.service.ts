@@ -18,13 +18,7 @@ export class DataService {
 
   constructor(private WSS: WebsocketService, private sensorData: SensorService) {
   }
-
-  async init() {
-    await this.WSS.sendMessage('print()');
-    await this.delay(50);
-  }
   async fetchInletData(): Promise<Inlet[]> {
-    await this.init();
     const inlets: Inlet[] = [];
     const index = await this.WSS.getResult('print(#inlets)');
     const test = await this.WSS.getResult(`print(inlets[1]:getVoltage(0))`);
@@ -98,7 +92,7 @@ export class DataService {
         }
       }
     }
-      return inlets
+    return inlets
   }
 
 
@@ -152,7 +146,6 @@ export class DataService {
 
   async fetchOutletData(): Promise<Outlet[]> {
     try {
-      await this.init();
       const outlets: Outlet[] = [];
       const index = await this.WSS.getResult('print(#outlets)');
       this.WSS.clearMessages();
@@ -204,7 +197,6 @@ export class DataService {
 
   async fetchPeripheralData() {
     let peripherals: Peripheral[] = [];
-    await this.init();
     const index = await this.WSS.getResult('print(#sensorports)');
     if (index == 1){
       this.WSS.clearMessages();
@@ -218,7 +210,6 @@ export class DataService {
 
   async fetchEnvhubsData() {
     const peripherals:Envhub = {};
-    await this.init();
     const index = await this.WSS.getResult('print(#envhubs)');
     if (index == 1){
       this.WSS.clearMessages();
@@ -283,7 +274,6 @@ export class DataService {
 
   async fetchOcpData() : Promise<Ocp[]> {
     try {
-      await this.init();
       const ocps: Ocp[] = [];
       const index = await this.WSS.getResult('print(#ocps)')
       this.WSS.clearMessages();
@@ -318,8 +308,6 @@ export class DataService {
     }
   }
 
-
-
   async editOcp(ocp: Ocp) {
     if (ocp != null) {
       await this.WSS.sendMessage(`ocps[${ocp.id}]:setCurrent(${ocp.current});`);
@@ -328,9 +316,6 @@ export class DataService {
       throw new Error('outlet is null');
     }
   }
-
-
-
 
   async editOutlet(outlet: Outlet): Promise<void> {
     if (outlet!=null) {
