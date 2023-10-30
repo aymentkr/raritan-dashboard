@@ -10,10 +10,11 @@ export class InletsPipe implements PipeTransform {
   hasPoles : boolean= true;
 
   constructor(private WSS: WebsocketService,private ds: DataService) {
+
   }
 
   async fetchInletData(): Promise<Inlet[]> {
-    const inlets: Inlet[] = [];
+    const inlets: Inlet[] = [];/*
     const index = await this.WSS.getResult('print(#inlets)');
     const test = await this.WSS.getResult(`print(inlets[1]:getVoltage(0))`);
     this.hasPoles = !isNaN(test);
@@ -24,14 +25,14 @@ export class InletsPipe implements PipeTransform {
           if (isNaN(frequency)) return this.fetchInletData();
           else {
             await this.fetchPoleData(i)
-              .then(async (data: Pole[]) => {
-                  inlets.push({
-                    id: i,
-                    frequency: frequency,
-                    poles: data,
-                  });
-                }
-              )
+                .then(async (data: Pole[]) => {
+                      inlets.push({
+                        id: i,
+                        frequency: frequency,
+                        poles: data,
+                      });
+                    }
+                )
           }
         }
       } else {
@@ -57,13 +58,13 @@ export class InletsPipe implements PipeTransform {
           const act_energy = parseFloat(messages[i + 5]);
           const app_energy = parseFloat(messages[i + 6]);
           if (
-            isNaN(voltage) ||
-            isNaN(frequency) ||
-            isNaN(current) ||
-            isNaN(act_power) ||
-            isNaN(app_power) ||
-            isNaN(act_energy) ||
-            isNaN(app_energy)
+              isNaN(voltage) ||
+              isNaN(frequency) ||
+              isNaN(current) ||
+              isNaN(act_power) ||
+              isNaN(app_power) ||
+              isNaN(act_energy) ||
+              isNaN(app_energy)
           ) {
             return this.fetchInletData();
           }
@@ -86,13 +87,13 @@ export class InletsPipe implements PipeTransform {
         }
       }
     }
+    this.WSS.unsubscribe();*/
     return inlets
   }
 
 
   async fetchPoleData(size:number): Promise<Pole[]> {
-    this.WSS.clearMessages();
-    const poles: Pole[] = [];
+    const poles: Pole[] = [];/*
     for (let i = 0; i < 6; i++) {
       await this.WSS.sendMessage(`print(inlets[${size}]:getVoltage(${i}))`);
       await this.WSS.sendMessage(`print(inlets[${size}]:getCurrent(${i}))`);
@@ -113,12 +114,12 @@ export class InletsPipe implements PipeTransform {
       const act_energy = parseFloat(messages[i + 4]);
       const app_energy = parseFloat(messages[i + 5]);
       if (
-        isNaN(voltage) ||
-        isNaN(current) ||
-        isNaN(act_power) ||
-        isNaN(app_power) ||
-        isNaN(act_energy) ||
-        isNaN(app_energy)
+          isNaN(voltage) ||
+          isNaN(current) ||
+          isNaN(act_power) ||
+          isNaN(app_power) ||
+          isNaN(act_energy) ||
+          isNaN(app_energy)
       ) {
         return this.fetchPoleData(size);
       }
@@ -134,7 +135,7 @@ export class InletsPipe implements PipeTransform {
       });
       i += 6;
       id++;
-    }
+    }*/
     return poles;
   }
 
@@ -144,16 +145,16 @@ export class InletsPipe implements PipeTransform {
   }
 
 
-  async editInlet(inlet: Inlet): Promise<void> {
+  async editInlet(inlet: Inlet): Promise<void> {/*
     if (inlet!=null) {
       await this.WSS.sendMessage(`inlets[${inlet.id}]:setFrequency(${inlet.frequency});`);
     } else {
       throw new Error('inlet is null');
-    }
+    }*/
   }
 
 
-  async editPole(inlet: Inlet,pole: Pole, hasPoles:boolean): Promise<void> {
+  async editPole(inlet: Inlet,pole: Pole, hasPoles:boolean): Promise<void> {/*
     if (pole!=null && inlet!=null) {
       if (hasPoles) {
         await this.WSS.sendMessage(`inlets[${inlet.id}]:setVoltage(${pole.id},${pole.voltage});`);
@@ -172,7 +173,7 @@ export class InletsPipe implements PipeTransform {
       }
     } else {
       throw new Error('pole is null');
-    }
+    }*/
   }
 
   isInlet_P() {

@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import {SelectionModel} from "@angular/cdk/collections";
@@ -7,7 +7,6 @@ import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {Outlet} from "../model/interfaces";
 import {MatPaginator} from "@angular/material/paginator";
 import {NotificationService} from "../services/notification.service";
-import {OutletsPipe} from "../pipes/outlets.pipe";
 
 
 @Component({
@@ -15,7 +14,7 @@ import {OutletsPipe} from "../pipes/outlets.pipe";
   templateUrl: './outlet.component.html',
   styleUrls: ['./outlet.component.css'],
 })
-export class OutletComponent implements OnInit,AfterViewInit {
+export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
   dataSource = new MatTableDataSource<Outlet>();
   displayedColumns: string[] = [
     'select',
@@ -36,20 +35,13 @@ export class OutletComponent implements OnInit,AfterViewInit {
   editableRowIndex: number = -1;
   isLoading: boolean = true;
   constructor(private _liveAnnouncer: LiveAnnouncer,
-              private outletsPipe: OutletsPipe,
+              private data: DataService,
               private notificationService: NotificationService,
               private cdRef: ChangeDetectorRef
-  ) {}
+  ) {
+  }
   ngOnInit(): void {
-    this.fetchData();
-  }
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.cdRef.detectChanges();
-  }
-
-  fetchData() {
-    this.outletsPipe.transform()
+    this.fetchOutletData()
       .then((data: Outlet[]) => {
         this.dataSource.data = data;
         this.dataSource.sort = this.sort;
@@ -59,13 +51,47 @@ export class OutletComponent implements OnInit,AfterViewInit {
         console.error('Data fetching failed:', error);
       });
   }
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.cdRef.detectChanges();
+  }
+  ngOnDestroy(): void {
+    this.data.close();
+  }
+
+
+  async fetchOutletData(): Promise<Outlet[]> {
+    const outlets: Outlet[] = [];
+    await this.data.delay(1000);
+    const index = parseFloat(await this.data.getResult('#outlets', 'print(#outlets)'));
+    console.log(index);
+    for (let i = 1; i <= index; i++) {
+      const state = await this.data.getResult(`outlets[${i}]:getState()`, `print(outlets[${i}]:getState())`);
+      const voltage = parseFloat(await this.data.getResult(`outlets[${i}]:getVoltage()`, `print(outlets[${i}]:getVoltage())`));
+      const frequency = parseFloat(await this.data.getResult(`outlets[${i}]:getFrequency()`, `print(outlets[${i}]:getFrequency())`));
+      const current = parseFloat(await this.data.getResult(`outlets[${i}]:getCurrent()`, `print(outlets[${i}]:getCurrent())`));
+      const act_power = parseFloat(await this.data.getResult(`outlets[${i}]:getActivePower()`, `print(outlets[${i}]:getActivePower())`));
+      const app_power = parseFloat(await this.data.getResult(`outlets[${i}]:getApparentPower()`, `print(outlets[${i}]:getApparentPower())`));
+      outlets.push({
+        id: i,
+        state: state.includes('true'),
+        voltage: voltage,
+        frequency: frequency,
+        current: current,
+        act_power: act_power,
+        app_power: app_power,
+      });
+      console.log(this.data.getMap());
+    }
+    return outlets;
+  }
 
   editItem( rowIndex: number) {
     this.editableRowIndex = rowIndex;
   }
 
   saveItem(rowData: any) {
-    this.outletsPipe.editOutlet(rowData)
+    this.editOutlet(rowData)
       .then(() => {
         this.editableRowIndex = -1;
         this.notificationService.openToastr(`Outlet  ${rowData.id} saved successfully`, 'Outlet Modification', 'done');
@@ -73,6 +99,18 @@ export class OutletComponent implements OnInit,AfterViewInit {
       .catch(error => {
         this.notificationService.openToastr(`Failed to save data ${error}`,'Outlet Modification','error');
       });
+  }
+
+  async editOutlet(outlet: Outlet) {
+    if (outlet!=null) {
+      this.data.sendToGo(`outlets[${outlet.id}]:setVoltage(${outlet.voltage});`);
+      this.data.sendToGo(`outlets[${outlet.id}]:setFrequency(${outlet.frequency});`);
+      this.data.sendToGo(`outlets[${outlet.id}]:setCurrent(${outlet.current});`);
+      this.data.sendToGo(`outlets[${outlet.id}]:setActivePower(${outlet.act_power});`);
+      this.data.sendToGo(`outlets[${outlet.id}]:setApparentPower(${outlet.app_power});`);
+    } else {
+      throw new Error('outlet is null');
+    }
   }
 
 
@@ -101,5 +139,6 @@ export class OutletComponent implements OnInit,AfterViewInit {
   onPageSizeChange(event: any) {
     this.pageSize = event.pageSize;
   }
+
 
 }

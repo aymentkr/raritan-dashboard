@@ -4,9 +4,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import {Inlet, Pole} from "../model/interfaces";
 import {MatSort, Sort} from "@angular/material/sort";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
-import {DataService} from "../services/data.service";
 import {NotificationService} from "../services/notification.service";
-import {OutletsPipe} from "../pipes/outlets.pipe";
 import {InletsPipe} from "../pipes/inlets.pipe";
 
 @Component({

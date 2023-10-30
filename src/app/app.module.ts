@@ -51,7 +51,6 @@ import {OrderListModule} from "primeng/orderlist";
 import {VirtualScrollerModule} from "primeng/virtualscroller";
 import {PanelModule} from "primeng/panel";
 import {ButtonModule} from "primeng/button";
-import { OutletsPipe } from './pipes/outlets.pipe';
 import { InletsPipe } from './pipes/inlets.pipe';
 import { SensorsPipe } from './pipes/sensors.pipe';
 @NgModule({
@@ -68,7 +67,6 @@ import { SensorsPipe } from './pipes/sensors.pipe';
     DashboardComponent,
     SettingsComponent,
     SmartlockComponent,
-    OutletsPipe,
     InletsPipe,
     SensorsPipe,
   ],
@@ -116,7 +114,7 @@ import { SensorsPipe } from './pipes/sensors.pipe';
     PanelModule,
     ButtonModule,
   ],
-  providers: [WebsocketService,DataService,SensorsPipe,OutletsPipe,InletsPipe],
+  providers: [WebsocketService,DataService,SensorsPipe,InletsPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

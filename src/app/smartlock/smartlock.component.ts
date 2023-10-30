@@ -37,6 +37,7 @@ export class SmartlockComponent implements OnInit, AfterViewInit{
   }
 
   fetchData() {
+    /*
     this.dataService.fetchSmartLockData()
       .then((data: Peripheral[]) => {
         this.dataSource.data = data;
@@ -45,7 +46,7 @@ export class SmartlockComponent implements OnInit, AfterViewInit{
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);
-      });
+      });*/
   }
   isAllSelected() {
     const numSelected = this.selection.selected.length;

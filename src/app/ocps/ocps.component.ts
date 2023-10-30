@@ -43,7 +43,7 @@ export class OcpsComponent implements OnInit,AfterViewInit {
   }
 
 
-  fetchData() {
+  fetchData() {/*
     this.dataService.fetchOcpData()
       .then((data: Ocp[]) => {
         this.dataSource.data = data;
@@ -52,14 +52,14 @@ export class OcpsComponent implements OnInit,AfterViewInit {
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);
-      });
+      });*/
   }
 
   editItem( rowIndex: number) {
     this.editableRowIndex = rowIndex;
   }
 
-  saveItem(rowData: any) {
+  saveItem(rowData: any) {/*
     this.dataService.editOcp(rowData)
       .then(() => {
         this.editableRowIndex = -1;
@@ -67,7 +67,7 @@ export class OcpsComponent implements OnInit,AfterViewInit {
       })
       .catch(error => {
         this.notificationService.openToastr(`Failed to save data ${error}`,'OCP Modification','error');
-      });
+      });*/
   }
 
   cancelEdit() {

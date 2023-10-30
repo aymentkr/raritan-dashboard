@@ -41,7 +41,7 @@ export class HomeComponent implements OnInit, AfterViewInit{
     this.cdr.detectChanges();
   }
 
-  fetchData() {
+  fetchData() {/*
     this.dataService
       .fetchEnvhubsData()
       .then((data: Envhub) => {
@@ -53,7 +53,7 @@ export class HomeComponent implements OnInit, AfterViewInit{
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);
-      });
+      });*/
   }
 
   addDevice(i:number) {

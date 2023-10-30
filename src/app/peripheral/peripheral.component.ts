@@ -41,7 +41,7 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
     this.cdr.detectChanges();
   }
 
-  fetchData() {
+  fetchData() {/*
     this.dataService.fetchPeripheralData()
       .then((data: Peripheral[]) => {
         this.dataSource.data = data;
@@ -50,7 +50,7 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);
-      });
+      });*/
   }
 
   addDevice() {
