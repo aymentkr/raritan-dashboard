@@ -57,7 +57,10 @@ export class WebsocketService {
   }
 
   public sendMessage(message: string) {
-    this.ws.send(message);
+    if (this.isConnected())
+      this.ws.send(message);
+    else
+      console.log('WebSocket connection is not established. Message not sent.');
   }
   public close() {
     this.ws.close();

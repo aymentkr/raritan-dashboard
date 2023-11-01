@@ -28,24 +28,24 @@ export class SensorsPipe implements PipeTransform {
   };
 
   removeAll(table:string) {
-    this.data.sendToGo(table+':removeAll()');
+    this.data.send(table+':removeAll()');
   }
   saveDevice(table:string,type: string ) {
-    this.data.sendToGo(`
+    this.data.send(`
     new_sensor = emu.${type}:create(tfw_core)
     new_sensor:connect(${table})
     `);
   }
   callMethod(table:string, data: any) {
-    this.data.sendToGo(`emu.${data.device.type}:cast(${table}:findDevice("${data.device.serial_number}")):${data.methodName}`);
+    this.data.send(`emu.${data.device.type}:cast(${table}:findDevice("${data.device.serial_number}")):${data.methodName}`);
   }
 
   setFuseState(i: number, state: boolean) {
-    this.data.sendToGo(`envhubs[1]:setFuseState(${i}, ${state})`);
+    this.data.send(`envhubs[1]:setFuseState(${i}, ${state})`);
   }
 
   removeDevice(table : string, peripheral: Peripheral) {
-    this.data.sendToGo(`emu.${peripheral.type}:cast(${table}:findDevice("${peripheral.serial_number}")):disconnect();`);
+    this.data.send(`emu.${peripheral.type}:cast(${table}:findDevice("${peripheral.serial_number}")):disconnect();`);
   }
 
   async getLength(table: string): Promise<number> {
