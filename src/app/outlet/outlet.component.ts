@@ -32,15 +32,14 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
   @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort!: MatSort;
   pageSizeOptions: number[] = [5,10, 15,20, 30,35,40];
-  index : number = 0;
+  index : number = 48;
   pageSize: number = 10;
   editableRowIndex: number = -1;
   constructor(private _liveAnnouncer: LiveAnnouncer,
               private data: DataService,
               private notificationService: NotificationService,
               private cdRef: ChangeDetectorRef
-  ) {
-  }
+  ) {}
   ngOnInit(): void {
     this.fetchOutletData().then(() => {
       this.dataSource.sort = this.sort;
@@ -107,8 +106,6 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
     }
   }
 
-
-
   cancelEdit() {
     this.editableRowIndex = -1;
   }
@@ -132,6 +129,10 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
   }
   onPageSizeChange(event: any) {
     this.pageSize = event.pageSize;
+  }
+
+  calculateProgress(): number {
+    return (this.dataSource.data.length / this.index ) * 100;
   }
 
 

@@ -155,6 +155,7 @@
       <ng-container *ngIf="dataSource.data.length === 0">
         <h2>No Outlet available</h2>
       </ng-container>
+      <mat-progress-bar *ngIf="index !== dataSource.data.length" mode="determinate" [value]="calculateProgress()"></mat-progress-bar>
       <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onPageSizeChange($event)" showFirstLastButtons></mat-paginator>
     </mat-card-content>
   </mat-card>
