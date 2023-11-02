@@ -13,8 +13,10 @@ import {NotificationService} from "../services/notification.service";
   templateUrl: './outlet.component.html',
   styleUrls: ['./outlet.component.css'],
 })
+
 export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
   dataSource = new MatTableDataSource<Outlet>();
+  outlets: Outlet[] = [];
   displayedColumns: string[] = [
     'select',
     'name',
@@ -33,7 +35,6 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
   index : number = 0;
   pageSize: number = 10;
   editableRowIndex: number = -1;
-  isLoading: boolean = false;
   constructor(private _liveAnnouncer: LiveAnnouncer,
               private data: DataService,
               private notificationService: NotificationService,
@@ -41,14 +42,11 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
   ) {
   }
   ngOnInit(): void {
-    this.fetchOutletData()
-      .then((data: Outlet[]) => {
-        this.dataSource.data = data;
-        this.dataSource.sort = this.sort;
-      })
-      .catch((error) => {
-        console.error('Data fetching failed:', error);
-      });
+    this.fetchOutletData().then(() => {
+      this.dataSource.sort = this.sort;
+    }).catch((error) => {
+      console.error('Data fetching failed:', error);
+    });
   }
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -61,8 +59,7 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
     this.editableRowIndex = rowIndex;
   }
 
-  async fetchOutletData(): Promise<Outlet[]> {
-    const outlets: Outlet[] = [];
+  async fetchOutletData() {
     const fetchOutletDataRecursive = async (): Promise<void> => {
       this.index = parseFloat(await this.data.getResult('#outlets', 'print(#outlets)'));
       if (isNaN(this.index)) {
@@ -71,27 +68,21 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
         }, 0);
       } else {
         for (let i = 1; i <= this.index; i++) {
-          const state = await this.data.getResult(`outlets[${i}]:getState()`, `print(outlets[${i}]:getState())`);
-          const voltage = parseFloat(await this.data.getResult(`outlets[${i}]:getVoltage()`, `print(outlets[${i}]:getVoltage())`));
-          const frequency = parseFloat(await this.data.getResult(`outlets[${i}]:getFrequency()`, `print(outlets[${i}]:getFrequency())`));
-          const current = parseFloat(await this.data.getResult(`outlets[${i}]:getCurrent()`, `print(outlets[${i}]:getCurrent())`));
-          const act_power = parseFloat(await this.data.getResult(`outlets[${i}]:getActivePower()`, `print(outlets[${i}]:getActivePower())`));
-          const app_power = parseFloat(await this.data.getResult(`outlets[${i}]:getApparentPower()`, `print(outlets[${i}]:getApparentPower())`));
-          outlets.push({
+          const outletData = {
             id: i,
-            state: state.includes('true'),
-            voltage: voltage,
-            frequency: frequency,
-            current: current,
-            act_power: act_power,
-            app_power: app_power,
-          });
-          this.dataSource.data = [...outlets];
+            state: (await this.data.getResult(`outlets[${i}]:state`, `print(outlets[${i}]:getState())`)).includes('true'),
+            voltage: parseFloat(await this.data.getResult(`outlets[${i}]:voltage`, `print(outlets[${i}]:getVoltage())`)),
+            frequency: parseFloat(await this.data.getResult(`outlets[${i}]:frequency`, `print(outlets[${i}]:getFrequency())`)),
+            current: parseFloat(await this.data.getResult(`outlets[${i}]:current`, `print(outlets[${i}]:getCurrent())`)),
+            act_power: parseFloat(await this.data.getResult(`outlets[${i}]:act_power`, `print(outlets[${i}]:getActivePower())`)),
+            app_power: parseFloat(await this.data.getResult(`outlets[${i}]:app_power`, `print(outlets[${i}]:getApparentPower())`)),
+          };
+          this.outlets.push(outletData);
+          this.dataSource.data = [...this.outlets];
         }
       }
     }
     await fetchOutletDataRecursive();
-    return outlets;
   }
 
   saveItem(rowData: any) {
@@ -104,24 +95,23 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
         this.notificationService.openToastr(`Failed to save data ${error}`,'Outlet Modification','error');
       });
   }
-
   async editOutlet(outlet: Outlet) {
-    if (outlet!=null) {
-      this.data.sendToGo(`outlets[${outlet.id}]:setVoltage(${outlet.voltage});`);
-      this.data.sendToGo(`outlets[${outlet.id}]:setFrequency(${outlet.frequency});`);
-      this.data.sendToGo(`outlets[${outlet.id}]:setCurrent(${outlet.current});`);
-      this.data.sendToGo(`outlets[${outlet.id}]:setActivePower(${outlet.act_power});`);
-      this.data.sendToGo(`outlets[${outlet.id}]:setApparentPower(${outlet.app_power});`);
+    if (outlet != null) {
+      const { id, voltage, frequency, current, act_power, app_power } = outlet;
+      this.data.sendToGo(
+        `outlets[${id}]:setVoltage(${voltage});outlets[${id}]:setFrequency(${frequency});outlets[${id}]:setCurrent(${current});outlets[${id}]:setActivePower(${act_power});outlets[${id}]:setApparentPower(${app_power});`
+      );
+      Object.entries(outlet).forEach(([key, value]) => this.data.editMap(`outlets[${id}]:${key}`, value as number | boolean));
     } else {
       throw new Error('outlet is null');
     }
   }
 
 
+
   cancelEdit() {
     this.editableRowIndex = -1;
   }
-
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;

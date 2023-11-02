@@ -62,5 +62,7 @@ export class DataService {
     });
   }
 
-
+  editMap(key: string, value: number | boolean) {
+    this.myMap.set(key, String(value));
+  }
 }
