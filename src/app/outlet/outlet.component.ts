@@ -32,7 +32,7 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
   @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort!: MatSort;
   pageSizeOptions: number[] = [5,10, 15,20, 30,35,40];
-  index : number = 48;
+  index : number = 0;
   pageSize: number = 10;
   editableRowIndex: number = -1;
   constructor(private _liveAnnouncer: LiveAnnouncer,

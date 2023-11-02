@@ -15,6 +15,7 @@ import {NotificationService} from "../services/notification.service";
 })
 export class OcpsComponent implements OnInit,AfterViewInit {
   dataSource = new MatTableDataSource<Ocp>();
+  ocps: Ocp[] = [];
   displayedColumns: string[] = [
     'select',
     'name',
@@ -26,10 +27,11 @@ export class OcpsComponent implements OnInit,AfterViewInit {
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  index : number = -1;
   editableRowIndex: number = -1;
   isLoading: boolean = true;
   constructor(private _liveAnnouncer: LiveAnnouncer,
-              private dataService: DataService,
+              private data: DataService,
               private notificationService: NotificationService,
               private cdRef: ChangeDetectorRef
   ) {}
@@ -42,32 +44,62 @@ export class OcpsComponent implements OnInit,AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-
-  fetchData() {/*
-    this.dataService.fetchOcpData()
-      .then((data: Ocp[]) => {
-        this.dataSource.data = data;
+  fetchData() {
+    this.fetchOcpData()
+      .then(() => {
         this.dataSource.sort = this.sort;
-        this.isLoading = false;
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);
-      });*/
+      });
+  }
+
+  async fetchOcpData() {
+    const fetchOcpDataRecursive = async (): Promise<void> => {
+      this.index = parseFloat(await this.data.getResult('#ocps', 'print(#ocps)'));
+      if (isNaN(this.index)) {
+        setTimeout(() => {
+          fetchOcpDataRecursive();
+        }, 0);
+      } else {
+        for (let i = 1; i <= this.index; i++) {
+          const ocpData = {
+            id: i,
+            status: (await this.data.getResult(`ocps[${i}]:status`, `print(ocps[${i}]:isClosed())`)).includes('true'),
+            current: parseFloat(await this.data.getResult(`ocps[${i}]:current`, `print(ocps[${i}]:getCurrent())`)),
+            peak_current: parseFloat(await this.data.getResult(`ocps[${i}]:peak_current`, `print(ocps[${i}]:getPeakCurrent())`)),
+          };
+          this.ocps.push(ocpData);
+          this.dataSource.data = [...this.ocps];
+        }
+        this.isLoading = false;
+      }
+    }
+    await fetchOcpDataRecursive();
   }
 
   editItem( rowIndex: number) {
     this.editableRowIndex = rowIndex;
   }
 
-  saveItem(rowData: any) {/*
-    this.dataService.editOcp(rowData)
+  saveItem(rowData: any) {
+    this.editOcp(rowData)
       .then(() => {
         this.editableRowIndex = -1;
         this.notificationService.openToastr(`OCP  ${rowData.id} saved successfully`, 'OCP Modification', 'done');
       })
       .catch(error => {
         this.notificationService.openToastr(`Failed to save data ${error}`,'OCP Modification','error');
-      });*/
+      });
+  }
+
+  async editOcp(ocp: Ocp) {
+    if (ocp != null) {
+      this.data.sendToGo(`ocps[${ocp.id}]:setCurrent(${ocp.current});`);
+      this.data.sendToGo(`ocps[${ocp.id}]:setPeakCurrent(${ocp.peak_current});`);
+    } else {
+      throw new Error('outlet is null');
+    }
   }
 
   cancelEdit() {
