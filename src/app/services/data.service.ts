@@ -73,11 +73,4 @@ export class DataService {
       checkValue();
     });
   }
-  getMap() {
-    return this.myMap;
-  }
-
-  async delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
 }
