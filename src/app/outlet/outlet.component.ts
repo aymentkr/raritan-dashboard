@@ -34,7 +34,6 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
   pageSize: number = 10;
   editableRowIndex: number = -1;
   isLoading: boolean = true;
-
   constructor(private _liveAnnouncer: LiveAnnouncer,
               private data: DataService,
               private notificationService: NotificationService,
@@ -60,63 +59,37 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
     this.data.close();
   }
 
+
   async fetchOutletData(): Promise<Outlet[]> {
-    try {
-      const outlets: Outlet[] = [];
-      await this.data.delay(1000);
-      this.data.send('print(#outlets)');
-      const fetchOutletDataRecursive = async (): Promise<void> => {
-        const index = parseFloat(this.data.getList()[0]);
-        if (isNaN(index)) {
-          await this.data.delay(1000);
-          return fetchOutletDataRecursive();
-        } else {
-          console.log(index);
-          for (let i = 1; i <= 10; i++) {
-            this.data.send(`print(outlets[${i}]:getState())`);
-            this.data.send(`print(outlets[${i}]:getVoltage())`);
-            this.data.send(`print(outlets[${i}]:getFrequency())`);
-            this.data.send(`print(outlets[${i}]:getCurrent())`);
-            this.data.send(`print(outlets[${i}]:getActivePower())`);
-            this.data.send(`print(outlets[${i}]:getApparentPower())`);
-          }
-          await this.data.delay(1000);
-          const messages = this.data.getList();
-          console.log(messages);
-          let i = 0, id = 1;
-          while (i < messages.length) {
-            const voltage = parseFloat(messages[i + 1]);
-            const frequency = parseFloat(messages[i + 2]);
-            const current = parseFloat(messages[i + 3]);
-            const act_power = parseFloat(messages[i + 4]);
-            const app_power = parseFloat(messages[i + 5]);
-            outlets.push({
-              id: id,
-              state: messages[i] === 'true',
-              voltage: voltage,
-              frequency: frequency,
-              current: current,
-              act_power: act_power,
-              app_power: app_power,
-            });
-            i += 6;
-            id++;
-            console.log(outlets)
-          }
+    const outlets: Outlet[] = [];
+    const fetchOutletDataRecursive = async (): Promise<void> => {
+      const index = parseFloat(await this.data.getResult('#outlets', 'print(#outlets)'));
+      if (isNaN(index)) {
+        return fetchOutletDataRecursive();
+      } else {
+        for (let i = 1; i <= index; i++) {
+          const state = await this.data.getResult(`outlets[${i}]:getState()`, `print(outlets[${i}]:getState())`);
+          const voltage = parseFloat(await this.data.getResult(`outlets[${i}]:getVoltage()`, `print(outlets[${i}]:getVoltage())`));
+          const frequency = parseFloat(await this.data.getResult(`outlets[${i}]:getFrequency()`, `print(outlets[${i}]:getFrequency())`));
+          const current = parseFloat(await this.data.getResult(`outlets[${i}]:getCurrent()`, `print(outlets[${i}]:getCurrent())`));
+          const act_power = parseFloat(await this.data.getResult(`outlets[${i}]:getActivePower()`, `print(outlets[${i}]:getActivePower())`));
+          const app_power = parseFloat(await this.data.getResult(`outlets[${i}]:getApparentPower()`, `print(outlets[${i}]:getApparentPower())`));
+          outlets.push({
+            id: i,
+            state: state.includes('true'),
+            voltage: voltage,
+            frequency: frequency,
+            current: current,
+            act_power: act_power,
+            app_power: app_power,
+          });
+          console.log(outlets);
         }
-      };
-
-      await fetchOutletDataRecursive();
-      return outlets;
-    } catch (error) {
-      // handle error appropriately
-      console.error("Error occurred: ", error);
-      throw error;
+      }
     }
+    await fetchOutletDataRecursive();
+    return outlets;
   }
-
-
-
 
   editItem( rowIndex: number) {
     this.editableRowIndex = rowIndex;
@@ -135,11 +108,11 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
 
   async editOutlet(outlet: Outlet) {
     if (outlet!=null) {
-      this.data.send(`outlets[${outlet.id}]:setVoltage(${outlet.voltage});`);
-      this.data.send(`outlets[${outlet.id}]:setFrequency(${outlet.frequency});`);
-      this.data.send(`outlets[${outlet.id}]:setCurrent(${outlet.current});`);
-      this.data.send(`outlets[${outlet.id}]:setActivePower(${outlet.act_power});`);
-      this.data.send(`outlets[${outlet.id}]:setApparentPower(${outlet.app_power});`);
+      this.data.sendToGo(`outlets[${outlet.id}]:setVoltage(${outlet.voltage});`);
+      this.data.sendToGo(`outlets[${outlet.id}]:setFrequency(${outlet.frequency});`);
+      this.data.sendToGo(`outlets[${outlet.id}]:setCurrent(${outlet.current});`);
+      this.data.sendToGo(`outlets[${outlet.id}]:setActivePower(${outlet.act_power});`);
+      this.data.sendToGo(`outlets[${outlet.id}]:setApparentPower(${outlet.app_power});`);
     } else {
       throw new Error('outlet is null');
     }

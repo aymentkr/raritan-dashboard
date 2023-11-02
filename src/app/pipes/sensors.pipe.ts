@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import {Peripheral, SensorElement} from "../model/interfaces";
-import {WebsocketService} from "../services/websocket.service";
 import Swal from "sweetalert2";
 import {SensorClass} from "../model/SensorClass";
 import {DataService} from "../services/data.service";
@@ -28,29 +27,28 @@ export class SensorsPipe implements PipeTransform {
   };
 
   removeAll(table:string) {
-    this.data.send(table+':removeAll()');
+    this.data.sendToGo(table+':removeAll()');
   }
   saveDevice(table:string,type: string ) {
-    this.data.send(`
+    this.data.sendToGo(`
     new_sensor = emu.${type}:create(tfw_core)
     new_sensor:connect(${table})
     `);
   }
   callMethod(table:string, data: any) {
-    this.data.send(`emu.${data.device.type}:cast(${table}:findDevice("${data.device.serial_number}")):${data.methodName}`);
+    this.data.sendToGo(`emu.${data.device.type}:cast(${table}:findDevice("${data.device.serial_number}")):${data.methodName}`);
   }
 
   setFuseState(i: number, state: boolean) {
-    this.data.send(`envhubs[1]:setFuseState(${i}, ${state})`);
+    this.data.sendToGo(`envhubs[1]:setFuseState(${i}, ${state})`);
   }
 
   removeDevice(table : string, peripheral: Peripheral) {
-    this.data.send(`emu.${peripheral.type}:cast(${table}:findDevice("${peripheral.serial_number}")):disconnect();`);
+    this.data.sendToGo(`emu.${peripheral.type}:cast(${table}:findDevice("${peripheral.serial_number}")):disconnect();`);
   }
 
   async getLength(table: string): Promise<number> {
-    return 0;
-    //return await this.WSS.getResult(`print(#${table})`)
+    return parseFloat(await this.data.getResult(`#${table}`,`print(#${table})`))
   }
 
   filterSensorsByType(type: string): SensorElement | undefined {
