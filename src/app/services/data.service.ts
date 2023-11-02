@@ -49,16 +49,15 @@ export class DataService {
     return new Promise((resolve) => {
       this.send(key, msg);
       const checkValue = () => {
-        setTimeout(() => {
-          const value =this.myMap.get(key);
-          if (value) {
-            resolve(value);
-          } else{
-            console.log('hi')
+        const value = <string>this.myMap.get(key);
+        if (value) {
+          resolve(value);
+        } else {
+          setTimeout(() => {
             checkValue();
-          }
-        }, 0);
-      }
+          }, 0);
+        }
+      };
       checkValue();
     });
   }

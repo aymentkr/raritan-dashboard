@@ -82,7 +82,7 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
             act_power: act_power,
             app_power: app_power,
           });
-          console.log(outlets)
+          console.log(outlets);
         }
       }
     }
