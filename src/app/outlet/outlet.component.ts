@@ -8,7 +8,6 @@ import {Outlet} from "../model/interfaces";
 import {MatPaginator} from "@angular/material/paginator";
 import {NotificationService} from "../services/notification.service";
 
-
 @Component({
   selector: 'app-outlet',
   templateUrl: './outlet.component.html',
@@ -31,9 +30,10 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
   @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort!: MatSort;
   pageSizeOptions: number[] = [5,10, 15,20, 30,35,40];
+  index : number = 0;
   pageSize: number = 10;
   editableRowIndex: number = -1;
-  isLoading: boolean = true;
+  isLoading: boolean = false;
   constructor(private _liveAnnouncer: LiveAnnouncer,
               private data: DataService,
               private notificationService: NotificationService,
@@ -45,7 +45,6 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
       .then((data: Outlet[]) => {
         this.dataSource.data = data;
         this.dataSource.sort = this.sort;
-        this.isLoading = false;
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);
@@ -58,15 +57,20 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
   ngOnDestroy(): void {
     this.data.close();
   }
+  editItem( rowIndex: number) {
+    this.editableRowIndex = rowIndex;
+  }
 
   async fetchOutletData(): Promise<Outlet[]> {
     const outlets: Outlet[] = [];
     const fetchOutletDataRecursive = async (): Promise<void> => {
-      const index = parseFloat(await this.data.getResult('#outlets', 'print(#outlets)'));
-      if (isNaN(index)) {
-        return fetchOutletDataRecursive();
+      this.index = parseFloat(await this.data.getResult('#outlets', 'print(#outlets)'));
+      if (isNaN(this.index)) {
+        setTimeout(() => {
+          fetchOutletDataRecursive();
+        }, 0);
       } else {
-        for (let i = 1; i <= index; i++) {
+        for (let i = 1; i <= this.index; i++) {
           const state = await this.data.getResult(`outlets[${i}]:getState()`, `print(outlets[${i}]:getState())`);
           const voltage = parseFloat(await this.data.getResult(`outlets[${i}]:getVoltage()`, `print(outlets[${i}]:getVoltage())`));
           const frequency = parseFloat(await this.data.getResult(`outlets[${i}]:getFrequency()`, `print(outlets[${i}]:getFrequency())`));
@@ -82,16 +86,12 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
             act_power: act_power,
             app_power: app_power,
           });
-          console.log(outlets);
+          this.dataSource.data = [...outlets];
         }
       }
     }
     await fetchOutletDataRecursive();
     return outlets;
-  }
-
-  editItem( rowIndex: number) {
-    this.editableRowIndex = rowIndex;
   }
 
   saveItem(rowData: any) {
@@ -119,7 +119,7 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
 
 
   cancelEdit() {
-    this.editableRowIndex = -1; // Exit edit mode
+    this.editableRowIndex = -1;
   }
 
   isAllSelected() {

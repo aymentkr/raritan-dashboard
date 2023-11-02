@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {NotificationService} from "./services/notification.service";
 import {Observable} from "rxjs";
 import {Notification} from "./model/interfaces";
-import {DataService} from "./services/data.service";
 
 @Component({
   selector: 'app-root',
@@ -10,18 +9,25 @@ import {DataService} from "./services/data.service";
   styleUrls: ['./app.component.css'],
 })
 
-export class AppComponent {
+export class AppComponent{
   notifications!: Observable<Notification[]>;
   title = 'Raritan';
   constructor(
-    private data: DataService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
   ) {
     this.notifications = this.notificationService.getNotifications();
   }
 
-
   reloadPage() {
     window.location.reload();
   }
+
+
+
+
+
+
+
+
+
 }
