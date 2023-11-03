@@ -15,6 +15,7 @@ import {NotificationService} from "../services/notification.service";
 })
 export class OcpsComponent implements OnInit {
   dataSource = new MatTableDataSource<Ocp>();
+  ocps: Ocp[] = [];
   displayedColumns: string[] = [
     'select',
     'name',
@@ -45,7 +46,6 @@ export class OcpsComponent implements OnInit {
   }
 
   async fetchOcpData() {
-    const ocps: Ocp[] = [];
     const fetchOcpDataRecursive = async (): Promise<void> => {
       const size = parseFloat(await this.data.getResult('#ocps', 'print(#ocps)'));
       if (isNaN(size)) {
@@ -60,14 +60,13 @@ export class OcpsComponent implements OnInit {
             current: parseFloat(await this.data.getResult(`ocps[${i}]:current`, `print(ocps[${i}]:getCurrent())`)),
             peak_current: parseFloat(await this.data.getResult(`ocps[${i}]:peak_current`, `print(ocps[${i}]:getPeakCurrent())`)),
           };
-          ocps.push(ocpData);
+          this.ocps.push(ocpData);
         }
-        this.dataSource.data = ocps;
+        this.dataSource.data = [...this.ocps];
         this.isLoading = false;
       }
     }
-    await fetchOcpDataRecursive();
-    return ocps;
+    return await fetchOcpDataRecursive();
   }
 
   editItem( rowIndex: number) {

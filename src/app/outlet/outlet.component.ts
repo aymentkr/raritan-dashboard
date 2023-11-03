@@ -43,7 +43,6 @@ export class OutletComponent implements OnInit {
   ngOnInit(): void {
     this.fetchOutletData().then(() => {
       this.dataSource.sort = this.sort;
-      this.dataSource.paginator = this.paginator;
       this.cdRef.detectChanges();
     }).catch((error) => {
       console.error('Data fetching failed:', error);
@@ -73,10 +72,11 @@ export class OutletComponent implements OnInit {
           };
           this.outlets.push(outletData);
           this.dataSource.data = [...this.outlets];
+          if (i === this.pageSize) this.dataSource.paginator = this.paginator;
         }
       }
     }
-    await fetchOutletDataRecursive();
+    return await fetchOutletDataRecursive();
   }
 
   saveItem(rowData: any) {
