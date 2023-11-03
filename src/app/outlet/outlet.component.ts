@@ -62,7 +62,7 @@ export class OutletComponent implements OnInit {
         }, 0);
       } else {
         for (let i = 1; i <= this.size; i++) {
-          const outletData = {
+          const outletData:Outlet = {
             id: i,
             state: (await this.data.getResult(`outlets[${i}]:state`, `print(outlets[${i}]:getState())`)).includes('true'),
             voltage: parseFloat(await this.data.getResult(`outlets[${i}]:voltage`, `print(outlets[${i}]:getVoltage())`)),
