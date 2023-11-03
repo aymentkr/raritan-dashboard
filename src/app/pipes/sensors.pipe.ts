@@ -58,4 +58,30 @@ export class SensorsPipe implements PipeTransform {
   transform(value: any, ...args: any[]): any {
     return this.sensors;
   }
+
+  convertLinesToPeripherals(lines: string[]):Peripheral[]{
+    const peripherals: Peripheral[] = [];
+    let index=1;
+    for (const line of lines) {
+      const match = line.match(/([A-Z0-9_]+): ([A-Z0-9]+)/);
+      if (match) {
+        const type = match[1];
+        const serialNumber = match[2];
+        this.sensors.filter(item => {
+          if (item.type === type) {
+            peripherals.push({
+              id: index,
+              name: item.name,
+              type: item.type,
+              serial_number: serialNumber,
+            });
+            index++;
+          }
+        });
+      }
+    }
+    return peripherals;
+  }
+
+
 }

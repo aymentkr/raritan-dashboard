@@ -1,6 +1,6 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {Envhub, Peripheral} from "../model/interfaces";
+import {Peripheral} from "../model/interfaces";
 import {MatSort} from "@angular/material/sort";
 import {MatDialog} from "@angular/material/dialog";
 import {DataService} from "../services/data.service";
@@ -16,7 +16,7 @@ import {SensorsPipe} from "../pipes/sensors.pipe";
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit, AfterViewInit{
+export class HomeComponent implements OnInit{
   isLoading: boolean = true;
   columns: string[] = ['id', 'name', 'type', 'serial_number'];
   displayedColumns: string[] = ['select' ,...this.columns,'actions']
@@ -30,31 +30,38 @@ export class HomeComponent implements OnInit, AfterViewInit{
       private sp: SensorsPipe,
       private cdr: ChangeDetectorRef,
       private notificationService: NotificationService,
-      private dataService: DataService
+      private data: DataService
   ) {}
 
   ngOnInit(): void {
-    this.fetchData();
-  }
-
-  ngAfterViewInit() {
-    this.cdr.detectChanges();
-  }
-
-  fetchData() {/*
-    this.dataService
-      .fetchEnvhubsData()
-      .then((data: Envhub) => {
-        for (let i = 0; i < 4; i++) {
-          this.dataSource[i] = new MatTableDataSource<Peripheral>(data[i]);
-          this.dataSource[i].sort = this.sort;
-        }
-        this.isLoading = false;
+    this.fetchEnvhubsData()
+      .then(() => {
+        this.cdr.detectChanges();
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);
-      });*/
+      });
   }
+
+  async fetchEnvhubsData() {
+    const fetchEnvhubsDataRecursive = async (): Promise<void> => {
+      const size = parseFloat(await this.data.getResult('#envhubs', 'print(#envhubs)'));
+      if (isNaN(size)) {
+        setTimeout(() => {
+          fetchEnvhubsDataRecursive();
+        }, 0);
+      } else {
+        for (let i = 0; i < 4; i++) {
+          const lines = (await this.data.getResult(`envhubs[1]:getPort(${i}):listDevices`, `print(envhubs[1]:getPort(${i}):listDevices())`)).split('\n');
+          this.dataSource[i] = new MatTableDataSource<Peripheral>(this.sp.convertLinesToPeripherals(lines));
+          this.dataSource[i].sort = this.sort;
+        }
+        this.isLoading = false;
+      }
+    }
+    await fetchEnvhubsDataRecursive();
+  }
+
 
   addDevice(i:number) {
     this.isEmpty().then(_bool => {
@@ -80,8 +87,12 @@ export class HomeComponent implements OnInit, AfterViewInit{
 
   async addRowData(type: string, p: number ) {
     if (type != '' ) {
-      await this.sp.saveDevice('envhubs[1]:getPort('+p+')',type);
-      this.fetchData();
+      this.sp.saveDevice('envhubs[1]:getPort(' + p + ')', type);
+      setInterval( async () => {
+        const lines = (await this.data.getResult(`envhubs[1]:getPort(${p}):listDevices`, `print(envhubs[1]:getPort(${p}):listDevices())`)).split('\n');
+        this.dataSource[p].data = this.sp.convertLinesToPeripherals(lines);
+        this.dataSource[p]._updateChangeSubscription();
+      },10)
       this.notificationService.openToastr(`New Device with type ${type} in Port ${p} saved successfully`, 'Adding Device to Envhubs','done');
     } else {
       this.notificationService.openToastr('Failed to save data','Adding Device to Envhubs','error');
@@ -116,9 +127,9 @@ export class HomeComponent implements OnInit, AfterViewInit{
     return numSelected === numRows;
   }
 
-  deleteSelectedItems(i:number){
+  deleteSelectedItems(i: number) {
     const selectedItems = this.selection.selected;
-    let title,text: string;
+    let title, text: string;
 
     if (this.isAllSelected(i)) {
       title = 'Are you sure?';
@@ -140,13 +151,19 @@ export class HomeComponent implements OnInit, AfterViewInit{
       if (result.isConfirmed) {
         if (this.isAllSelected(i)) {
           this.sp.removeAll(`envhubs[1]:getPort(${i})`);
+          this.dataSource[i].data = [];
+          this.dataSource[i]._updateChangeSubscription();
         } else {
-          selectedItems.forEach(item => {
-            this.sp.removeDevice('envhubs[1]', item);
+          selectedItems.forEach((item: Peripheral) => {
+            const index = this.dataSource[i].data.indexOf(item);
+            if (index !== -1) {
+              this.sp.removeDevice('envhubs[1]', item);
+              this.dataSource[i].data.splice(index, 1);
+              this.dataSource[i]._updateChangeSubscription();
+            }
           });
         }
         this.selection.clear();
-        this.fetchData();
         if (this.isAllSelected(i)) {
           Swal.fire(
             'Deleted!',
@@ -165,6 +182,7 @@ export class HomeComponent implements OnInit, AfterViewInit{
       }
     });
   }
+
 
   async isEmpty(): Promise<boolean> {
     return await this.sp.getLength('envhubs') == 0;

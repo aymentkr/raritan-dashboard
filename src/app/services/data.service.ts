@@ -53,7 +53,7 @@ export class DataService {
         } else {
           setTimeout(() => {
             checkValue();
-          }, 0);
+          },0);
         }
       };
       checkValue();

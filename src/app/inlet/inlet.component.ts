@@ -92,7 +92,7 @@ export class InletComponent implements OnInit{
 
   async fetchPoleData(index:number): Promise<Pole[]> {
     const poles: Pole[] = [];
-    const pole_numbers =['L1','L2','L3','L1-L3','L2-L3','L3-L1'];
+    const pole_numbers =['L1','L2','L3','L1-L2','L2-L3','L3-L1'];
     for (let i = 0; i < 6; i++) {
       poles.push({
         id: i,
