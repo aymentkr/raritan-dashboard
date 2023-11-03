@@ -11,9 +11,7 @@ export class WebsocketService {
   private ws = new WebSocket(baseUrl);
   private messageSubject: Subject<string> = new Subject<string>();
 
-  constructor() {
-    this.connect();
-  }
+  constructor() {}
 
   public connect() {
     this.ws.onmessage = (event) => this.handleMessage(event);

@@ -7,11 +7,13 @@ import { WebsocketService } from './websocket.service';
 })
 export class DataService {
   private myMap = new Map<string, string>();
-  private readonly messageSubscription!: Subscription;
+  private messageSubscription!: Subscription;
   private key = '';
   private isSending = false;
 
-  constructor(private ws: WebsocketService) {
+  constructor(private ws: WebsocketService) {}
+  open(){
+    this.ws.connect();
     this.messageSubscription = this.ws.onMessage().subscribe((message) => {
       if (message.includes('>')) message = message.slice(0, -3);
       if (message != '') {
@@ -38,12 +40,8 @@ export class DataService {
     }
   }
   sendToGo(msgToSend: string) {
-    if (this.ws.isConnected()) {
-      this.key = '';
-      this.ws.sendMessage(msgToSend);
-    } else {
-      console.log('WebSocket connection is not established. Message not sent.');
-    }
+    this.key = '';
+    this.ws.sendMessage(msgToSend);
   }
   getResult(key: string, msg: string): Promise<string> {
     return new Promise((resolve) => {
@@ -64,5 +62,9 @@ export class DataService {
 
   editMap(key: string, value: number | boolean) {
     this.myMap.set(key, String(value));
+  }
+
+  isConnected() {
+    return this.ws.isConnected();
   }
 }

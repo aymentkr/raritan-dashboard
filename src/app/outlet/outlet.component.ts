@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import {SelectionModel} from "@angular/cdk/collections";
@@ -14,7 +14,7 @@ import {NotificationService} from "../services/notification.service";
   styleUrls: ['./outlet.component.css'],
 })
 
-export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
+export class OutletComponent implements OnInit {
   dataSource = new MatTableDataSource<Outlet>();
   outlets: Outlet[] = [];
   displayedColumns: string[] = [
@@ -32,7 +32,7 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
   @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort!: MatSort;
   pageSizeOptions: number[] = [5,10, 15,20, 30,35,40];
-  index : number = 0;
+  size : number = 0;
   pageSize: number = 10;
   editableRowIndex: number = -1;
   constructor(private _liveAnnouncer: LiveAnnouncer,
@@ -43,16 +43,11 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
   ngOnInit(): void {
     this.fetchOutletData().then(() => {
       this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
+      this.cdRef.detectChanges();
     }).catch((error) => {
       console.error('Data fetching failed:', error);
     });
-  }
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.cdRef.detectChanges();
-  }
-  ngOnDestroy(): void {
-    this.data.close();
   }
   editItem( rowIndex: number) {
     this.editableRowIndex = rowIndex;
@@ -60,13 +55,13 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
 
   async fetchOutletData() {
     const fetchOutletDataRecursive = async (): Promise<void> => {
-      this.index = parseFloat(await this.data.getResult('#outlets', 'print(#outlets)'));
-      if (isNaN(this.index)) {
+      this.size = parseFloat(await this.data.getResult('#outlets', 'print(#outlets)'));
+      if (isNaN(this.size)) {
         setTimeout(() => {
           fetchOutletDataRecursive();
         }, 0);
       } else {
-        for (let i = 1; i <= this.index; i++) {
+        for (let i = 1; i <= this.size; i++) {
           const outletData = {
             id: i,
             state: (await this.data.getResult(`outlets[${i}]:state`, `print(outlets[${i}]:getState())`)).includes('true'),
@@ -132,7 +127,7 @@ export class OutletComponent implements OnInit,AfterViewInit,OnDestroy {
   }
 
   calculateProgress(): number {
-    return (this.dataSource.data.length / this.index ) * 100;
+    return (this.dataSource.data.length / this.size ) * 100;
   }
 
 

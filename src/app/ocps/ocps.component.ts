@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {Ocp} from "../model/interfaces";
 import {SelectionModel} from "@angular/cdk/collections";
@@ -13,9 +13,8 @@ import {NotificationService} from "../services/notification.service";
   templateUrl: './ocps.component.html',
   styleUrls: ['./ocps.component.css']
 })
-export class OcpsComponent implements OnInit,AfterViewInit {
+export class OcpsComponent implements OnInit {
   dataSource = new MatTableDataSource<Ocp>();
-  ocps: Ocp[] = [];
   displayedColumns: string[] = [
     'select',
     'name',
@@ -27,7 +26,6 @@ export class OcpsComponent implements OnInit,AfterViewInit {
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  index : number = -1;
   editableRowIndex: number = -1;
   isLoading: boolean = true;
   constructor(private _liveAnnouncer: LiveAnnouncer,
@@ -37,45 +35,39 @@ export class OcpsComponent implements OnInit,AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.fetchData();
-  }
-  ngAfterViewInit() {
-    this.cdRef.detectChanges();
-    this.dataSource.paginator = this.paginator;
-  }
-
-  fetchData() {
-    this.fetchOcpData()
-      .then(() => {
-        this.dataSource.sort = this.sort;
-      })
-      .catch((error) => {
-        console.error('Data fetching failed:', error);
-      });
+    this.fetchOcpData().then(() => {
+      this.dataSource.sort = this.sort;
+      this.cdRef.detectChanges();
+      this.dataSource.paginator = this.paginator;
+    }).catch((error) => {
+      console.error('Data fetching failed:', error);
+    });
   }
 
   async fetchOcpData() {
+    const ocps: Ocp[] = [];
     const fetchOcpDataRecursive = async (): Promise<void> => {
-      this.index = parseFloat(await this.data.getResult('#ocps', 'print(#ocps)'));
-      if (isNaN(this.index)) {
+      const size = parseFloat(await this.data.getResult('#ocps', 'print(#ocps)'));
+      if (isNaN(size)) {
         setTimeout(() => {
           fetchOcpDataRecursive();
         }, 0);
       } else {
-        for (let i = 1; i <= this.index; i++) {
+        for (let i = 1; i <= size; i++) {
           const ocpData = {
             id: i,
             status: (await this.data.getResult(`ocps[${i}]:status`, `print(ocps[${i}]:isClosed())`)).includes('true'),
             current: parseFloat(await this.data.getResult(`ocps[${i}]:current`, `print(ocps[${i}]:getCurrent())`)),
             peak_current: parseFloat(await this.data.getResult(`ocps[${i}]:peak_current`, `print(ocps[${i}]:getPeakCurrent())`)),
           };
-          this.ocps.push(ocpData);
-          this.dataSource.data = [...this.ocps];
+          ocps.push(ocpData);
         }
+        this.dataSource.data = ocps;
         this.isLoading = false;
       }
     }
     await fetchOcpDataRecursive();
+    return ocps;
   }
 
   editItem( rowIndex: number) {
@@ -97,6 +89,8 @@ export class OcpsComponent implements OnInit,AfterViewInit {
     if (ocp != null) {
       this.data.sendToGo(`ocps[${ocp.id}]:setCurrent(${ocp.current});`);
       this.data.sendToGo(`ocps[${ocp.id}]:setPeakCurrent(${ocp.peak_current});`);
+      this.data.editMap(`ocps[${ocp.id}]:current`,ocp.current);
+      this.data.editMap(`ocps[${ocp.id}]:peak_current`,ocp.peak_current);
     } else {
       throw new Error('outlet is null');
     }

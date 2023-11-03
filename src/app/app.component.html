@@ -7,6 +7,9 @@
   <button mat-icon-button class="reload-button" aria-label="Reload" (click)="reloadPage()">
     <mat-icon>autorenew</mat-icon>
   </button>
+  <button mat-icon-button class="reload-button" aria-label="Reload" (click)="Connection()">
+    <mat-icon>signal_wifi_off</mat-icon>
+  </button>
 
   <button mat-icon-button [matMenuTriggerFor]="menu">
     <mat-icon [matBadge]="(notifications | async)?.length" matBadgeColor="warn" aria-hidden="false">notifications</mat-icon>
