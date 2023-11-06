@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit{
   displayedColumns: string[] = ['select' ,...this.columns,'actions']
   state!: boolean;
   dataSource: MatTableDataSource<Peripheral>[] = [];
-  selection = new SelectionModel<any>(true, []);
+  selection: SelectionModel<Peripheral>[] = [];
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
@@ -55,6 +55,7 @@ export class HomeComponent implements OnInit{
           const lines = (await this.data.getResult(`envhubs[1]:getPort(${i}):listDevices`, `print(envhubs[1]:getPort(${i}):listDevices())`)).split('\n');
           this.dataSource[i] = new MatTableDataSource<Peripheral>(this.sp.convertLinesToPeripherals(lines));
           this.dataSource[i].sort = this.sort;
+          this.selection.push(new SelectionModel<Peripheral>(true, []));
         }
         this.isLoading = false;
       }
@@ -87,13 +88,22 @@ export class HomeComponent implements OnInit{
 
   async addRowData(type: string, p: number ) {
     if (type != '' ) {
+      const length = this.dataSource[p].data.length + 1
+      this.selection[p].clear();
       this.sp.saveDevice('envhubs[1]:getPort(' + p + ')', type);
-      setInterval( async () => {
+      const fetchEnvhubDataRecursive = async (): Promise<void> => {
         const lines = (await this.data.getResult(`envhubs[1]:getPort(${p}):listDevices`, `print(envhubs[1]:getPort(${p}):listDevices())`)).split('\n');
-        this.dataSource[p].data = this.sp.convertLinesToPeripherals(lines);
-        this.dataSource[p]._updateChangeSubscription();
-      },10)
-      this.notificationService.openToastr(`New Device with type ${type} in Port ${p} saved successfully`, 'Adding Device to Envhubs','done');
+        if (length === lines.length-1) {
+          this.dataSource[p].data = this.sp.convertLinesToPeripherals(lines);
+          this.dataSource[p]._updateChangeSubscription();
+          this.notificationService.openToastr(`New Device with type ${type} in Port ${p} saved successfully`, 'Adding Device to Envhubs','done');
+        } else {
+          setTimeout(() => {
+            fetchEnvhubDataRecursive();
+          }, 10);
+        }
+      }
+      await fetchEnvhubDataRecursive()
     } else {
       this.notificationService.openToastr('Failed to save data','Adding Device to Envhubs','error');
     }
@@ -116,19 +126,20 @@ export class HomeComponent implements OnInit{
       }
   }
   masterToggle(i: number) {
-    this.isAllSelected(i) ?
-      this.selection.clear() :
-      this.dataSource[i].data.forEach(row => this.selection.select(row));
+    this.isAllSelected(i)
+      ? this.selection[i].clear()
+      : this.dataSource[i].data.forEach((row) => this.selection[i].select(row));
   }
 
-  isAllSelected(i : number) {
-    const numSelected = this.selection.selected.length;
+  isAllSelected(i: number) {
+    const numSelected = this.selection[i].selected.length;
     const numRows = this.dataSource[i].data.length;
     return numSelected === numRows;
   }
 
+
   deleteSelectedItems(i: number) {
-    const selectedItems = this.selection.selected;
+    const selectedItems = this.selection[i].selected;
     let title, text: string;
 
     if (this.isAllSelected(i)) {
@@ -151,19 +162,23 @@ export class HomeComponent implements OnInit{
       if (result.isConfirmed) {
         if (this.isAllSelected(i)) {
           this.sp.removeAll(`envhubs[1]:getPort(${i})`);
-          this.dataSource[i].data = [];
-          this.dataSource[i]._updateChangeSubscription();
+          setTimeout(() => {
+            this.dataSource[i].data = [];
+            this.dataSource[i]._updateChangeSubscription();
+          },1000)
         } else {
           selectedItems.forEach((item: Peripheral) => {
             const index = this.dataSource[i].data.indexOf(item);
             if (index !== -1) {
               this.sp.removeDevice('envhubs[1]', item);
-              this.dataSource[i].data.splice(index, 1);
-              this.dataSource[i]._updateChangeSubscription();
+              setTimeout(() => {
+                this.dataSource[i].data.splice(index, 1);
+                this.dataSource[i]._updateChangeSubscription();
+              },1000)
             }
           });
         }
-        this.selection.clear();
+        this.selection[i].clear();
         if (this.isAllSelected(i)) {
           Swal.fire(
             'Deleted!',
