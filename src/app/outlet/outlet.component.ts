@@ -35,6 +35,7 @@ export class OutletComponent implements OnInit {
   size : number = 0;
   pageSize: number = 10;
   editableRowIndex: number = -1;
+  isLoading: boolean = true;
   constructor(private _liveAnnouncer: LiveAnnouncer,
               private data: DataService,
               private notificationService: NotificationService,
@@ -74,9 +75,10 @@ export class OutletComponent implements OnInit {
           this.dataSource.data = [...this.outlets];
           if (i === this.pageSize) this.dataSource.paginator = this.paginator;
         }
+        this.isLoading = false ;
       }
     }
-    return await fetchOutletDataRecursive();
+    await fetchOutletDataRecursive();
   }
 
   saveItem(rowData: any) {

@@ -9,16 +9,17 @@ import {InfoComponent} from "./info/info.component";
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {SettingsComponent} from "./settings/settings.component";
 import {SmartlockComponent} from "./smartlock/smartlock.component";
+import {DeactivateGuard} from "./deactivate.guard";
 
 
 const routes: Routes= [
   {path: '', component:DashboardComponent},
-  {path: 'home', component:HomeComponent},
-  {path: 'outlets', component:OutletComponent},
-  {path: 'inlets', component:InletComponent},
-  {path: 'ocps', component:OcpsComponent},
-  {path: 'peripherals', component:PeripheralComponent},
-  {path: 'smartlock', component:SmartlockComponent},
+  {path: 'home', component:HomeComponent,canDeactivate: [DeactivateGuard]},
+  {path: 'outlets', component:OutletComponent,canDeactivate: [DeactivateGuard]},
+  {path: 'inlets', component:InletComponent,canDeactivate: [DeactivateGuard]},
+  {path: 'ocps', component:OcpsComponent,canDeactivate: [DeactivateGuard]},
+  {path: 'peripherals', component:PeripheralComponent,canDeactivate: [DeactivateGuard]},
+  {path: 'smartlock', component:SmartlockComponent,canDeactivate: [DeactivateGuard]},
   {path: 'settings', component:SettingsComponent},
   {path: 'help', component:InfoComponent},
 ];
@@ -26,6 +27,7 @@ const routes: Routes= [
 @NgModule({
   declarations: [],
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [DeactivateGuard],
 })
 export class AppRoutingModule { }
