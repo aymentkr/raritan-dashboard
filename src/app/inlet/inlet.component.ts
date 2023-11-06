@@ -141,6 +141,7 @@ export class InletComponent implements OnInit{
   async editInlet(inlet: Inlet): Promise<void> {
     if (inlet!=null) {
       this.data.sendToGo(`inlets[${inlet.id}]:setFrequency(${inlet.frequency});`);
+      this.data.editMap(`inlets[${inlet.id}]:frequency`,inlet.frequency);
     } else {
       throw new Error('inlet is null');
     }
@@ -149,21 +150,27 @@ export class InletComponent implements OnInit{
 
   async editPole(inlet: Inlet,pole: Pole): Promise<void> {
     if (pole!=null && inlet!=null) {
-      if (this.hasPoles) {
-        this.data.sendToGo(`inlets[${inlet.id}]:setVoltage(${pole.id},${pole.voltage});`);
-        this.data.sendToGo((`inlets[${inlet.id}]:setCurrent(${pole.id},${pole.current});`));
-        this.data.sendToGo((`inlets[${inlet.id}]:setActivePower(${pole.id},${pole.act_power});`));
-        this.data.sendToGo((`inlets[${inlet.id}]:setApparentPower(${pole.id},${pole.app_power});`));
-        this.data.sendToGo((`inlets[${inlet.id}]:addActiveEnergy(${pole.id},${pole.act_energy});`));
-        this.data.sendToGo((`inlets[${inlet.id}]:addApparentEnergy(${pole.id},${pole.app_energy});`));
-      } else {
-        this.data.sendToGo((`inlets[${inlet.id}]:setVoltage(${pole.voltage});`));
-        this.data.sendToGo((`inlets[${inlet.id}]:setCurrent(${pole.current});`));
-        this.data.sendToGo((`inlets[${inlet.id}]:setActivePower(${pole.act_power});`));
-        this.data.sendToGo((`inlets[${inlet.id}]:setApparentPower(${pole.app_power});`));
-        this.data.sendToGo((`inlets[${inlet.id}]:addActiveEnergy(${pole.act_energy});`));
-        this.data.sendToGo((`inlets[${inlet.id}]:addApparentEnergy(${pole.app_energy});`));
-      }
+        const { id, voltage, current, act_power, app_power, act_energy, app_energy } = pole;
+        if (this.hasPoles) {
+          this.data.sendToGo(`
+        inlets[${inlet.id}]:setVoltage(${id},${voltage});
+        inlets[${inlet.id}]:setCurrent(${id},${current});
+        inlets[${inlet.id}]:setActivePower(${id},${act_power});
+        inlets[${inlet.id}]:setApparentPower(${id},${app_power});
+        inlets[${inlet.id}]:setActiveEnergy(${id},${act_energy});
+        inlets[${inlet.id}]:setApparentEnergy(${id},${app_energy});
+        `);
+          Object.entries(pole).forEach(([key, value]) => this.data.editMap(`inlets[${inlet.id}]:${key}(${id})`, value as number | boolean));
+        } else {
+          this.data.sendToGo(`
+        inlets[${inlet.id}]:setCurrent(${current});
+        inlets[${inlet.id}]:setActivePower(${act_power});
+        inlets[${inlet.id}]:setApparentPower(${app_power});
+        inlets[${inlet.id}]:setActiveEnergy(${act_energy});
+        inlets[${inlet.id}]:setApparentEnergy(${app_energy});
+        `);
+          Object.entries(inlet).forEach(([key, value]) => this.data.editMap(`inlets[${inlet.id}]:${key}`, value as number | boolean));
+        }
     } else {
       throw new Error('pole is null');
     }

@@ -92,9 +92,13 @@ export class OutletComponent implements OnInit {
   async editOutlet(outlet: Outlet) {
     if (outlet != null) {
       const { id, voltage, frequency, current, act_power, app_power } = outlet;
-      this.data.sendToGo(
-        `outlets[${id}]:setVoltage(${voltage});outlets[${id}]:setFrequency(${frequency});outlets[${id}]:setCurrent(${current});outlets[${id}]:setActivePower(${act_power});outlets[${id}]:setApparentPower(${app_power});`
-      );
+      this.data.sendToGo(`
+        outlets[${id}]:setVoltage(${voltage});
+        outlets[${id}]:setFrequency(${frequency});
+        outlets[${id}]:setCurrent(${current});
+        outlets[${id}]:setActivePower(${act_power});
+        outlets[${id}]:setApparentPower(${app_power});
+        `);
       Object.entries(outlet).forEach(([key, value]) => this.data.editMap(`outlets[${id}]:${key}`, value as number | boolean));
     } else {
       throw new Error('outlet is null');
