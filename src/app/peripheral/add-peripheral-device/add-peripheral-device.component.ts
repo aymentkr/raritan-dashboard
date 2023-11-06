@@ -1,7 +1,5 @@
 import { Component, Inject, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { SensorElement } from '../../model/interfaces';
-import {SensorsPipe} from "../../pipes/sensors.pipe";
 
 @Component({
   selector: 'app-add-peripheral-device',
@@ -24,4 +22,7 @@ export class AddPeripheralDeviceComponent {
     this.dialogRef.close();
   }
 
+  isFormValid(): boolean {
+    return this.type != '';
+  }
 }

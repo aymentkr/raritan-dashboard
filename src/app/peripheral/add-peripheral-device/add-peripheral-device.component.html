@@ -12,6 +12,6 @@
   </p>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="doAction()">Add a Device</button>
+  <button mat-button (click)="doAction()" [disabled]="!isFormValid()">Add a Device</button>
   <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>
 </div>

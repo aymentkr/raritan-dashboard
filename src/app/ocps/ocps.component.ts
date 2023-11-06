@@ -3,7 +3,6 @@ import {MatTableDataSource} from "@angular/material/table";
 import {Ocp} from "../model/interfaces";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort, Sort} from "@angular/material/sort";
-import {MatPaginator} from "@angular/material/paginator";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {DataService} from "../services/data.service";
 import {NotificationService} from "../services/notification.service";
@@ -26,7 +25,6 @@ export class OcpsComponent implements OnInit {
   ];
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
   editableRowIndex: number = -1;
   isLoading: boolean = true;
   constructor(private _liveAnnouncer: LiveAnnouncer,
@@ -39,7 +37,6 @@ export class OcpsComponent implements OnInit {
     this.fetchOcpData().then(() => {
       this.dataSource.sort = this.sort;
       this.cdRef.detectChanges();
-      this.dataSource.paginator = this.paginator;
     }).catch((error) => {
       console.error('Data fetching failed:', error);
     });
@@ -66,7 +63,7 @@ export class OcpsComponent implements OnInit {
         this.isLoading = false;
       }
     }
-    return await fetchOcpDataRecursive();
+    await fetchOcpDataRecursive();
   }
 
   editItem( rowIndex: number) {

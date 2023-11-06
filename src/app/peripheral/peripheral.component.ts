@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {MatDialog} from "@angular/material/dialog";
 import {AddPeripheralDeviceComponent} from "./add-peripheral-device/add-peripheral-device.component";
@@ -17,7 +17,7 @@ import {SensorsPipe} from "../pipes/sensors.pipe";
   templateUrl: './peripheral.component.html',
   styleUrls: ['./peripheral.component.css'],
 })
-export class PeripheralComponent implements OnInit, AfterViewInit {
+export class PeripheralComponent implements OnInit {
   isLoading: boolean = true;
   dataSource = new MatTableDataSource<Peripheral>();
   columns : string[] = ['id', 'name', 'type', 'serial_number'];
@@ -28,29 +28,37 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
   constructor(
     private dialog: MatDialog,
     private sp: SensorsPipe,
-    private cdr: ChangeDetectorRef,
+    private cdRef: ChangeDetectorRef,
     private notificationService: NotificationService,
-    private dataService: DataService
+    private data: DataService,
   ) {}
 
   ngOnInit(): void {
-    this.fetchData();
+    this.fetchPeripheralData().then(() => {
+      this.dataSource.sort = this.sort;
+      this.cdRef.detectChanges();
+    })
+  .catch((error) => {
+      console.error('Data fetching failed:', error);
+    });
   }
 
-  ngAfterViewInit() {
-    this.cdr.detectChanges();
-  }
-
-  fetchData() {/*
-    this.dataService.fetchPeripheralData()
-      .then((data: Peripheral[]) => {
-        this.dataSource.data = data;
-        this.dataSource.sort = this.sort;
-        this.isLoading = false;
-      })
-      .catch((error) => {
-        console.error('Data fetching failed:', error);
-      });*/
+  async fetchPeripheralData() {
+    const fetchPeripheralDataRecursive = async (): Promise<void> => {
+      const size = parseFloat(await this.data.getResult('#sensorports', 'print(#sensorports)'));
+      if (isNaN(size)) {
+        setTimeout(() => {
+          fetchPeripheralDataRecursive();
+        }, 0);
+      } else {
+        if (size === 1) {
+          const lines = (await this.data.getResult('sensorports[1]:listDevices', 'print(sensorports[1]:listDevices())')).split('\n');
+          this.dataSource.data = this.sp.convertLinesToPeripherals(lines);
+          this.isLoading = false;
+        }
+      }
+    }
+    await fetchPeripheralDataRecursive();
   }
 
   addDevice() {
@@ -79,8 +87,7 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
 
   async addRowData(type:string) {
     if (type != "") {
-      await this.sp.saveDevice('sensorports[1]',type)
-      this.fetchData();
+      this.sp.saveDevice('sensorports[1]',type)
       this.notificationService.openToastr(`New Device with type ${type} saved successfully`, 'Adding Device to Sensorports','done');
     } else {
       this.notificationService.openToastr('Failed to save data','Adding Device to Sensorports','error');
@@ -131,7 +138,7 @@ export class PeripheralComponent implements OnInit, AfterViewInit {
           });
         }
         this.selection.clear();
-        this.fetchData();
+        //this.fetchData();
         if (this.isAllSelected()) {
           Swal.fire(
             'Deleted!',

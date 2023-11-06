@@ -87,7 +87,7 @@ export class InletComponent implements OnInit{
         this.isLoading = false;
       }
     }
-    return await fetchOutletDataRecursive();
+    await fetchOutletDataRecursive();
   }
 
   async fetchPoleData(index:number): Promise<Pole[]> {
