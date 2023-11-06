@@ -54,8 +54,8 @@ export class PeripheralComponent implements OnInit {
         if (size === 1) {
           const lines = (await this.data.getResult('sensorports[1]:listDevices', 'print(sensorports[1]:listDevices())')).split('\n');
           this.dataSource.data = this.sp.convertLinesToPeripherals(lines);
-          this.isLoading = false;
         }
+        this.isLoading = false;
       }
     }
     await fetchPeripheralDataRecursive();
@@ -86,9 +86,23 @@ export class PeripheralComponent implements OnInit {
   }
 
   async addRowData(type:string) {
-    if (type != "") {
+    if (type != '') {
+      const length = this.dataSource.data.length + 1
+      this.selection.clear();
       this.sp.saveDevice('sensorports[1]',type)
-      this.notificationService.openToastr(`New Device with type ${type} saved successfully`, 'Adding Device to Sensorports','done');
+      const fetchPeripheralDataRecursive = async (): Promise<void> => {
+        const lines = (await this.data.getResult(`sensorports[1]:listDevices`, 'print(sensorports[1]:listDevices())')).split('\n');
+        if (length === lines.length-1) {
+          this.dataSource.data = this.sp.convertLinesToPeripherals(lines);
+          this.dataSource._updateChangeSubscription();
+          this.notificationService.openToastr(`New Device with type ${type} saved successfully`, 'Adding Device to Sensorports','done');
+        } else {
+          setTimeout(() => {
+            fetchPeripheralDataRecursive();
+          }, 10);
+        }
+      }
+      await fetchPeripheralDataRecursive()
     } else {
       this.notificationService.openToastr('Failed to save data','Adding Device to Sensorports','error');
     }
@@ -132,13 +146,19 @@ export class PeripheralComponent implements OnInit {
       if (result.isConfirmed) {
         if (this.isAllSelected()) {
           this.sp.removeAll('sensorports[1]');
+          this.dataSource.data = [];
+          this.dataSource._updateChangeSubscription();
         } else {
           selectedItems.forEach(item => {
-            this.sp.removeDevice('sensorports[1]', item);
+            const index = this.dataSource.data.indexOf(item);
+            if (index !== -1) {
+              this.sp.removeDevice('sensorports[1]', item);
+              this.dataSource.data.splice(index, 1);
+              this.dataSource._updateChangeSubscription();
+            }
           });
         }
         this.selection.clear();
-        //this.fetchData();
         if (this.isAllSelected()) {
           Swal.fire(
             'Deleted!',
