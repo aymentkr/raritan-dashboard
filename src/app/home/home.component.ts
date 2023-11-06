@@ -162,19 +162,15 @@ export class HomeComponent implements OnInit{
       if (result.isConfirmed) {
         if (this.isAllSelected(i)) {
           this.sp.removeAll(`envhubs[1]:getPort(${i})`);
-          setTimeout(() => {
-            this.dataSource[i].data = [];
-            this.dataSource[i]._updateChangeSubscription();
-          },1000)
+          this.dataSource[i].data = [];
+          this.dataSource[i]._updateChangeSubscription();
         } else {
           selectedItems.forEach((item: Peripheral) => {
             const index = this.dataSource[i].data.indexOf(item);
             if (index !== -1) {
               this.sp.removeDevice('envhubs[1]', item);
-              setTimeout(() => {
-                this.dataSource[i].data.splice(index, 1);
-                this.dataSource[i]._updateChangeSubscription();
-              },1000)
+              this.dataSource[i].data.splice(index, 1);
+              this.dataSource[i]._updateChangeSubscription();
             }
           });
         }
