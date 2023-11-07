@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {Envhub, Peripheral, SensorElement} from "../model/interfaces";
+import {Peripheral, SensorElement} from "../model/interfaces";
 import Swal from "sweetalert2";
 import {SensorClass} from "../model/SensorClass";
 import {DataService} from "../services/data.service";
@@ -59,6 +59,8 @@ export class SensorsPipe implements PipeTransform {
     return this.sensors.find(sensor => sensor.type === type);
   }
 
+
+
   convertLinesToPeripherals(lines: string[]):Peripheral[]{
     const peripherals: Peripheral[] = [];
     let index=1;
@@ -82,39 +84,6 @@ export class SensorsPipe implements PipeTransform {
     }
     return peripherals;
   }
-  async fetchEnvhubsData() {
-    const peripherals:Envhub = {};
-    const size = parseFloat(await this.data.getResult('#envhubs', 'print(#envhubs)'));
-    if (size === 1) {
-      for (let i = 0; i < 4; i++) {
-        const lines = (await this.data.getResult(`envhubs[1]:getPort(${i}):listDevices`, `print(envhubs[1]:getPort(${i}):listDevices())`)).split('\n');
-        peripherals[i] = this.convertLinesToPeripherals(lines);
-      }
-    }
-    return {
-      ...peripherals
-    }
-  }
-  async fetchPeripheralData() {
-    const size = parseFloat(await this.data.getResult('#sensorports', 'print(#sensorports)'));
-    if (size === 1) {
-      const lines = (await this.data.getResult('sensorports[1]:listDevices', 'print(sensorports[1]:listDevices())')).split('\n');
-      return this.convertLinesToPeripherals(lines);
-    } else return []
-  }
 
-  async fetchSmartLockData() {
-    const type = 'DX2_DH2C2';
-    let peripherals = await this.fetchPeripheralData();
-    let envhubs = await this.fetchEnvhubsData();
-    if (peripherals.length === 0 && Object.keys(envhubs).length === 0){
-      return [];
-    } else {
-      peripherals = peripherals.filter((peripheral) => peripheral.type === type);
-      const filteredEnvhubData = envhubs[0]
-        .concat(envhubs[1], envhubs[2], envhubs[3])
-        .filter((peripheral) => peripheral.type === type);
-      return peripherals.concat(filteredEnvhubData);
-    }
-  }
+
 }

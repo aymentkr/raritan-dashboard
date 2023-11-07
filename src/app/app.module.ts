@@ -52,6 +52,7 @@ import {VirtualScrollerModule} from "primeng/virtualscroller";
 import {PanelModule} from "primeng/panel";
 import {ButtonModule} from "primeng/button";
 import { SensorsPipe } from './pipes/sensors.pipe';
+
 @NgModule({
   declarations: [
     AppComponent,
