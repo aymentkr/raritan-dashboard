@@ -64,6 +64,10 @@ export class DataService {
     this.myMap.set(key, String(value));
   }
 
+  removeMap(key : string) {
+    this.myMap.delete(key);
+  }
+
   isConnected() {
     return this.ws.isConnected();
   }

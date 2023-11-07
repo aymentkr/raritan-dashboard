@@ -34,9 +34,11 @@ export class PeripheralComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.fetchPeripheralData().then(() => {
+    this.fetchPeripheralData().then((data) => {
+      this.dataSource.data = data;
       this.dataSource.sort = this.sort;
       this.cdRef.detectChanges();
+      this.isLoading = false;
     })
   .catch((error) => {
       console.error('Data fetching failed:', error);
@@ -44,21 +46,11 @@ export class PeripheralComponent implements OnInit {
   }
 
   async fetchPeripheralData() {
-    const fetchPeripheralDataRecursive = async (): Promise<void> => {
-      const size = parseFloat(await this.data.getResult('#sensorports', 'print(#sensorports)'));
-      if (isNaN(size)) {
-        setTimeout(() => {
-          fetchPeripheralDataRecursive();
-        }, 0);
-      } else {
-        if (size === 1) {
-          const lines = (await this.data.getResult('sensorports[1]:listDevices', 'print(sensorports[1]:listDevices())')).split('\n');
-          this.dataSource.data = this.sp.convertLinesToPeripherals(lines);
-        }
-        this.isLoading = false;
-      }
-    }
-    await fetchPeripheralDataRecursive();
+    const size = parseFloat(await this.data.getResult('#sensorports', 'print(#sensorports)'));
+    if (size === 1) {
+      const lines = (await this.data.getResult('sensorports[1]:listDevices', 'print(sensorports[1]:listDevices())')).split('\n');
+      return this.sp.convertLinesToPeripherals(lines);
+    } else return []
   }
 
   addDevice() {
@@ -87,22 +79,11 @@ export class PeripheralComponent implements OnInit {
 
   async addRowData(type:string) {
     if (type != '') {
-      const length = this.dataSource.data.length + 1
       this.selection.clear();
       this.sp.saveDevice('sensorports[1]',type)
-      const fetchPeripheralDataRecursive = async (): Promise<void> => {
-        const lines = (await this.data.getResult(`sensorports[1]:listDevices`, 'print(sensorports[1]:listDevices())')).split('\n');
-        if (length === lines.length-1) {
-          this.dataSource.data = this.sp.convertLinesToPeripherals(lines);
-          this.dataSource._updateChangeSubscription();
-          this.notificationService.openToastr(`New Device with type ${type} saved successfully`, 'Adding Device to Sensorports','done');
-        } else {
-          setTimeout(() => {
-            fetchPeripheralDataRecursive();
-          }, 10);
-        }
-      }
-      await fetchPeripheralDataRecursive()
+      this.data.removeMap(`sensorports[1]:listDevices`);
+      this.dataSource.data = await this.fetchPeripheralData();
+      this.notificationService.openToastr(`New Device with type ${type} saved successfully`, 'Adding Device to Sensorports','done');
     } else {
       this.notificationService.openToastr('Failed to save data','Adding Device to Sensorports','error');
     }
@@ -144,6 +125,7 @@ export class PeripheralComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
+        this.data.removeMap(`sensorports[1]:listDevices`);
         if (this.isAllSelected()) {
           this.sp.removeAll('sensorports[1]');
           this.dataSource.data = [];

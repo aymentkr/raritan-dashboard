@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 export class AppComponent implements OnInit,OnDestroy{
   notifications!: Observable<Notification[]>;
   title = 'Raritan';
+  isLoading: boolean = true;
   constructor(
     private notificationService: NotificationService,
     private data: DataService
@@ -22,6 +23,9 @@ export class AppComponent implements OnInit,OnDestroy{
   }
   ngOnInit() {
     this.data.open();
+    setTimeout(() => {
+      this.isLoading = false;
+    },1000)
   }
 
   ngOnDestroy(): void {

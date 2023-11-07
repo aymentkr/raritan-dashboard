@@ -14,7 +14,6 @@ import {NotificationService} from "../services/notification.service";
 })
 export class OcpsComponent implements OnInit {
   dataSource = new MatTableDataSource<Ocp>();
-  ocps: Ocp[] = [];
   displayedColumns: string[] = [
     'select',
     'name',
@@ -34,36 +33,29 @@ export class OcpsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.fetchOcpData().then(() => {
+    this.fetchOcpData().then((data) => {
+      this.dataSource.data = data
       this.dataSource.sort = this.sort;
       this.cdRef.detectChanges();
+      this.isLoading = false;
     }).catch((error) => {
       console.error('Data fetching failed:', error);
     });
   }
 
   async fetchOcpData() {
-    const fetchOcpDataRecursive = async (): Promise<void> => {
-      const size = parseFloat(await this.data.getResult('#ocps', 'print(#ocps)'));
-      if (isNaN(size)) {
-        setTimeout(() => {
-          fetchOcpDataRecursive();
-        }, 0);
-      } else {
-        for (let i = 1; i <= size; i++) {
-          const ocpData = {
-            id: i,
-            status: (await this.data.getResult(`ocps[${i}]:status`, `print(ocps[${i}]:isClosed())`)).includes('true'),
-            current: parseFloat(await this.data.getResult(`ocps[${i}]:current`, `print(ocps[${i}]:getCurrent())`)),
-            peak_current: parseFloat(await this.data.getResult(`ocps[${i}]:peak_current`, `print(ocps[${i}]:getPeakCurrent())`)),
-          };
-          this.ocps.push(ocpData);
-        }
-        this.dataSource.data = [...this.ocps];
-        this.isLoading = false;
-      }
+    const ocps: Ocp[] = [];
+    const size = parseFloat(await this.data.getResult('#ocps', 'print(#ocps)'));
+    for (let i = 1; i <= size; i++) {
+      const ocpData = {
+        id: i,
+        status: (await this.data.getResult(`ocps[${i}]:status`, `print(ocps[${i}]:isClosed())`)).includes('true'),
+        current: parseFloat(await this.data.getResult(`ocps[${i}]:current`, `print(ocps[${i}]:getCurrent())`)),
+        peak_current: parseFloat(await this.data.getResult(`ocps[${i}]:peak_current`, `print(ocps[${i}]:getPeakCurrent())`)),
+      };
+      ocps.push(ocpData);
     }
-    await fetchOcpDataRecursive();
+    return ocps;
   }
 
   editItem( rowIndex: number) {

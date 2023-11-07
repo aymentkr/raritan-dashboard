@@ -54,31 +54,22 @@ export class OutletComponent implements OnInit {
   }
 
   async fetchOutletData() {
-    const fetchOutletDataRecursive = async (): Promise<void> => {
-      this.size = parseFloat(await this.data.getResult('#outlets', 'print(#outlets)'));
-      if (isNaN(this.size)) {
-        setTimeout(() => {
-          fetchOutletDataRecursive();
-        }, 0);
-      } else {
-        for (let i = 1; i <= this.size; i++) {
-          const outletData:Outlet = {
-            id: i,
-            state: (await this.data.getResult(`outlets[${i}]:state`, `print(outlets[${i}]:getState())`)).includes('true'),
-            voltage: parseFloat(await this.data.getResult(`outlets[${i}]:voltage`, `print(outlets[${i}]:getVoltage())`)),
-            frequency: parseFloat(await this.data.getResult(`outlets[${i}]:frequency`, `print(outlets[${i}]:getFrequency())`)),
-            current: parseFloat(await this.data.getResult(`outlets[${i}]:current`, `print(outlets[${i}]:getCurrent())`)),
-            act_power: parseFloat(await this.data.getResult(`outlets[${i}]:act_power`, `print(outlets[${i}]:getActivePower())`)),
-            app_power: parseFloat(await this.data.getResult(`outlets[${i}]:app_power`, `print(outlets[${i}]:getApparentPower())`)),
-          };
-          this.outlets.push(outletData);
-          this.dataSource.data = [...this.outlets];
-          if (i === this.pageSize) this.dataSource.paginator = this.paginator;
-        }
-        this.isLoading = false ;
-      }
+    this.size = parseFloat(await this.data.getResult('#outlets', 'print(#outlets)'));
+    for (let i = 1; i <= this.size; i++) {
+      const outletData:Outlet = {
+        id: i,
+        state: (await this.data.getResult(`outlets[${i}]:state`, `print(outlets[${i}]:getState())`)).includes('true'),
+        voltage: parseFloat(await this.data.getResult(`outlets[${i}]:voltage`, `print(outlets[${i}]:getVoltage())`)),
+        frequency: parseFloat(await this.data.getResult(`outlets[${i}]:frequency`, `print(outlets[${i}]:getFrequency())`)),
+        current: parseFloat(await this.data.getResult(`outlets[${i}]:current`, `print(outlets[${i}]:getCurrent())`)),
+        act_power: parseFloat(await this.data.getResult(`outlets[${i}]:act_power`, `print(outlets[${i}]:getActivePower())`)),
+        app_power: parseFloat(await this.data.getResult(`outlets[${i}]:app_power`, `print(outlets[${i}]:getApparentPower())`)),
+      };
+      this.outlets.push(outletData);
+      this.dataSource.data = [...this.outlets];
+      if (i === this.pageSize) this.dataSource.paginator = this.paginator;
     }
-    await fetchOutletDataRecursive();
+    this.isLoading = false ;
   }
 
   saveItem(rowData: any) {
