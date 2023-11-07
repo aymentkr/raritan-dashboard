@@ -47,14 +47,8 @@
 <mat-drawer-container autosize>
   <mat-drawer #drawer opened="true" mode="side" position="start">
     <mat-nav-list >
-      <mat-list-item routerLink="">
-        <button  color="accent" mat-button><mat-icon>dashboard</mat-icon> Dashboard</button>
-      </mat-list-item>
-      <mat-list-item routerLink="home" >
-        <button color="primary" mat-button><mat-icon>home</mat-icon> Home</button>
-      </mat-list-item>
       <mat-list-item routerLink="outlets">
-        <button  mat-button>  <mat-icon>outlet</mat-icon> Outlets</button>
+        <button color="accent"  mat-button>  <mat-icon>outlet</mat-icon> Outlets</button>
       </mat-list-item>
       <mat-list-item routerLink="inlets">
         <button mat-button> <mat-icon>power_input</mat-icon> Inlets</button>
@@ -63,7 +57,10 @@
         <button  mat-button>  <mat-icon>flash_on</mat-icon> OCPs</button>
       </mat-list-item>
       <mat-list-item routerLink="peripherals">
-        <button mat-button>  <mat-icon>devices_other</mat-icon> Peripherals</button>
+        <button color="primary" mat-button>  <mat-icon>devices_other</mat-icon> Peripherals</button>
+      </mat-list-item>
+      <mat-list-item routerLink="envhub" >
+        <button mat-button><mat-icon>device_hub</mat-icon> Envhubs </button>
       </mat-list-item>
       <mat-list-item routerLink="smartlock">
         <button mat-button>  <mat-icon>lock</mat-icon> SmartLock</button>

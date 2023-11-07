@@ -33,9 +33,7 @@ import { EditPeripheralDeviceComponent } from './peripheral/edit-peripheral-devi
 import {MatSidenavModule} from "@angular/material/sidenav";
 import {RouterLink, RouterOutlet} from "@angular/router";
 import {AppRoutingModule} from "./app-routing.module";
-import { HomeComponent } from './home/home.component';
-import { InfoComponent } from './info/info.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { InfoComponent } from './info/info.component'
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {MatGridListModule} from "@angular/material/grid-list";
@@ -52,6 +50,7 @@ import {VirtualScrollerModule} from "primeng/virtualscroller";
 import {PanelModule} from "primeng/panel";
 import {ButtonModule} from "primeng/button";
 import { SensorsPipe } from './pipes/sensors.pipe';
+import { EnvhubComponent } from './envhub/envhub.component';
 
 @NgModule({
   declarations: [
@@ -62,12 +61,11 @@ import { SensorsPipe } from './pipes/sensors.pipe';
     PeripheralComponent,
     AddPeripheralDeviceComponent,
     EditPeripheralDeviceComponent,
-    HomeComponent,
     InfoComponent,
-    DashboardComponent,
     SettingsComponent,
     SmartlockComponent,
     SensorsPipe,
+    EnvhubComponent,
   ],
   imports: [
     AppRoutingModule,

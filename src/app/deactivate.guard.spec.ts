@@ -1,17 +1,18 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
 
-import { deactivateGuard } from './deactivate.guard';
+import { DeactivateGuard } from './deactivate.guard';
 
-describe('deactivateGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => deactivateGuard(...guardParameters));
+describe('DeactivateGuard', () => {
+  let guard: DeactivateGuard;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [DeactivateGuard]
+    });
+    guard = TestBed.inject(DeactivateGuard);
   });
 
   it('should be created', () => {
-    expect(executeGuard).toBeTruthy();
+    expect(guard).toBeTruthy();
   });
 });

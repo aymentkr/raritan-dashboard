@@ -20,12 +20,12 @@ export class AppComponent implements OnInit,OnDestroy{
     private data: DataService
   ) {
     this.notifications = this.notificationService.getNotifications();
-  }
-  ngOnInit() {
-    this.data.open();
     setTimeout(() => {
       this.isLoading = false;
     },1000)
+  }
+  ngOnInit() {
+    this.data.open();
   }
 
   ngOnDestroy(): void {
