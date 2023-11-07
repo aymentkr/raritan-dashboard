@@ -3,7 +3,6 @@ import {MatTableDataSource} from "@angular/material/table";
 import {Peripheral} from "../model/interfaces";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
-import {DataService} from "../services/data.service";
 import {SensorsPipe} from "../pipes/sensors.pipe";
 
 @Component({
@@ -21,24 +20,14 @@ export class SmartlockComponent implements OnInit, AfterViewInit{
   sensor: any ;
 
   constructor(
-    sp: SensorsPipe,
+    private sp: SensorsPipe,
     private cdr: ChangeDetectorRef,
-    private dataService: DataService
   ) {
     this.sensor = sp.filterSensorsByType('DX2_DH2C2');
   }
 
   ngOnInit(): void {
-    this.fetchData();
-  }
-
-  ngAfterViewInit() {
-    this.cdr.detectChanges();
-  }
-
-  fetchData() {
-    /*
-    this.dataService.fetchSmartLockData()
+    this.sp.fetchSmartLockData()
       .then((data: Peripheral[]) => {
         this.dataSource.data = data;
         this.dataSource.sort = this.sort;
@@ -46,7 +35,11 @@ export class SmartlockComponent implements OnInit, AfterViewInit{
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);
-      });*/
+      });
+  }
+
+  ngAfterViewInit() {
+    this.cdr.detectChanges();
   }
   isAllSelected() {
     const numSelected = this.selection.selected.length;

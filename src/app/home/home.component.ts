@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {Peripheral} from "../model/interfaces";
+import {Envhub, Peripheral} from "../model/interfaces";
 import {MatSort} from "@angular/material/sort";
 import {MatDialog} from "@angular/material/dialog";
 import {DataService} from "../services/data.service";
@@ -34,26 +34,19 @@ export class HomeComponent implements OnInit{
   ) {}
 
   ngOnInit(): void {
-    this.fetchEnvhubsData()
-      .then(() => {
+    this.sp.fetchEnvhubsData()
+      .then((data:Envhub) => {
+        for (let i = 0; i < 4; i++) {
+          this.dataSource[i] = new MatTableDataSource<Peripheral>(data[i]);
+          this.dataSource[i].sort = this.sort;
+          this.selection.push(new SelectionModel<Peripheral>(true, []));
+        }
         this.cdr.detectChanges();
         this.isLoading = false;
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);
       });
-  }
-
-  async fetchEnvhubsData() {
-    const size = parseFloat(await this.data.getResult('#envhubs', 'print(#envhubs)'));
-    if (size === 1) {
-      for (let i = 0; i < 4; i++) {
-        const lines = (await this.data.getResult(`envhubs[1]:getPort(${i}):listDevices`, `print(envhubs[1]:getPort(${i}):listDevices())`)).split('\n');
-        this.dataSource[i] = new MatTableDataSource<Peripheral>(this.sp.convertLinesToPeripherals(lines));
-        this.dataSource[i].sort = this.sort;
-        this.selection.push(new SelectionModel<Peripheral>(true, []));
-      }
-    }
   }
 
 
@@ -84,9 +77,10 @@ export class HomeComponent implements OnInit{
       this.selection[p].clear();
       this.sp.saveDevice('envhubs[1]:getPort(' + p + ')', type);
       this.data.removeMap(`envhubs[1]:getPort(${p}):listDevices`);
-      const lines = (await this.data.getResult(`envhubs[1]:getPort(${p}):listDevices`, `print(envhubs[1]:getPort(${p}):listDevices())`)).split('\n');
-      this.dataSource[p].data = this.sp.convertLinesToPeripherals(lines);
-      this.dataSource[p]._updateChangeSubscription();
+      this.sp.fetchEnvhubsData().then((data) => {
+        this.dataSource[p].data = data[p];
+        this.dataSource[p]._updateChangeSubscription();
+      })
       this.notificationService.openToastr(`New Device with type ${type} in Port ${p} saved successfully`, 'Adding Device to Envhubs','done');
     } else {
       this.notificationService.openToastr('Failed to save data','Adding Device to Envhubs','error');

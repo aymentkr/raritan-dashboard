@@ -34,7 +34,7 @@ export class PeripheralComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.fetchPeripheralData().then((data) => {
+    this.sp.fetchPeripheralData().then((data) => {
       this.dataSource.data = data;
       this.dataSource.sort = this.sort;
       this.cdRef.detectChanges();
@@ -43,14 +43,6 @@ export class PeripheralComponent implements OnInit {
   .catch((error) => {
       console.error('Data fetching failed:', error);
     });
-  }
-
-  async fetchPeripheralData() {
-    const size = parseFloat(await this.data.getResult('#sensorports', 'print(#sensorports)'));
-    if (size === 1) {
-      const lines = (await this.data.getResult('sensorports[1]:listDevices', 'print(sensorports[1]:listDevices())')).split('\n');
-      return this.sp.convertLinesToPeripherals(lines);
-    } else return []
   }
 
   addDevice() {
@@ -82,7 +74,7 @@ export class PeripheralComponent implements OnInit {
       this.selection.clear();
       this.sp.saveDevice('sensorports[1]',type)
       this.data.removeMap(`sensorports[1]:listDevices`);
-      this.dataSource.data = await this.fetchPeripheralData();
+      this.dataSource.data = await this.sp.fetchPeripheralData();
       this.notificationService.openToastr(`New Device with type ${type} saved successfully`, 'Adding Device to Sensorports','done');
     } else {
       this.notificationService.openToastr('Failed to save data','Adding Device to Sensorports','error');
