@@ -69,7 +69,6 @@ export class DataService {
   }
 
   isConnected() {
-    console.log(this.myMap);
     return this.ws.isConnected();
   }
 }
