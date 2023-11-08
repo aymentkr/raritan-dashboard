@@ -15,8 +15,9 @@ import {NotificationService} from "../services/notification.service";
 })
 
 export class OutletComponent implements OnInit {
-  dataSource = new MatTableDataSource<Outlet>();
-  outlets: Outlet[] = [];
+  selection = new SelectionModel<any>(true, []);
+  @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
   displayedColumns: string[] = [
     'select',
     'name',
@@ -28,9 +29,8 @@ export class OutletComponent implements OnInit {
     'app_power',
     'edit',
   ];
-  selection = new SelectionModel<any>(true, []);
-  @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
-  @ViewChild(MatSort, {static: false}) sort!: MatSort;
+  dataSource = new MatTableDataSource<Outlet>();
+  outlets: Outlet[] = [];
   pageSizeOptions: number[] = [5,10, 15,20, 30,35,40];
   size : number = 0;
   pageSize: number = 10;
@@ -119,6 +119,7 @@ export class OutletComponent implements OnInit {
       this._liveAnnouncer.announce('Sorting cleared');
     }
   }
+
   onPageSizeChange(event: any) {
     this.pageSize = event.pageSize;
   }
