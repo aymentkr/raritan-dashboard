@@ -76,6 +76,15 @@ export class SensorsPipe implements PipeTransform {
               name: item.name,
               type: item.type,
               serial_number: serialNumber,
+              methods : [{
+                id : 0,
+                name : '',
+                methodName : ''
+              },{
+                id : 0,
+                name : '',
+                methodName : ''
+              }],
             });
             index++;
           }

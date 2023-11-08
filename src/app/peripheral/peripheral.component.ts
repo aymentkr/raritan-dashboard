@@ -1,10 +1,10 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import {MatTableDataSource} from "@angular/material/table";
+import {ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {MatTable, MatTableDataSource} from "@angular/material/table";
 import {MatDialog} from "@angular/material/dialog";
 import {AddPeripheralDeviceComponent} from "./add-peripheral-device/add-peripheral-device.component";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
-import {Peripheral} from "../model/interfaces";
+import {InnerPeripheral, Peripheral} from "../model/interfaces";
 import {DataService} from "../services/data.service";
 import {EditPeripheralDeviceComponent} from "./edit-peripheral-device/edit-peripheral-device.component";
 import Swal from 'sweetalert2';
@@ -21,9 +21,13 @@ export class PeripheralComponent implements OnInit {
   isLoading: boolean = true;
   dataSource = new MatTableDataSource<Peripheral>();
   columns : string[] = ['id', 'name', 'type', 'serial_number'];
+  innerDisplayedColumns: string[] = ['id', 'name', 'methodName'];
   displayedColumns: string[] = ['select', ...this.columns, 'actions'];
+  expandedElement!: null | Peripheral;
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChildren('innerTables') innerTables!: QueryList<MatTable<InnerPeripheral>>;
+  @ViewChildren('innerSort') innerSort!: QueryList<MatSort>;
 
   constructor(
     private dialog: MatDialog,
@@ -98,6 +102,8 @@ export class PeripheralComponent implements OnInit {
     this.sp.infoDevice(obj);
   };
 
+
+
   masterToggle() {
     this.isAllSelected() ?
       this.selection.clear() :
@@ -169,5 +175,11 @@ export class PeripheralComponent implements OnInit {
 
   async isEmpty() {
     return  await this.sp.getLength('sensorports') == 0;
+  }
+
+  toggleRow(element: Peripheral) {
+    element.methods && (element.methods as unknown as MatTableDataSource<InnerPeripheral>).data.length ? (this.expandedElement = this.expandedElement === element ? null : element) : null;
+    this.cdRef.detectChanges();
+    this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<InnerPeripheral>).sort = this.innerSort.toArray()[index]);
   }
 }

@@ -32,15 +32,20 @@ export interface SensorElement {
   prefix : string;
   methods : any;
 }
+
+export interface InnerPeripheral {
+  id : number,
+  name : string,
+  methodName : string
+}
 export interface Peripheral {
   id : number;
   name : string;
   type : string;
   serial_number : string;
+  methods: InnerPeripheral[]
 }
-export interface Envhub {
-  [key: number]: Peripheral[];
-}
+
 
 export interface Notification {
   title: string;
