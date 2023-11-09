@@ -45,7 +45,7 @@ export interface Peripheral {
   name : string;
   type : string;
   serial_number : string;
-  methods?: MatTableDataSource<InnerPeripheral>;
+  methods: MatTableDataSource<InnerPeripheral>;
 }
 
 

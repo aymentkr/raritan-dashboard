@@ -31,8 +31,7 @@ export class PeripheralComponent implements OnInit {
   columns : string[] = ['id', 'name', 'type', 'serial_number'];
   innerDisplayedColumns: string[] = ['id', 'name', 'methodName'];
   displayedColumns: string[] = ['select', ...this.columns, 'actions'];
-  expandedElement!: null | Peripheral;
-  isExpansionDetailRow = (row: Object) => row.hasOwnProperty('expandedDetail');
+  expandedElement!: Peripheral;
   selection = new SelectionModel<any>(true, []);
   @ViewChild('outerSort', { static: true }) sort!: MatSort ;
   @ViewChildren('innerTables') innerTables!: QueryList<MatTable<InnerPeripheral>>;
@@ -187,8 +186,7 @@ export class PeripheralComponent implements OnInit {
   }
 
   toggleRow(element: Peripheral) {
-    console.log('ToggleRow function called with element:', element); // Add this line to verify function execution
-    element.methods && (element.methods as MatTableDataSource<InnerPeripheral>).data.length ? (this.expandedElement = this.expandedElement === element ? null : element) : null;
+    this.expandedElement = element;
     this.cdRef.detectChanges();
     this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<InnerPeripheral>).sort = this.innerSort.toArray()[index]);
   }
