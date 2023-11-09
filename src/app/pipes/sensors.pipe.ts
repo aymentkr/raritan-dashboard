@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {InnerPeripheral, Peripheral, SensorElement} from "../model/interfaces";
+import {SensorPort, Peripheral, SensorElement} from "../model/interfaces";
 import Swal from "sweetalert2";
 import {SensorClass} from "../model/SensorClass";
 import {DataService} from "../services/data.service";
@@ -16,7 +16,7 @@ export class SensorsPipe implements PipeTransform {
     return this.sensors;
   }
 
-  infoDevice = (obj: Peripheral): void => {
+  infoDevice = (obj: SensorPort): void => {
     let selectedSensor = this.sensors.find(sensor => sensor.type === obj.type);
     if (selectedSensor) {
       const formattedMethods = selectedSensor.methods.join('\n');
@@ -48,7 +48,7 @@ export class SensorsPipe implements PipeTransform {
     this.data.sendToGo(`envhubs[1]:setFuseState(${i}, ${state})`);
   }
 
-  removeDevice(table : string, peripheral: Peripheral) {
+  removeDevice(table : string, peripheral: SensorPort) {
     this.data.sendToGo(`emu.${peripheral.type}:cast(${table}:findDevice("${peripheral.serial_number}")):disconnect();`);
   }
 
@@ -61,18 +61,18 @@ export class SensorsPipe implements PipeTransform {
   }
 
   getPeripheralByType(type : string) {
-    const device: InnerPeripheral[] = [];
+    const device: Peripheral[] = [];
     let selectedSensor = this.sensors.find(sensor => sensor.type === type);
     selectedSensor?.methods.forEach((method:string, index:number) => {
-      device.push({ id: index, name: method, methodName: method });
+      device.push({ device_id: index, name: method, methodName: method });
     });
 
     return device;
   }
 
 
-  convertLinesToPeripherals(lines: string[]): Peripheral[] {
-    const peripherals: Peripheral[] = [];
+  convertLinesToSensors(lines: string[]): SensorPort[] {
+    const sensors: SensorPort[] = [];
     let index = 1;
     for (const line of lines) {
       const match = line.match(/([A-Z0-9_]+): ([A-Z0-9]+)/);
@@ -81,8 +81,8 @@ export class SensorsPipe implements PipeTransform {
         const serialNumber = match[2];
         this.sensors.filter((item) => {
           if (item.type === type) {
-            const PeripheralDataSource = new MatTableDataSource<InnerPeripheral>(this.getPeripheralByType(type));
-            peripherals.push({
+            const PeripheralDataSource = new MatTableDataSource<Peripheral>(this.getPeripheralByType(type));
+            sensors.push({
               id: index,
               name: item.name,
               type: item.type,
@@ -94,7 +94,7 @@ export class SensorsPipe implements PipeTransform {
         });
       }
     }
-    return peripherals;
+    return sensors;
   }
 
 

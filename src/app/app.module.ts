@@ -39,16 +39,10 @@ import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import { SettingsComponent } from './settings/settings.component';
-import {KnobModule} from "primeng/knob";
 import {MatCardModule} from "@angular/material/card";
-import {MessagesModule} from "primeng/messages";
 import { SmartlockComponent } from './smartlock/smartlock.component';
 import {MatBadgeModule} from "@angular/material/badge";
 import {ToastrModule} from "ngx-toastr";
-import {OrderListModule} from "primeng/orderlist";
-import {VirtualScrollerModule} from "primeng/virtualscroller";
-import {PanelModule} from "primeng/panel";
-import {ButtonModule} from "primeng/button";
 import { SensorsPipe } from './pipes/sensors.pipe';
 import { EnvhubComponent } from './envhub/envhub.component';
 
@@ -100,15 +94,9 @@ import { EnvhubComponent } from './envhub/envhub.component';
     MatButtonToggleModule,
     MatGridListModule,
     MatSlideToggleModule,
-    KnobModule,
     MatCardModule,
-    MessagesModule,
     MatBadgeModule,
     ToastrModule.forRoot(),
-    OrderListModule,
-    VirtualScrollerModule,
-    PanelModule,
-    ButtonModule,
   ],
   providers: [WebsocketService,DataService,SensorsPipe],
   bootstrap: [AppComponent]

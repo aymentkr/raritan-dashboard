@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import { Peripheral, SensorElement } from "../../model/interfaces";
+import {SensorElement, SensorPort} from "../../model/interfaces";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import {SensorsPipe} from "../../pipes/sensors.pipe";
 
@@ -13,7 +13,7 @@ import {SensorsPipe} from "../../pipes/sensors.pipe";
 export class EditPeripheralDeviceComponent implements AfterViewInit {
   sensorForm: FormGroup;
   selectedSensorMethod: string = '';
-  local_data: Peripheral;
+  local_data: SensorPort;
   selectedSensor?: SensorElement;
 
   methodParameters: { [key: string]: string[] } = {
@@ -38,7 +38,7 @@ export class EditPeripheralDeviceComponent implements AfterViewInit {
 
   constructor(
       public dialogRef: MatDialogRef<EditPeripheralDeviceComponent>,
-      @Inject(MAT_DIALOG_DATA) public data: Peripheral,
+      @Inject(MAT_DIALOG_DATA) public data: SensorPort,
       sp: SensorsPipe,
       private cdr: ChangeDetectorRef,
       private fb: FormBuilder,

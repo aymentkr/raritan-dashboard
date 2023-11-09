@@ -35,17 +35,17 @@ export interface SensorElement {
   methods : any;
 }
 
-export interface InnerPeripheral {
-  id : number,
+export interface Peripheral {
+  device_id : number,
   name : string,
   methodName : string
 }
-export interface Peripheral {
+export interface SensorPort {
   id : number;
   name : string;
   type : string;
   serial_number : string;
-  methods: MatTableDataSource<InnerPeripheral>;
+  methods: MatTableDataSource<Peripheral>;
 }
 
 
