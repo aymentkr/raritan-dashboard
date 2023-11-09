@@ -24,7 +24,7 @@ tr.example-detail-row {
 }
 
 tr.example-element-row:not(.example-expanded-row):hover {
-  background: #777;
+  background: #f5f5f5;
 }
 
 tr.example-element-row:not(.example-expanded-row):active {
@@ -61,13 +61,4 @@ tr.example-element-row:not(.example-expanded-row):active {
 
 .example-element-description-attribution {
   opacity: 0.5;
-}
-
-.inner-table {
-  width: 100%;
-}
-
-.inner-table mat-form-field {
-  margin-top: 15px;
-  width: 100%;
 }

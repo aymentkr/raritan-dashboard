@@ -19,11 +19,11 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
   styleUrls: ['./peripheral.component.css'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
+      state('collapsed,void', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
-  ],
+    ]
 })
 export class PeripheralComponent implements OnInit {
   isLoading: boolean = true;
@@ -32,7 +32,7 @@ export class PeripheralComponent implements OnInit {
   innerDisplayedColumns: string[] = ['id', 'name', 'methodName'];
   displayedColumns: string[] = ['select', ...this.columns, 'actions'];
   expandedElement!: null | Peripheral;
-  isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
+  isExpansionDetailRow = (row: Object) => row.hasOwnProperty('expandedDetail');
   selection = new SelectionModel<any>(true, []);
   @ViewChild('outerSort', { static: true }) sort!: MatSort ;
   @ViewChildren('innerTables') innerTables!: QueryList<MatTable<InnerPeripheral>>;
@@ -188,9 +188,7 @@ export class PeripheralComponent implements OnInit {
 
   toggleRow(element: Peripheral) {
     console.log('ToggleRow function called with element:', element); // Add this line to verify function execution
-    if (element.methods && (element.methods as unknown as MatTableDataSource<InnerPeripheral>).data.length) {
-      this.expandedElement = this.expandedElement === element ? null : element;
-    }
+    element.methods && (element.methods as MatTableDataSource<InnerPeripheral>).data.length ? (this.expandedElement = this.expandedElement === element ? null : element) : null;
     this.cdRef.detectChanges();
     this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<InnerPeripheral>).sort = this.innerSort.toArray()[index]);
   }
