@@ -1,8 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {Peripheral, SensorElement} from "../model/interfaces";
+import {InnerPeripheral, Peripheral, SensorElement} from "../model/interfaces";
 import Swal from "sweetalert2";
 import {SensorClass} from "../model/SensorClass";
 import {DataService} from "../services/data.service";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Pipe({
   name: 'sensors'
@@ -60,31 +61,27 @@ export class SensorsPipe implements PipeTransform {
   }
 
 
-
-  convertLinesToPeripherals(lines: string[]):Peripheral[]{
+  convertLinesToPeripherals(lines: string[]): Peripheral[] {
     const peripherals: Peripheral[] = [];
-    let index=1;
+    let index = 1;
     for (const line of lines) {
       const match = line.match(/([A-Z0-9_]+): ([A-Z0-9]+)/);
       if (match) {
         const type = match[1];
         const serialNumber = match[2];
-        this.sensors.filter(item => {
+        this.sensors.filter((item) => {
           if (item.type === type) {
+            const methodsData: InnerPeripheral[] = [
+              { id: 0, name: '', methodName: '' },
+              { id: 0, name: '', methodName: '' },
+            ];
+            const methodsDataSource = new MatTableDataSource<InnerPeripheral>(methodsData);
             peripherals.push({
               id: index,
               name: item.name,
               type: item.type,
               serial_number: serialNumber,
-              methods : [{
-                id : 0,
-                name : '',
-                methodName : ''
-              },{
-                id : 0,
-                name : '',
-                methodName : ''
-              }],
+              methods: methodsDataSource,
             });
             index++;
           }

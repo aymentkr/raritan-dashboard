@@ -1,3 +1,5 @@
+import {MatTableDataSource} from "@angular/material/table";
+
 export interface Outlet {
   id: number;
   state: boolean;
@@ -43,7 +45,7 @@ export interface Peripheral {
   name : string;
   type : string;
   serial_number : string;
-  methods: InnerPeripheral[]
+  methods?: MatTableDataSource<InnerPeripheral>;
 }
 
 

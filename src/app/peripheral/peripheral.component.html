@@ -30,19 +30,17 @@
           </ng-container>
 
           <!-- Define your columns once here -->
-          <ng-container *ngFor="let column of columns">
-            <ng-container [matColumnDef]="column">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column }}</th>
-              <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
-            </ng-container>
+          <ng-container *ngFor="let column of columns" matColumnDef="{{column}}">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column }}</th>
+            <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
           </ng-container>
 
           <ng-container matColumnDef="expandedDetail">
             <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
-              <div class="example-element-detail" *ngIf="element.methods.length" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+              <div class="example-element-detail" *ngIf="element.methods?.data.length" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
                 <div class="inner-table mat-elevation-z8" *ngIf="expandedElement">
-                  <table mat-table [dataSource]="element.methods.data" matSort>
-                    <ng-container *ngFor="let innerColumn of innerDisplayedColumns" [matColumnDef]="innerColumn">
+                  <table mat-table [dataSource]="element.methods" matSort>
+                    <ng-container *ngFor="let innerColumn of innerDisplayedColumns" matColumnDef="{{innerColumn}}">
                       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ innerColumn }}</th>
                       <td mat-cell *matCellDef="let innerElement">{{ innerElement[innerColumn] }}</td>
                     </ng-container>
@@ -72,12 +70,9 @@
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *ngFor="let row of dataSource.data"
-              [class.example-element-row]="row.methods.length"
-              [class.example-expanded-row]="expandedElement === row"
-              (click)="toggleRow(row)">
+          <tr mat-row *matRowDef="let element; columns: displayedColumns;" [class.example-element-row]="element.methods?.data.length"
+              [class.example-expanded-row]="expandedElement === element" (click)="toggleRow(element)">
           </tr>
-
           <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
         </table>
       </ng-template>
