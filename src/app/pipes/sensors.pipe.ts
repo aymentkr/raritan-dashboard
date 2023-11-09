@@ -64,7 +64,7 @@ export class SensorsPipe implements PipeTransform {
     const device: Peripheral[] = [];
     let selectedSensor = this.sensors.find(sensor => sensor.type === type);
     selectedSensor?.methods.forEach((method:string, index:number) => {
-      device.push({ device_id: index, name: method, methodName: method });
+      device.push({ device_id: index+1, name: method, methodName: method });
     });
 
     return device;

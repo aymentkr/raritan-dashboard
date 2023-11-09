@@ -29,8 +29,8 @@ export class PeripheralComponent implements OnInit {
   isLoading: boolean = true;
   dataSource = new MatTableDataSource<SensorPort>();
   columns : string[] = ['id', 'name', 'type', 'serial_number'];
-  innerDisplayedColumns: string[] = ['id', 'name', 'methodName'];
-  displayedColumns: string[] = ['select', ...this.columns, 'actions'];
+  innerDisplayedColumns: string[] = ['device_id', 'name', 'methodName'];
+  displayedColumns: string[] = ['select', ...this.columns,'actions'];
   expandedElement!: SensorPort;
   selection = new SelectionModel<any>(true, []);
   @ViewChild('outerSort', { static: true }) sort!: MatSort ;

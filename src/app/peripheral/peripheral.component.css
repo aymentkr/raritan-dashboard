@@ -71,3 +71,6 @@ tr.example-element-row:not(.example-expanded-row):active {
   margin-top: 15px;
   width: 100%;
 }
+.selected-row {
+  background-color: pink;
+}
