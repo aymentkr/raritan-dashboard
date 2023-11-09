@@ -20,7 +20,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*', minHeight: '*' })),
+      state('expanded', style({ height: '*' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
@@ -32,8 +32,9 @@ export class PeripheralComponent implements OnInit {
   innerDisplayedColumns: string[] = ['id', 'name', 'methodName'];
   displayedColumns: string[] = ['select', ...this.columns, 'actions'];
   expandedElement!: null | Peripheral;
+  isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
   selection = new SelectionModel<any>(true, []);
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('outerSort', { static: true }) sort!: MatSort ;
   @ViewChildren('innerTables') innerTables!: QueryList<MatTable<InnerPeripheral>>;
   @ViewChildren('innerSort') innerSort!: QueryList<MatSort>;
 
