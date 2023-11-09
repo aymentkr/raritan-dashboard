@@ -78,7 +78,6 @@ import { EnvhubComponent } from './envhub/envhub.component';
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
-    BrowserAnimationsModule,
     MatCheckboxModule,
     MatMenuModule,
     MatProgressBarModule,

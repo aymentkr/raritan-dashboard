@@ -10,12 +10,20 @@ import {EditPeripheralDeviceComponent} from "./edit-peripheral-device/edit-perip
 import Swal from 'sweetalert2';
 import {NotificationService} from "../services/notification.service";
 import {SensorsPipe} from "../pipes/sensors.pipe";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 
 @Component({
   selector: 'app-peripheral',
   templateUrl: './peripheral.component.html',
   styleUrls: ['./peripheral.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*', minHeight: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class PeripheralComponent implements OnInit {
   isLoading: boolean = true;
@@ -178,7 +186,10 @@ export class PeripheralComponent implements OnInit {
   }
 
   toggleRow(element: Peripheral) {
-    element.methods && (element.methods as unknown as MatTableDataSource<InnerPeripheral>).data.length ? (this.expandedElement = this.expandedElement === element ? null : element) : null;
+    console.log('ToggleRow function called with element:', element); // Add this line to verify function execution
+    if (element.methods && (element.methods as unknown as MatTableDataSource<InnerPeripheral>).data.length) {
+      this.expandedElement = this.expandedElement === element ? null : element;
+    }
     this.cdRef.detectChanges();
     this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<InnerPeripheral>).sort = this.innerSort.toArray()[index]);
   }
