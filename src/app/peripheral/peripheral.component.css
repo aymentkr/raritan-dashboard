@@ -65,6 +65,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 
 .inner-table {
   width: 100%;
+  border-collapse: collapse;
 }
 
 .inner-table mat-form-field {
@@ -74,3 +75,18 @@ tr.example-element-row:not(.example-expanded-row):active {
 .selected-row {
   background-color: pink;
 }
+.inner-table th,
+.inner-table td {
+  border: 1px solid #ddd; /* Add a 1px solid border to all table cells */
+  padding: 8px; /* Add padding for better spacing */
+  text-align: left; /* Align text to the left within cells */
+}
+
+.inner-table th {
+  background-color: #f2f2f2; /* Add a background color to header cells for better differentiation */
+}
+
+.inner-table .action-link button {
+  border: none; /* Remove border from action button */
+}
+

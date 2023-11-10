@@ -45,6 +45,7 @@ import {MatBadgeModule} from "@angular/material/badge";
 import {ToastrModule} from "ngx-toastr";
 import { SensorsPipe } from './pipes/sensors.pipe';
 import { EnvhubComponent } from './envhub/envhub.component';
+import {PeripheralClass} from "./model/PeripheralClass";
 
 @NgModule({
   declarations: [
@@ -98,7 +99,7 @@ import { EnvhubComponent } from './envhub/envhub.component';
     MatBadgeModule,
     ToastrModule.forRoot(),
   ],
-  providers: [WebsocketService,DataService,SensorsPipe],
+  providers: [WebsocketService,DataService,SensorsPipe,PeripheralClass],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

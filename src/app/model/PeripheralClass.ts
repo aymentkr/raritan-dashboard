@@ -33,14 +33,44 @@ export class PeripheralClass {
       name: 'Hall Effect',
       type: 'Magnetic Contact',
     },
-
-/*
-    'Door State', 'Door Handle','Door Lock',
-    'Air Flow',
-    'Vibration',''*/
+    {
+      size : 0,
+      name: 'Door State',
+      type : 'Door State'
+    },
+    {
+      size : 0,
+      name: 'Door Handle',
+      type : 'Handle State'
+    },
+    {
+      size : 0,
+      name: 'Door Lock',
+      type : 'Door Lock'
+    },
+    {
+      size : 0,
+      name: 'Air Flow',
+      type : 'Air Flow'
+    },
+    {
+      size : 0,
+      name: 'Vibration',
+      type : 'Vibration'
+    }
   ];
+  length = 0;
+
+  IncDevice(){
+    this.length++;
+    return this.length
+  }
 
   getDevices(): DeviceElement[] {
     return this.devices;
+  }
+
+  clear() {
+    this.length = 0;
   }
 }

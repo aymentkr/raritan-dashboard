@@ -11,9 +11,10 @@ import {PeripheralClass} from "../model/PeripheralClass";
 })
 export class SensorsPipe implements PipeTransform {
   sensors = new SensorClass().getSensors();
-  devices = new PeripheralClass().getDevices();
-  size_devices = 0;
-  constructor(private data: DataService) {}
+  devices;
+  constructor(private data: DataService, private Peripheral: PeripheralClass) {
+    this.devices = Peripheral.getDevices();
+  }
 
   transform(value: any, ...args: any[]): any {
     return this.sensors;
@@ -67,12 +68,11 @@ export class SensorsPipe implements PipeTransform {
     const peripherals: Peripheral[] = [];
     const selectedSensor = this.sensors.find(sensor => sensor.type === type);
     selectedSensor?.methods.forEach((method:string) => {
-        const selectedDevice = this.devices.find(device => method.toLowerCase().includes(device.name.replace(/\s/g, "").toLowerCase()))
-        if (selectedDevice) {
-          selectedDevice.size ++;
-          this.size_devices ++;
-            peripherals.push({ device_id: this.size_devices , name: `${selectedDevice?.name}  ${selectedDevice?.size}`,type:`${selectedDevice?.type}`, methodName: method });
-        }
+      const selectedDevice = this.devices.find(device => method.toLowerCase().includes(device.type.replace(/\s/g, "").toLowerCase()))
+      if (selectedDevice) {
+        selectedDevice.size ++;
+        peripherals.push({ device_id: this.Peripheral.IncDevice() , name: `${selectedDevice?.name}  ${selectedDevice?.size}`,type:`${selectedDevice?.type}`, methodName: method });
+      }
     });
 
     return peripherals;
@@ -81,6 +81,7 @@ export class SensorsPipe implements PipeTransform {
 
   convertLinesToSensors(lines: string[]): SensorPort[] {
     const sensors: SensorPort[] = [];
+    this.Peripheral.clear();
     let index = 1;
     for (const line of lines) {
       const match = line.match(/([A-Z0-9_]+): ([A-Z0-9]+)/);
