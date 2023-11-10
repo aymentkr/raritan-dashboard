@@ -154,6 +154,7 @@ export class InletComponent implements OnInit{
           Object.entries(pole).forEach(([key, value]) => this.data.editMap(`inlets[${inlet.id}]:${key}(${id})`, value as number | boolean));
         } else {
           this.data.sendToGo(`
+        inlets[${inlet.id}]:setVoltage(${voltage});
         inlets[${inlet.id}]:setCurrent(${current});
         inlets[${inlet.id}]:setActivePower(${act_power});
         inlets[${inlet.id}]:setApparentPower(${app_power});

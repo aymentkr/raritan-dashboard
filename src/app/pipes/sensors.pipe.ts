@@ -68,10 +68,12 @@ export class SensorsPipe implements PipeTransform {
     const peripherals: Peripheral[] = [];
     const selectedSensor = this.sensors.find(sensor => sensor.type === type);
     selectedSensor?.methods.forEach((method:string) => {
-      const selectedDevice = this.devices.find(device => method.toLowerCase().includes(device.type.replace(/\s/g, "").toLowerCase()))
-      if (selectedDevice) {
-        selectedDevice.size ++;
-        peripherals.push({ device_id: this.Peripheral.IncDevice() , name: `${selectedDevice?.name}  ${selectedDevice?.size}`,type:`${selectedDevice?.type}`, methodName: method });
+      if (!method.includes('Invalid')) {
+        const selectedDevice = this.devices.find(device => method.toLowerCase().includes(device.type.replace(/\s/g, "").toLowerCase()))
+        if (selectedDevice) {
+          selectedDevice.size ++;
+          peripherals.push({ device_id: this.Peripheral.IncDevice() , name: `${selectedDevice?.name}  ${selectedDevice?.size}`,type:`${selectedDevice?.type}`, methodName: method });
+        }
       }
     });
 

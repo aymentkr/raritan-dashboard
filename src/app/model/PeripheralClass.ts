@@ -71,6 +71,7 @@ export class PeripheralClass {
   }
 
   clear() {
+    this.devices.forEach(element => element.size = 0 )
     this.length = 0;
   }
 }
