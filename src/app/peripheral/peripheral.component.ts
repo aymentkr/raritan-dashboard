@@ -29,7 +29,8 @@ export class PeripheralComponent implements OnInit {
   isLoading: boolean = true;
   dataSource = new MatTableDataSource<SensorPort>();
   columns : string[] = ['id', 'name', 'type', 'serial_number'];
-  innerDisplayedColumns: string[] = ['device_id', 'name', 'methodName'];
+  innercolumns : string[] =  ['device_id','name','type','methodName'];
+  innerDisplayedColumns: string[] = [...this.innercolumns, 'edit'];
   displayedColumns: string[] = ['select', ...this.columns,'actions'];
   expandedElement!: SensorPort;
   selection = new SelectionModel<any>(true, []);
@@ -88,6 +89,9 @@ export class PeripheralComponent implements OnInit {
       if (result) this.editRowData(result.data);
     });
   }
+    setInvalid(obj: SensorPort) {
+    console.log(obj)
+    }
 
   async addRowData(type:string) {
     if (type != '') {
@@ -109,8 +113,6 @@ export class PeripheralComponent implements OnInit {
   public infoDevice = (obj: SensorPort): void => {
     this.sp.infoDevice(obj);
   };
-
-
 
   masterToggle() {
     this.isAllSelected() ?
@@ -190,4 +192,5 @@ export class PeripheralComponent implements OnInit {
     this.cdRef.detectChanges();
     this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<Peripheral>).sort = this.innerSort.toArray()[index]);
   }
+
 }

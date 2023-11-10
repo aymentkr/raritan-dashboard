@@ -34,10 +34,16 @@ export interface SensorElement {
   prefix : string;
   methods : any;
 }
+export interface DeviceElement {
+  size : number,
+  name : string,
+  type: string,
+}
 
 export interface Peripheral {
   device_id : number,
   name : string,
+  type : string,
   methodName : string
 }
 export interface SensorPort {

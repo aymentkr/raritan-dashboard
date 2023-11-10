@@ -22,6 +22,12 @@ export class EditPeripheralDeviceComponent implements AfterViewInit {
     setAirPressure: ['number'],
     setHumidity: ['number'],
     setVibration: ['number'],
+    setCableLength:['number'],
+    setLeakDistance:['number'],
+    setMassPM10:['number'],
+    setMassPM25:['number'],
+    setMassPM40:['number'],
+    setMassPM100:['number'],
     setContactClosure: ['number', 'bool'],
     setDryContact: ['number', 'bool'],
     setDoorState: ['number', 'bool'],
@@ -30,6 +36,7 @@ export class EditPeripheralDeviceComponent implements AfterViewInit {
     setContactClosure2: ['bool'],
     setMagneticContact: ['bool'],
     setMotionDetected: ['bool'],
+    setLeakDetected: ['bool'],
     setTamperAlarm: ['bool'],
     setCardId: ['number', 'str'],
     setPIN: ['number', 'str'],
@@ -59,7 +66,11 @@ export class EditPeripheralDeviceComponent implements AfterViewInit {
   }
 
   setSensorValue() {
-    const parameters = this.methodParameters[this.selectedSensorMethod]
+    let sensorMethod: string
+      if (this.selectedSensorMethod.includes('Invalid')) {
+      sensorMethod = this.selectedSensorMethod + '()'
+    } else {
+      const parameters = this.methodParameters[this.selectedSensorMethod]
         .map((paramType) => {
           switch (paramType) {
             case 'number':
@@ -73,12 +84,14 @@ export class EditPeripheralDeviceComponent implements AfterViewInit {
           }
         });
 
-    // Use parameters to build the method call
-    const parametersString = parameters.join(',');
-
+      // Use parameters to build the method call
+      const parametersString = parameters.join(',');
+      sensorMethod = `${this.selectedSensorMethod}(${parametersString})`
+    }
+    console.log(sensorMethod)
     this.dialogRef.close({
       data: {
-        methodName: `${this.selectedSensorMethod}(${parametersString})`,
+        methodName: sensorMethod,
         device: this.local_data,
       }
     });

@@ -4,12 +4,15 @@ import Swal from "sweetalert2";
 import {SensorClass} from "../model/SensorClass";
 import {DataService} from "../services/data.service";
 import {MatTableDataSource} from "@angular/material/table";
+import {PeripheralClass} from "../model/PeripheralClass";
 
 @Pipe({
   name: 'sensors'
 })
 export class SensorsPipe implements PipeTransform {
   sensors = new SensorClass().getSensors();
+  devices = new PeripheralClass().getDevices();
+  size_devices = 0;
   constructor(private data: DataService) {}
 
   transform(value: any, ...args: any[]): any {
@@ -61,13 +64,18 @@ export class SensorsPipe implements PipeTransform {
   }
 
   getPeripheralByType(type : string) {
-    const device: Peripheral[] = [];
-    let selectedSensor = this.sensors.find(sensor => sensor.type === type);
-    selectedSensor?.methods.forEach((method:string, index:number) => {
-      device.push({ device_id: index+1, name: method, methodName: method });
+    const peripherals: Peripheral[] = [];
+    const selectedSensor = this.sensors.find(sensor => sensor.type === type);
+    selectedSensor?.methods.forEach((method:string) => {
+        const selectedDevice = this.devices.find(device => method.toLowerCase().includes(device.name.replace(/\s/g, "").toLowerCase()))
+        if (selectedDevice) {
+          selectedDevice.size ++;
+          this.size_devices ++;
+            peripherals.push({ device_id: this.size_devices , name: `${selectedDevice?.name}  ${selectedDevice?.size}`,type:`${selectedDevice?.type}`, methodName: method });
+        }
     });
 
-    return device;
+    return peripherals;
   }
 
 
