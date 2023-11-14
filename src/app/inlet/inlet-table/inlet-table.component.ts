@@ -15,7 +15,7 @@ import {NotificationService} from "../../services/notification.service";
 export class InletTableComponent implements OnInit{
   @Input() inputFromParent = 0 ;
   dataSource = new MatTableDataSource<Inlet>();
-  Columns: string[] = ['select', 'frequency', 'voltage', 'current', 'act_power', 'app_power','act_energy','app_energy', 'edit'];
+  Columns: string[] = ['select', 'name','frequency', 'voltage', 'current', 'act_power', 'app_power','act_energy','app_energy', 'edit'];
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
   editableRowIndex: number = -1;
