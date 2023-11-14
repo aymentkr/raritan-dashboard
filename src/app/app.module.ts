@@ -54,6 +54,8 @@ import {InletTableComponent} from "./inlet/inlet-table/inlet-table.component";
     AppComponent,
     OutletComponent,
     InletComponent,
+    InletPoleTableComponent,
+    InletTableComponent,
     OcpsComponent,
     PeripheralComponent,
     AddPeripheralDeviceComponent,
@@ -100,8 +102,6 @@ import {InletTableComponent} from "./inlet/inlet-table/inlet-table.component";
     MatCardModule,
     MatBadgeModule,
     ToastrModule.forRoot(),
-    InletPoleTableComponent,
-    InletTableComponent,
   ],
   providers: [WebsocketService,DataService,SensorsPipe,PeripheralClass],
   bootstrap: [AppComponent]

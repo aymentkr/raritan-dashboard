@@ -1,6 +1,5 @@
-import {ChangeDetectorRef, Component, Input, ViewChild} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {MatTableDataSource, MatTableModule} from "@angular/material/table";
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {MatTableDataSource} from "@angular/material/table";
 import {InletP, Pole} from "../../model/interfaces";
 import {MatSort, Sort} from "@angular/material/sort";
 import {SelectionModel} from "@angular/cdk/collections";
@@ -9,11 +8,10 @@ import {DataService} from "../../services/data.service";
 import {NotificationService} from "../../services/notification.service";
 @Component({
   selector: 'app-inlet-pole-table',
-  standalone: true,
   templateUrl: './inlet-pole-table.component.html',
-  styleUrl: './inlet-pole-table.component.css'
+  styleUrls: ['./inlet-pole-table.component.css']
 })
-export class InletPoleTableComponent {
+export class InletPoleTableComponent  implements OnInit{
   @Input() inputFromParent = 0 ;
   dataSource = new MatTableDataSource<InletP>();
   polesColumns: string[] = ['name','voltage', 'current', 'act_power', 'app_power','act_energy','app_energy','editPole'];
@@ -25,7 +23,6 @@ export class InletPoleTableComponent {
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     private data: DataService,
-    private cdRef: ChangeDetectorRef,
     private notificationService: NotificationService
   ) {}
 

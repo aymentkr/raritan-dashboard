@@ -1,1 +1,151 @@
-<p>inlet-table works!</p>
+<table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
+  <!-- Selection Column -->
+  <ng-container matColumnDef="select">
+    <th mat-header-cell *matHeaderCellDef>
+      <mat-checkbox color="warn" (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+      </mat-checkbox>
+    </th>
+    <td mat-cell *matCellDef="let row">
+      <mat-checkbox color="warn" (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                    [checked]="selection.isSelected(row)">
+      </mat-checkbox>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="frequency">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by frequency">
+      Frequency
+    </th>
+    <td mat-cell *matCellDef="let element; let rowIndex = index">
+      <ng-container *ngIf="editableRowIndex !== rowIndex; else editMode">
+        <!-- Display the value when not in edit mode -->
+        {{ element.frequency }} Hz
+      </ng-container>
+      <ng-template #editMode>
+        <!-- Display input field when in edit mode -->
+        <mat-form-field>
+          <input matInput type="number" [(ngModel)]="element.frequency">
+        </mat-form-field>
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="voltage">
+    <th mat-header-cell *matHeaderCellDef>
+      Voltage
+    </th>
+    <td mat-cell *matCellDef="let element; let rowIndex = index">
+      <ng-container *ngIf="editableRowIndex !== rowIndex; else editMode">
+        {{ element.voltage }} V
+      </ng-container>
+      <ng-template #editMode>
+        <mat-form-field>
+          <input matInput type="number" [(ngModel)]="element.voltage" >
+        </mat-form-field>
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="current">
+    <th mat-header-cell *matHeaderCellDef >
+      Current
+    </th>
+    <td mat-cell *matCellDef="let element; let rowIndex = index">
+      <ng-container *ngIf="editableRowIndex !== rowIndex; else editMode">
+        {{ element.current }} A
+      </ng-container>
+      <ng-template #editMode>
+        <mat-form-field>
+          <input matInput type="number" [(ngModel)]="element.current" >
+        </mat-form-field>
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="act_power">
+    <th mat-header-cell *matHeaderCellDef >
+      Active Power
+    </th>
+    <td mat-cell *matCellDef="let element; let rowIndex = index">
+      <ng-container *ngIf="editableRowIndex !== rowIndex; else editMode">
+        {{ element.act_power }} W
+      </ng-container>
+      <ng-template #editMode>
+        <mat-form-field>
+          <input matInput type="number" [(ngModel)]="element.act_power" >
+        </mat-form-field>
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="app_power">
+    <th mat-header-cell *matHeaderCellDef >
+      Apparent Power
+    </th>
+    <td mat-cell *matCellDef="let element; let rowIndex = index">
+      <ng-container *ngIf="editableRowIndex !== rowIndex; else editMode">
+        {{ element.app_power }} VA
+      </ng-container>
+      <ng-template #editMode>
+        <mat-form-field>
+          <input matInput type="number" [(ngModel)]="element.app_power" >
+        </mat-form-field>
+      </ng-template>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="act_energy">
+    <th mat-header-cell *matHeaderCellDef >
+      Active Energy
+    </th>
+    <td mat-cell *matCellDef="let element; let rowIndex = index">
+      <ng-container *ngIf="editableRowIndex !== rowIndex; else editMode">
+        {{ element.act_energy }} Wh
+      </ng-container>
+      <ng-template #editMode>
+        <mat-form-field>
+          <input matInput type="number" [(ngModel)]="element.act_energy" >
+        </mat-form-field>
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="app_energy">
+    <th mat-header-cell *matHeaderCellDef >
+      Apparent Energy
+    </th>
+    <td mat-cell *matCellDef="let element; let rowIndex = index">
+      <ng-container *ngIf="editableRowIndex !== rowIndex; else editMode">
+        {{ element.app_energy }} VAh
+      </ng-container>
+      <ng-template #editMode>
+        <mat-form-field>
+          <input matInput type="number" [(ngModel)]="element.app_energy" >
+        </mat-form-field>
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <!-- edit Column -->
+  <ng-container matColumnDef="edit">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element; let rowIndex = index">
+      <ng-container *ngIf="editableRowIndex !== rowIndex; else editMode">
+        <button mat-icon-button color="primary" (click)="editItem(rowIndex)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </ng-container>
+      <ng-template #editMode>
+        <button mat-icon-button color="primary" (click)="save(element)">
+          <mat-icon>done</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="cancelEdit()">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef=Columns></tr>
+  <tr mat-row *matRowDef="let row; columns: Columns; let i = index;"></tr>
+</table>
