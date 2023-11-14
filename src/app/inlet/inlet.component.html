@@ -30,7 +30,7 @@
   <mat-card>
     <mat-card-header>
       <mat-card-title> Switches</mat-card-title>
-      <mat-card-subtitle> [ {{ formData.id }} ]</mat-card-subtitle>
+      <mat-card-subtitle> [ {{ 1 }} ]</mat-card-subtitle>
     </mat-card-header>
     <mat-divider></mat-divider>
 
@@ -156,18 +156,18 @@
           <div class="example-button-row">
             <div class="example-flex-container">
               <div class="example-button-container">
-                <button mat-raised-button>See Details</button>
+                <button mat-mini-fab color="warn" type="reset" (click)="resetFormData()">
+                  <mat-icon>settings_backup_restore</mat-icon>
+                </button>
+              </div>
+              <div class="example-button-container">
+                <button mat-raised-button type="button" (click)="seeDetails()">See Details</button>
               </div>
               <div class="example-button-container">
                 <button mat-raised-button color="accent" type="submit">Submit</button>
               </div>
               <div class="example-button-container">
-                <button mat-mini-fab color="warn">
-                  <mat-icon>settings_backup_restore</mat-icon>
-                </button>
-              </div>
-              <div class="example-button-container">
-                <button mat-mini-fab color="primary">
+                <button mat-mini-fab color="primary" type="button" (click)="info()">
                   <mat-icon>info</mat-icon>
                 </button>
               </div>
