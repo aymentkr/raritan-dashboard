@@ -24,6 +24,17 @@ export interface Pole {
 export interface Inlet {
   id: number;
   frequency: number;
+  voltage: number;
+  current: number;
+  act_power: number;
+  app_power: number;
+  act_energy: number;
+  app_energy: number;
+}
+
+export interface InletP {
+  id: number;
+  frequency: number;
   poles: Pole[];
 }
 

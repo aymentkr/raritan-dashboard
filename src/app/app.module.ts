@@ -46,6 +46,8 @@ import {ToastrModule} from "ngx-toastr";
 import { SensorsPipe } from './pipes/sensors.pipe';
 import { EnvhubComponent } from './envhub/envhub.component';
 import {PeripheralClass} from "./model/PeripheralClass";
+import {InletPoleTableComponent} from "./inlet/inlet-pole-table/inlet-pole-table.component";
+import {InletTableComponent} from "./inlet/inlet-table/inlet-table.component";
 
 @NgModule({
   declarations: [
@@ -98,6 +100,8 @@ import {PeripheralClass} from "./model/PeripheralClass";
     MatCardModule,
     MatBadgeModule,
     ToastrModule.forRoot(),
+    InletPoleTableComponent,
+    InletTableComponent,
   ],
   providers: [WebsocketService,DataService,SensorsPipe,PeripheralClass],
   bootstrap: [AppComponent]
