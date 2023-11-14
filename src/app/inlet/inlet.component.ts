@@ -1,6 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {DataService} from "../services/data.service";
 import Swal from "sweetalert2";
+import {Switch} from "../model/interfaces";
 
 @Component({
   selector: 'app-inlet',
@@ -11,11 +12,11 @@ export class InletComponent implements OnInit{
   hasPoles : boolean= true;
   isLoading: boolean = true;
   size = 0;
-  formData = {
+  formData: Switch  ={
     preferredInlet: 0,
     BypassSelectedInlet: 0,
     BypassActiveInlet: 0,
-    FaultFlags:0,
+    FaultFlags: 0,
     Inlet1FaultFlags: 0,
     Inlet2FaultFlags: 0,
     InletPhaseAngle: 0,
@@ -49,23 +50,29 @@ export class InletComponent implements OnInit{
       this.formData.BypassActiveInlet = parseFloat(await this.data.getResult(`BypassActiveInlet`, `print(switches[1]:getBypassActiveInlet())`));
     }
   }
-  submitForm(formData: any) {
-    console.log(formData)
-  }
+  submitForm(formData: Switch) {
+    console.log(formData);
+    if (formData.hasOwnProperty('FaultFlags')) {
+      this.data.sendToGo(`switches[1]:setFaultFlags(${formData.FaultFlags})`);
+    }
 
-  resetFormData() {
-    this.formData = {
-      preferredInlet: 0,
-      BypassSelectedInlet: 0,
-      BypassActiveInlet: 0,
-      FaultFlags: 0,
-      Inlet1FaultFlags: 0,
-      Inlet2FaultFlags: 0,
-      InletPhaseAngle: 0,
-      PowerFailDetectTime: 0,
-      RelayOpenTime: 0,
-      TotalTransferTime: 0,
-    };
+    if (formData.hasOwnProperty('Inlet1FaultFlags')) {
+      this.data.sendToGo(`switches[1]:setInlet1FaultFlags(${formData.Inlet1FaultFlags})`);
+    }
+
+    if (formData.hasOwnProperty('Inlet2FaultFlags')) {
+      this.data.sendToGo(`switches[1]:setInlet2FaultFlags(${formData.Inlet2FaultFlags})`);
+    }
+
+    if (formData.hasOwnProperty('InletPhaseAngle')) {
+      this.data.sendToGo(`switches[1]:setInletPhaseAngle(${formData.InletPhaseAngle})`);
+    }
+
+    if (formData.hasOwnProperty('preferredInlet')) {
+      this.data.sendToGo(`switches[1]:setPreferredInlet(${formData.preferredInlet})`);
+    }
+
+    // success message add all the valeus that will be changed , you can use a list ;)
   }
   generateInletRange(): number[] {
     return Array.from({ length: this.size }, (_, index) => index + 1);

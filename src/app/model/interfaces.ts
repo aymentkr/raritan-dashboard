@@ -79,3 +79,16 @@ export interface Ocp {
   current : number,
   peak_current : number,
 }
+
+export interface Switch {
+  preferredInlet: number,
+  BypassSelectedInlet: number,
+  BypassActiveInlet: number,
+  FaultFlags: number,
+  Inlet1FaultFlags: number,
+  Inlet2FaultFlags: number,
+  InletPhaseAngle: number,
+  PowerFailDetectTime: number,
+  RelayOpenTime: number,
+  TotalTransferTime: number,
+}

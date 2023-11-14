@@ -32,9 +32,9 @@
       <mat-card-title> Switches</mat-card-title>
       <mat-card-subtitle> [ {{ 1 }} ]</mat-card-subtitle>
     </mat-card-header>
-    <mat-divider></mat-divider>
-
     <mat-card-content>
+      <mat-divider></mat-divider>
+
 
       <form #switchForm="ngForm" (ngSubmit)="submitForm(switchForm.value)">
         <!-- Preferred Section -->
@@ -62,7 +62,7 @@
           <div class="form-fields">
             <mat-form-field>
               <mat-label>Bypass Selected Inlet</mat-label>
-              <mat-select [(ngModel)]="formData.BypassSelectedInlet"  name="BypassSelectedInlet" disableRipple>
+              <mat-select [(ngModel)]="formData.BypassSelectedInlet" name="BypassSelectedInlet" disableRipple>
                 <!-- Default option for 0 -->
                 <mat-option value="0">0</mat-option>
                 <!-- Options generated from the range -->
@@ -74,7 +74,7 @@
 
             <mat-form-field>
               <mat-label>Bypass Active Inlet</mat-label>
-              <mat-select [(ngModel)]="formData.BypassActiveInlet"   name="BypassActiveInlet" disableRipple>
+              <mat-select [(ngModel)]="formData.BypassActiveInlet" name="BypassActiveInlet" disableRipple>
                 <!-- Default option for 0 -->
                 <mat-option value="0">0</mat-option>
                 <!-- Options generated from the range -->
@@ -114,7 +114,7 @@
 
             <mat-form-field>
               <mat-label>Inlet 2 Fault Flags</mat-label>
-              <mat-select [(ngModel)]="formData.Inlet2FaultFlags" name="Inlet2FaultFlags"  disableRipple>
+              <mat-select [(ngModel)]="formData.Inlet2FaultFlags" name="Inlet2FaultFlags" disableRipple>
                 <mat-option value="0">none</mat-option>
                 <mat-option value="1">SMPS</mat-option>
                 <mat-option value="2">MOV</mat-option>
@@ -156,7 +156,7 @@
           <div class="example-button-row">
             <div class="example-flex-container">
               <div class="example-button-container">
-                <button mat-mini-fab color="warn" type="reset" (click)="resetFormData()">
+                <button mat-mini-fab color="warn" type="reset" >
                   <mat-icon>settings_backup_restore</mat-icon>
                 </button>
               </div>
