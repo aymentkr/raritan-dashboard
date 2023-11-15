@@ -81,14 +81,14 @@ export interface Ocp {
 }
 
 export interface Switch {
-  preferredInlet: number,
-  BypassSelectedInlet: number,
-  BypassActiveInlet: number,
-  FaultFlags: number,
-  Inlet1FaultFlags: number,
-  Inlet2FaultFlags: number,
-  InletPhaseAngle: number,
-  PowerFailDetectTime: number,
-  RelayOpenTime: number,
-  TotalTransferTime: number,
+  preferredInlet: number | null,
+  BypassSelectedInlet: number | null,
+  BypassActiveInlet: number | null,
+  FaultFlags: number | null,
+  Inlet1FaultFlags: number | null,
+  Inlet2FaultFlags: number | null,
+  InletPhaseAngle: number | null,
+  PowerFailDetectTime: number | null,
+  RelayOpenTime: number | null,
+  TotalTransferTime: number | null,
 }
