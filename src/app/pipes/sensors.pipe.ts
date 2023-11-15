@@ -4,17 +4,14 @@ import Swal from "sweetalert2";
 import {SensorClass} from "../model/SensorClass";
 import {DataService} from "../services/data.service";
 import {MatTableDataSource} from "@angular/material/table";
-import {PeripheralClass} from "../model/PeripheralClass";
 
 @Pipe({
   name: 'sensors'
 })
 export class SensorsPipe implements PipeTransform {
   sensors = new SensorClass().getSensors();
-  devices;
-  constructor(private data: DataService, private Peripheral: PeripheralClass) {
-    this.devices = Peripheral.getDevices();
-  }
+  size_devices = 0;
+  constructor(private data: DataService) {}
 
   transform(value: any, ...args: any[]): any {
     return this.sensors;
@@ -65,25 +62,25 @@ export class SensorsPipe implements PipeTransform {
   }
 
   getPeripheralByType(type : string) {
-    const peripherals: Peripheral[] = [];
+    const peripherals:Peripheral[] = [];
     const selectedSensor = this.sensors.find(sensor => sensor.type === type);
-    selectedSensor?.methods.forEach((method:string) => {
-      if (!method.includes('Invalid')) {
-        const selectedDevice = this.devices.find(device => method.toLowerCase().includes(device.type.replace(/\s/g, "").toLowerCase()))
-        if (selectedDevice) {
-          selectedDevice.size ++;
-          peripherals.push({ device_id: this.Peripheral.IncDevice() , name: `${selectedDevice?.name}  ${selectedDevice?.size}`,type:`${selectedDevice?.type}`, methodName: method });
-        }
+    selectedSensor?.devices.forEach((device) => {
+      for (let i  = 1 ; i<=device.size; i++) {
+        this.size_devices++;
+        peripherals.push({
+          device_id: this.size_devices ,
+          name: `${device.name}  ${i}`,
+          type: device.type
+        });
       }
     });
-
     return peripherals;
   }
 
 
   convertLinesToSensors(lines: string[]): SensorPort[] {
     const sensors: SensorPort[] = [];
-    this.Peripheral.clear();
+    this.size_devices = 0;
     let index = 1;
     for (const line of lines) {
       const match = line.match(/([A-Z0-9_]+): ([A-Z0-9]+)/);
@@ -98,7 +95,7 @@ export class SensorsPipe implements PipeTransform {
               name: item.name,
               type: item.type,
               serial_number: serialNumber,
-              methods: PeripheralDataSource,
+              peripherals: PeripheralDataSource,
             });
             index++;
           }

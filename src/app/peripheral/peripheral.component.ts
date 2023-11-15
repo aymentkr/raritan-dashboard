@@ -29,8 +29,7 @@ export class PeripheralComponent implements OnInit {
     isLoading: boolean = true;
     dataSource = new MatTableDataSource<SensorPort>();
     columns: string[] = ['id', 'name', 'type', 'serial_number'];
-    innercolumns: string[] = ['device_id', 'name', 'type', 'methodName'];
-    innerDisplayedColumns: string[] = [...this.innercolumns, 'edit'];
+    innercolumns: string[] = ['device_id', 'name', 'type'];
     displayedColumns: string[] = ['select', ...this.columns, 'actions'];
     expandedElement!: SensorPort;
     selection = new SelectionModel<any>(true, []);
@@ -89,10 +88,6 @@ export class PeripheralComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) this.editRowData(result.data);
         });
-    }
-
-    setInvalid(obj: SensorPort) {
-        console.log(obj)
     }
 
     async addRowData(type: string) {

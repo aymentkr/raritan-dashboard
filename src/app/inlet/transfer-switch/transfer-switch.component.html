@@ -1,0 +1,147 @@
+<form #switchForm="ngForm" (ngSubmit)="submitForm(switchForm.value)">
+  <!-- Preferred Section -->
+  <div class="form-group">
+    <div class="group-header">
+      <mat-icon class="icon icon-star">star</mat-icon>
+      <span>Preferred Settings</span>
+    </div>
+    <div class="form-fields">
+      <mat-form-field>
+        <mat-label>Preferred Inlet</mat-label>
+        <mat-select [(ngModel)]="formData.preferredInlet" name="preferredInlet" disableRipple>
+          <mat-option *ngFor="let index of generateInletRange()" [value]="index">
+            Inlet {{ index }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Inlet Phase Angle:</mat-label>
+        <input matInput type="number" id="InletPhaseAngle" name="InletPhaseAngle"
+               [(ngModel)]="formData.InletPhaseAngle">
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Bypass Section -->
+  <div class="form-group">
+    <div class="group-header">
+      <mat-icon class="icon" color="primary">compare_arrows</mat-icon>
+      <span>Bypass Settings</span>
+    </div>
+    <div class="form-fields">
+      <mat-form-field>
+        <mat-label>Bypass Selected Inlet</mat-label>
+        <mat-select [(ngModel)]="formData.BypassSelectedInlet" name="BypassSelectedInlet" disableRipple>
+          <!-- Default option for 0 -->
+          <mat-option value="0">0</mat-option>
+          <!-- Options generated from the range -->
+          <mat-option *ngFor="let index of generateInletRange()" [value]="index">
+            Inlet {{ index }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Bypass Active Inlet</mat-label>
+        <mat-select [(ngModel)]="formData.BypassActiveInlet" name="BypassActiveInlet" disableRipple>
+          <!-- Default option for 0 -->
+          <mat-option value="int0">0</mat-option>
+          <!-- Options generated from the range -->
+          <mat-option *ngFor="let index of generateInletRange()" [value]="index">
+            Inlet {{ index }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Fault Flags Section -->
+  <div class="form-group">
+    <div class="group-header">
+      <mat-icon class="icon" color="warn">warning</mat-icon>
+      <span>Fault Flags</span>
+    </div>
+    <div class="form-fields">
+      <mat-form-field>
+        <mat-label>Fault Flags</mat-label>
+        <mat-select [(ngModel)]="formData.FaultFlags" name="FaultFlags" disableRipple>
+          <mat-option value="1">phase</mat-option>
+          <mat-option value="2">overload</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Inlet 1 Fault Flags</mat-label>
+        <mat-select [(ngModel)]="formData.Inlet1FaultFlags" name="Inlet1FaultFlags" disableRipple>
+          <mat-option value="0">none</mat-option>
+          <mat-option value="1">SMPS</mat-option>
+          <mat-option value="2">MOV</mat-option>
+          <mat-option value="4">short</mat-option>
+          <mat-option value="8">open</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Inlet 2 Fault Flags</mat-label>
+        <mat-select [(ngModel)]="formData.Inlet2FaultFlags" name="Inlet2FaultFlags" disableRipple>
+          <mat-option value="0">none</mat-option>
+          <mat-option value="1">SMPS</mat-option>
+          <mat-option value="2">MOV</mat-option>
+          <mat-option value="4">short</mat-option>
+          <mat-option value="8">open</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Time Section -->
+  <div class="form-group">
+    <div class="group-header">
+      <mat-icon class="icon icon-time">access_time</mat-icon>
+      <span>Time Settings</span>
+    </div>
+    <div class="form-fields">
+      <mat-form-field>
+        <mat-label>Power Fail Detect Time:</mat-label>
+        <input matInput type="number" id="PowerFailDetectTime" name="PowerFailDetectTime"
+               [(ngModel)]="formData.PowerFailDetectTime">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Relay Open Time:</mat-label>
+        <input matInput type="number" id="RelayOpenTime" name="RelayOpenTime"
+               [(ngModel)]="formData.RelayOpenTime">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Total Transfer Time:</mat-label>
+        <input matInput type="number" id="TotalTransferTime" name="TotalTransferTime"
+               [(ngModel)]="formData.TotalTransferTime">
+      </mat-form-field>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+  <section>
+    <div class="example-button-row">
+      <div class="example-flex-container">
+        <div class="example-button-container">
+          <button mat-mini-fab color="warn" type="reset">
+            <mat-icon>settings_backup_restore</mat-icon>
+          </button>
+        </div>
+        <div class="example-button-container">
+          <button mat-raised-button type="button" (click)="seeDetails()">See Details</button>
+        </div>
+        <div class="example-button-container">
+          <button mat-raised-button color="accent" type="submit">Submit</button>
+        </div>
+        <div class="example-button-container">
+          <button mat-mini-fab color="primary" type="button" (click)="info()">
+            <mat-icon>info</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</form>

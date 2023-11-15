@@ -44,6 +44,7 @@ export interface SensorElement {
   generation : number;
   prefix : string;
   methods : any;
+  devices : DeviceElement[];
 }
 export interface DeviceElement {
   size : number,
@@ -55,14 +56,13 @@ export interface Peripheral {
   device_id : number,
   name : string,
   type : string,
-  methodName : string
 }
 export interface SensorPort {
   id : number;
   name : string;
   type : string;
   serial_number : string;
-  methods: MatTableDataSource<Peripheral>;
+  peripherals: MatTableDataSource<Peripheral>;
 }
 
 

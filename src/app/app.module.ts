@@ -45,9 +45,9 @@ import {MatBadgeModule} from "@angular/material/badge";
 import {ToastrModule} from "ngx-toastr";
 import { SensorsPipe } from './pipes/sensors.pipe';
 import { EnvhubComponent } from './envhub/envhub.component';
-import {PeripheralClass} from "./model/PeripheralClass";
 import {InletPoleTableComponent} from "./inlet/inlet-pole-table/inlet-pole-table.component";
 import {InletTableComponent} from "./inlet/inlet-table/inlet-table.component";
+import { TransferSwitchComponent } from './inlet/transfer-switch/transfer-switch.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +65,7 @@ import {InletTableComponent} from "./inlet/inlet-table/inlet-table.component";
     SmartlockComponent,
     SensorsPipe,
     EnvhubComponent,
+    TransferSwitchComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -103,7 +104,7 @@ import {InletTableComponent} from "./inlet/inlet-table/inlet-table.component";
     MatBadgeModule,
     ToastrModule.forRoot(),
   ],
-  providers: [WebsocketService,DataService,SensorsPipe,PeripheralClass],
+  providers: [WebsocketService,DataService,SensorsPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
