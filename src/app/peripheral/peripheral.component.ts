@@ -11,6 +11,8 @@ import Swal from 'sweetalert2';
 import {NotificationService} from "../services/notification.service";
 import {SensorsPipe} from "../pipes/sensors.pipe";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {PeripheralClass} from "../model/PeripheralClass";
+
 
 @Component({
   selector: 'app-peripheral',
@@ -39,6 +41,7 @@ export class PeripheralComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private sp: SensorsPipe,
+    private Peripheral:PeripheralClass,
     private cdRef: ChangeDetectorRef,
     private notificationService: NotificationService,
     private data: DataService,
@@ -46,10 +49,6 @@ export class PeripheralComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fetchData();
-  }
-
-  fetchData() {
     this.fetchPeripheralData().then((data) => {
       this.dataSource.data = data;
       this.dataSource.sort = this.sort;
@@ -143,19 +142,22 @@ export class PeripheralComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.data.removeMap(`sensorports[1]:listDevices`);
-        this.data.removeMap('#sensorports')
         if (this.isAllSelected()) {
           this.sp.removeAll('sensorports[1]');
+          this.dataSource.data = [];
+          this.dataSource._updateChangeSubscription();
         } else {
           selectedItems.forEach(item => {
             const index = this.dataSource.data.indexOf(item);
             if (index !== -1) {
-              this.sp.removeDevice('sensorports[1]', item);
+              this.sp.removeDevice('sensorports[1]', item.serial_number);
+              this.dataSource.data.splice(index, 1);
+              this.dataSource._updateChangeSubscription();
             }
           });
         }
         this.selection.clear();
-        this.fetchData();
+        this.Peripheral.clear();
         if (this.isAllSelected()) {
           Swal.fire(
             'Deleted!',

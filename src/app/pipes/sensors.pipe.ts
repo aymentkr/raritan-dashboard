@@ -52,8 +52,8 @@ export class SensorsPipe implements PipeTransform {
     this.data.sendToGo(`envhubs[1]:setFuseState(${i}, ${state})`);
   }
 
-  removeDevice(table : string, peripheral: SensorPort) {
-    this.data.sendToGo(`emu.${peripheral.type}:cast(${table}:findDevice("${peripheral.serial_number}")):disconnect();`);
+  removeDevice(table : string, serial_number: string) {
+    this.data.sendToGo(`${table}:findDevice("${serial_number}"):disconnect();`);
   }
 
   async getLength(table: string): Promise<number> {

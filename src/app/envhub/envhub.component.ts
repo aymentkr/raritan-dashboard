@@ -153,7 +153,7 @@ export class EnvhubComponent implements OnInit{
           selectedItems.forEach((item: SensorPort) => {
             const index = this.dataSource[i].data.indexOf(item);
             if (index !== -1) {
-              this.sp.removeDevice('envhubs[1]', item);
+              this.sp.removeDevice('envhubs[1]', item.serial_number);
               this.dataSource[i].data.splice(index, 1);
               this.dataSource[i]._updateChangeSubscription();
             }
