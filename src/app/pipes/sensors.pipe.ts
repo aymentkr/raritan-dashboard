@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {SensorPort, Peripheral, SensorElement} from "../model/interfaces";
+import {Device, Peripheral, SensorElement} from "../model/interfaces";
 import Swal from "sweetalert2";
 import {SensorClass} from "../model/SensorClass";
 import {DataService} from "../services/data.service";
@@ -20,18 +20,18 @@ export class SensorsPipe implements PipeTransform {
     return this.sensors;
   }
 
-  infoDevice = (obj: SensorPort): void => {
+  infoDevice = (obj: Device): void => {
     let selectedSensor = this.sensors.find(sensor => sensor.type === obj.type);
     if (selectedSensor) {
       const formattedMethods = selectedSensor.methods.join('\n');
 
       Swal.fire({
-        title: 'Sensor Port ID: ' + obj.port_id,
+        title: 'Device ID: ' + obj.device_id,
         html: '<mark>' + 'Methods:' + '</mark>' + '<pre>' + formattedMethods + '</pre>',
         icon: 'info'
       });
     } else {
-      Swal.fire('Peripheral Device ID: ' + obj.port_id, 'Sensor not found', 'error');
+      Swal.fire('Peripheral Device ID: ' + obj.device_id, 'Sensor not found', 'error');
     }
   };
 
@@ -73,8 +73,8 @@ export class SensorsPipe implements PipeTransform {
   }
 
 
-  convertLinesToSensors(lines: string[]): SensorPort[] {
-    const sensors: SensorPort[] = [];
+  convertLinesToDevices(lines: string[]): Device[] {
+    const devices: Device[] = [];
     //this.size_devices = 0;
     let index = 1;
     for (const line of lines) {
@@ -85,8 +85,8 @@ export class SensorsPipe implements PipeTransform {
         this.sensors.filter((item) => {
           if (item.type === type) {
             const PeripheralDataSource = new MatTableDataSource<Peripheral>(this.getPeripheralByType(index,type));
-            sensors.push({
-              port_id: index,
+            devices.push({
+              device_id: index,
               name: item.name,
               type: item.type,
               serial_number: serialNumber,
@@ -97,7 +97,7 @@ export class SensorsPipe implements PipeTransform {
         });
       }
     }
-    return sensors;
+    return devices;
   }
 
 

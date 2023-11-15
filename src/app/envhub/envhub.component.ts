@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {Peripheral, SensorPort} from "../model/interfaces";
+import {Peripheral, Device} from "../model/interfaces";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
 import {MatDialog} from "@angular/material/dialog";
@@ -10,6 +10,7 @@ import {DataService} from "../services/data.service";
 import {AddPeripheralDeviceComponent} from "../peripheral/add-peripheral-device/add-peripheral-device.component";
 import {EditPeripheralDeviceComponent} from "../peripheral/edit-peripheral-device/edit-peripheral-device.component";
 import Swal from "sweetalert2";
+import {PeripheralClass} from "../model/PeripheralClass";
 
 @Component({
   selector: 'app-envhub',
@@ -18,16 +19,17 @@ import Swal from "sweetalert2";
 })
 export class EnvhubComponent implements OnInit{
   isLoading: boolean = true;
-  columns: string[] = ['id', 'name', 'type', 'serial_number'];
+  columns: string[] = ['device_id', 'name', 'type', 'serial_number'];
   displayedColumns: string[] = ['select' ,...this.columns,'actions']
   state!: boolean;
-  dataSource: MatTableDataSource<SensorPort>[] = [];
-  selection: SelectionModel<SensorPort>[] = [];
+  dataSource: MatTableDataSource<Device>[] = [];
+  selection: SelectionModel<Device>[] = [];
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private dialog: MatDialog,
     private sp: SensorsPipe,
+    public Peripheral: PeripheralClass,
     private cdr: ChangeDetectorRef,
     private notificationService: NotificationService,
     private data: DataService
@@ -49,9 +51,9 @@ export class EnvhubComponent implements OnInit{
     if (size === 1) {
       for (let i = 0; i < 4; i++) {
         const lines = (await this.data.getResult(`envhubs[1]:getPort(${i}):listDevices`, `print(envhubs[1]:getPort(${i}):listDevices())`)).split('\n');
-        this.dataSource[i] = new MatTableDataSource<SensorPort>(this.sp.convertLinesToSensors(lines));
+        this.dataSource[i] = new MatTableDataSource<Device>(this.sp.convertLinesToDevices(lines));
         this.dataSource[i].sort = this.sort;
-        this.selection.push(new SelectionModel<SensorPort>(true, []));
+        this.selection.push(new SelectionModel<Device>(true, []));
       }
     }
   }
@@ -85,7 +87,7 @@ export class EnvhubComponent implements OnInit{
       this.sp.saveDevice('envhubs[1]:getPort(' + p + ')', type);
       this.data.removeMap(`envhubs[1]:getPort(${p}):listDevices`);
       const lines = (await this.data.getResult(`envhubs[1]:getPort(${p}):listDevices`, `print(envhubs[1]:getPort(${p}):listDevices())`)).split('\n');
-      this.dataSource[p].data = this.sp.convertLinesToSensors(lines);
+      this.dataSource[p].data = this.sp.convertLinesToDevices(lines);
       this.dataSource[p]._updateChangeSubscription();
       this.notificationService.openToastr(`New Device with type ${type} in Port ${p} saved successfully`, 'Adding Device to Envhubs','done');
     } else {
@@ -98,7 +100,7 @@ export class EnvhubComponent implements OnInit{
     this.notificationService.openToastr('Device has been successfully updated (Envhubs), Virtual sensor operations for QEMU ','Device Modification ','done')
   }
 
-  public infoDevice = (obj: SensorPort): void => {
+  public infoDevice = (obj: Device): void => {
     this.sp.infoDevice(obj);
   };
   setFuseState(i: number) {
@@ -150,7 +152,7 @@ export class EnvhubComponent implements OnInit{
           this.dataSource[i].data = [];
           this.dataSource[i]._updateChangeSubscription();
         } else {
-          selectedItems.forEach((item: SensorPort) => {
+          selectedItems.forEach((item: Device) => {
             const index = this.dataSource[i].data.indexOf(item);
             if (index !== -1) {
               this.sp.removeDevice('envhubs[1]', item.serial_number);

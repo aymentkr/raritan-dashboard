@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {SensorPort} from "../model/interfaces";
+import {Device} from "../model/interfaces";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
 import {SensorsPipe} from "../pipes/sensors.pipe";
@@ -13,7 +13,7 @@ import {DataService} from "../services/data.service";
 })
 export class SmartlockComponent implements OnInit{
   isLoading: boolean = true;
-  dataSource = new MatTableDataSource<SensorPort>();
+  dataSource = new MatTableDataSource<Device>();
   columns : string[] = [ 'name', 'type', 'serial_number'];
   displayedColumns: string[] = ['select', ...this.columns];
   selection = new SelectionModel<any>(true, []);
@@ -30,7 +30,7 @@ export class SmartlockComponent implements OnInit{
 
   ngOnInit(): void {
     this.fetchSmartLockData()
-      .then((data: SensorPort[]) => {
+      .then((data: Device[]) => {
         this.dataSource.data = data;
         this.dataSource.sort = this.sort;
         this.cdr.detectChanges()
@@ -43,17 +43,17 @@ export class SmartlockComponent implements OnInit{
 
   async fetchSmartLockData() {
     const type = 'DX2_DH2C2';
-    const peripherals: SensorPort[] = [];
+    const peripherals: Device[] = [];
     const sizeP = parseFloat(await this.data.getResult('#sensorports', 'print(#sensorports)'));
     const sizeE = parseFloat(await this.data.getResult('#envhubs', 'print(#envhubs)'));
     if (sizeP !== 0) {
       const lines = (await this.data.getResult('sensorports[1]:listDevices', 'print(sensorports[1]:listDevices())')).split('\n');
-      peripherals.push(...this.sp.convertLinesToSensors(lines));
+      peripherals.push(...this.sp.convertLinesToDevices(lines));
     }
     if (sizeE !== 0) {
       for (let i = 0; i < 4; i++) {
         const lines = (await this.data.getResult(`envhubs[1]:getPort(${i}):listDevices`, `print(envhubs[1]:getPort(${i}):listDevices())`)).split('\n');
-        peripherals.push(...this.sp.convertLinesToSensors(lines));
+        peripherals.push(...this.sp.convertLinesToDevices(lines));
       }
     }
     return peripherals.filter((peripheral) => peripheral.type === type);

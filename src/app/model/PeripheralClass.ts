@@ -7,7 +7,7 @@ interface Size {
 
 export class PeripheralClass {
   private devices = new Map<number, Peripheral[]>();
-  private size: Size = {
+  size: Size = {
     total: 0,
   };
   constructor() {
@@ -25,7 +25,7 @@ export class PeripheralClass {
           this.size.total++;
           this.size[device.name] ++;
           peripherals.push({
-            peripheral_device_id: this.size.total ,
+            peripheral_id: this.size.total ,
             name: `${device.name}  ${this.size[device.name]}`,
             type: device.type
           });

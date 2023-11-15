@@ -4,7 +4,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {AddPeripheralDeviceComponent} from "./add-peripheral-device/add-peripheral-device.component";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
-import {Peripheral, SensorPort} from "../model/interfaces";
+import {Peripheral, Device} from "../model/interfaces";
 import {DataService} from "../services/data.service";
 import {EditPeripheralDeviceComponent} from "./edit-peripheral-device/edit-peripheral-device.component";
 import Swal from 'sweetalert2';
@@ -28,11 +28,11 @@ import {PeripheralClass} from "../model/PeripheralClass";
 })
 export class PeripheralComponent implements OnInit {
   isLoading: boolean = true;
-  dataSource = new MatTableDataSource<SensorPort>();
-  columns: string[] = ['port_id', 'name', 'type', 'serial_number'];
-  innercolumns: string[] = ['peripheral_device_id', 'name', 'type'];
+  dataSource = new MatTableDataSource<Device>();
+  columns: string[] = ['device_id', 'name', 'type', 'serial_number'];
+  innercolumns: string[] = ['peripheral_id', 'name', 'type'];
   displayedColumns: string[] = ['select', ...this.columns, 'actions'];
-  expandedElement!: SensorPort;
+  expandedElement!: Device;
   selection = new SelectionModel<any>(true, []);
   @ViewChild('outerSort', {static: true}) sort!: MatSort;
   @ViewChildren('innerTables') innerTables!: QueryList<MatTable<Peripheral>>;
@@ -41,7 +41,7 @@ export class PeripheralComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private sp: SensorsPipe,
-    private Peripheral:PeripheralClass,
+    public Peripheral:PeripheralClass,
     private cdRef: ChangeDetectorRef,
     private notificationService: NotificationService,
     private data: DataService,
@@ -64,7 +64,7 @@ export class PeripheralComponent implements OnInit {
     const size = parseFloat(await this.data.getResult('#sensorports', 'print(#sensorports)'));
     if (size === 1) {
       const lines = (await this.data.getResult('sensorports[1]:listDevices', 'print(sensorports[1]:listDevices())')).split('\n');
-      return this.sp.convertLinesToSensors(lines);
+      return this.sp.convertLinesToDevices(lines);
     } else return []
   }
 
@@ -83,7 +83,7 @@ export class PeripheralComponent implements OnInit {
     })
   }
 
-  editDevice(obj: SensorPort) {
+  editDevice(obj: Device) {
     const dialogRef = this.dialog.open(EditPeripheralDeviceComponent, {
       data: obj
     });
@@ -109,7 +109,7 @@ export class PeripheralComponent implements OnInit {
     this.notificationService.openToastr('Device has been successfully updated (Sensorports), Virtual sensor operations for QEMU ', 'Device Modification ', 'done')
   }
 
-  public infoDevice = (obj: SensorPort): void => {
+  public infoDevice = (obj: Device): void => {
     this.sp.infoDevice(obj);
   };
 
@@ -188,7 +188,7 @@ export class PeripheralComponent implements OnInit {
     return await this.sp.getLength('sensorports') == 0;
   }
 
-  toggleRow(element: SensorPort) {
+  toggleRow(element: Device) {
     this.expandedElement = element;
     this.cdRef.detectChanges();
     this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<Peripheral>).sort = this.innerSort.toArray()[index]);

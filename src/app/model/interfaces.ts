@@ -53,12 +53,12 @@ export interface DeviceElement {
 }
 
 export interface Peripheral {
-  peripheral_device_id : number,
+  peripheral_id : number,
   name : string,
   type : string,
 }
-export interface SensorPort {
-  port_id : number;
+export interface Device {
+  device_id : number;
   name : string;
   type : string;
   serial_number : string;
