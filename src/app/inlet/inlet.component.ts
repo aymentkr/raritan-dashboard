@@ -51,29 +51,33 @@ export class InletComponent implements OnInit{
     }
   }
   submitForm(formData: Switch) {
-    console.log(formData);
-    if (formData.hasOwnProperty('FaultFlags')) {
-      this.data.sendToGo(`switches[1]:setFaultFlags(${formData.FaultFlags})`);
+    const propertyMap: Record<string, (value: any) => void> = {
+      FaultFlags: value => this.data.sendToGo(`switches[1]:setFaultFlags(${value})`),
+      Inlet1FaultFlags: value => this.data.sendToGo(`switches[1]:setInlet1FaultFlags(${value})`),
+      Inlet2FaultFlags: value => this.data.sendToGo(`switches[1]:setInlet2FaultFlags(${value})`),
+      InletPhaseAngle: value => this.data.sendToGo(`switches[1]:setInletPhaseAngle(${value})`),
+      preferredInlet: value => this.data.sendToGo(`switches[1]:setPreferredInlet(${value})`),
+      BypassActiveInlet: value => this.data.sendToGo(`switches[1]:setBypassActiveInlet(${value})`),
+      BypassSelectedInlet: value => this.data.sendToGo(`switches[1]:setBypassSelectedInlet(${value})`),
+      PowerFailDetectTime: value => this.data.sendToGo(`switches[1]:setPowerFailDetectTime(${value})`),
+      RelayOpenTime: value => this.data.sendToGo(`switches[1]:setRelayOpenTime(${value})`),
+      TotalTransferTime: value => this.data.sendToGo(`switches[1]:setTotalTransferTime(${value})`),
+    };
+
+    const list: string[] = [];
+
+    for (const [property, value] of Object.entries(formData)) {
+      if (value !== null && propertyMap[property]) {
+        propertyMap[property](value);
+        list.push(property);
+      }
     }
 
-    if (formData.hasOwnProperty('Inlet1FaultFlags')) {
-      this.data.sendToGo(`switches[1]:setInlet1FaultFlags(${formData.Inlet1FaultFlags})`);
-    }
-
-    if (formData.hasOwnProperty('Inlet2FaultFlags')) {
-      this.data.sendToGo(`switches[1]:setInlet2FaultFlags(${formData.Inlet2FaultFlags})`);
-    }
-
-    if (formData.hasOwnProperty('InletPhaseAngle')) {
-      this.data.sendToGo(`switches[1]:setInletPhaseAngle(${formData.InletPhaseAngle})`);
-    }
-
-    if (formData.hasOwnProperty('preferredInlet')) {
-      this.data.sendToGo(`switches[1]:setPreferredInlet(${formData.preferredInlet})`);
-    }
-
-    // success message add all the valeus that will be changed , you can use a list ;)
+    console.log(list);
+    // Success message: Add all the values that will be changed; you can use a list ;)
   }
+
+
   generateInletRange(): number[] {
     return Array.from({ length: this.size }, (_, index) => index + 1);
   }

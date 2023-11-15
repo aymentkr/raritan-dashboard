@@ -43,14 +43,22 @@
             <mat-icon class="icon icon-star">star</mat-icon>
             <span>Preferred Settings</span>
           </div>
-          <mat-form-field>
-            <mat-label>Preferred Inlet</mat-label>
-            <mat-select [(ngModel)]="formData.preferredInlet" name="preferredInlet" disableRipple>
-              <mat-option *ngFor="let index of generateInletRange()" [value]="index">
-                Inlet {{ index }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <div class="form-fields">
+            <mat-form-field>
+              <mat-label>Preferred Inlet</mat-label>
+              <mat-select [(ngModel)]="formData.preferredInlet" name="preferredInlet" disableRipple>
+                <mat-option *ngFor="let index of generateInletRange()" [value]="index">
+                  Inlet {{ index }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Inlet Phase Angle:</mat-label>
+              <input matInput type="number" id="InletPhaseAngle" name="InletPhaseAngle"
+                     [(ngModel)]="formData.InletPhaseAngle">
+            </mat-form-field>
+          </div>
         </div>
 
         <!-- Bypass Section -->
@@ -76,7 +84,7 @@
               <mat-label>Bypass Active Inlet</mat-label>
               <mat-select [(ngModel)]="formData.BypassActiveInlet" name="BypassActiveInlet" disableRipple>
                 <!-- Default option for 0 -->
-                <mat-option value="0">0</mat-option>
+                <mat-option value="int0">0</mat-option>
                 <!-- Options generated from the range -->
                 <mat-option *ngFor="let index of generateInletRange()" [value]="index">
                   Inlet {{ index }}

@@ -35,7 +35,6 @@ export class InletTableComponent implements OnInit{
     });
   }
 
-
   async fetchInletData(){
     const inlets: Inlet[] = [];
     for (let i = 1; i <= this.inputFromParent; i++) {
@@ -94,8 +93,6 @@ export class InletTableComponent implements OnInit{
       throw new Error('inlet is null');
     }
   }
-
-
 
   cancelEdit() {
     this.editableRowIndex = -1;
