@@ -4,14 +4,17 @@ import Swal from "sweetalert2";
 import {SensorClass} from "../model/SensorClass";
 import {DataService} from "../services/data.service";
 import {MatTableDataSource} from "@angular/material/table";
+import {PeripheralClass} from "../model/PeripheralClass";
 
 @Pipe({
   name: 'sensors'
 })
 export class SensorsPipe implements PipeTransform {
   sensors = new SensorClass().getSensors();
-  size_devices = 0;
-  constructor(private data: DataService) {}
+  devices :Peripheral[] = [];
+  constructor(private data: DataService,private Peripheral: PeripheralClass) {
+
+  }
 
   transform(value: any, ...args: any[]): any {
     return this.sensors;
@@ -61,26 +64,18 @@ export class SensorsPipe implements PipeTransform {
     return this.sensors.find(sensor => sensor.type === type);
   }
 
-  getPeripheralByType(type : string) {
-    const peripherals:Peripheral[] = [];
+  getPeripheralByType(index:number,type : string) {
     const selectedSensor = this.sensors.find(sensor => sensor.type === type);
-    selectedSensor?.devices.forEach((device) => {
-      for (let i  = 1 ; i<=device.size; i++) {
-        this.size_devices++;
-        peripherals.push({
-          device_id: this.size_devices ,
-          name: `${device.name}  ${i}`,
-          type: device.type
-        });
-      }
-    });
-    return peripherals;
+    if (selectedSensor){
+      return this.Peripheral.getDevices(index,selectedSensor)
+    } else
+    return [];
   }
 
 
   convertLinesToSensors(lines: string[]): SensorPort[] {
     const sensors: SensorPort[] = [];
-    this.size_devices = 0;
+    //this.size_devices = 0;
     let index = 1;
     for (const line of lines) {
       const match = line.match(/([A-Z0-9_]+): ([A-Z0-9]+)/);
@@ -89,7 +84,7 @@ export class SensorsPipe implements PipeTransform {
         const serialNumber = match[2];
         this.sensors.filter((item) => {
           if (item.type === type) {
-            const PeripheralDataSource = new MatTableDataSource<Peripheral>(this.getPeripheralByType(type));
+            const PeripheralDataSource = new MatTableDataSource<Peripheral>(this.getPeripheralByType(index,type));
             sensors.push({
               id: index,
               name: item.name,
