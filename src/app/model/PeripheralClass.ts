@@ -25,7 +25,7 @@ export class PeripheralClass {
           this.size.total++;
           this.size[device.name] ++;
           peripherals.push({
-            device_id: this.size.total ,
+            peripheral_device_id: this.size.total ,
             name: `${device.name}  ${this.size[device.name]}`,
             type: device.type
           });

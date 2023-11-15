@@ -26,12 +26,12 @@ export class SensorsPipe implements PipeTransform {
       const formattedMethods = selectedSensor.methods.join('\n');
 
       Swal.fire({
-        title: 'Peripheral Device ID: ' + obj.id,
+        title: 'Sensor Port ID: ' + obj.port_id,
         html: '<mark>' + 'Methods:' + '</mark>' + '<pre>' + formattedMethods + '</pre>',
         icon: 'info'
       });
     } else {
-      Swal.fire('Peripheral Device ID: ' + obj.id, 'Sensor not found', 'error');
+      Swal.fire('Peripheral Device ID: ' + obj.port_id, 'Sensor not found', 'error');
     }
   };
 
@@ -52,8 +52,8 @@ export class SensorsPipe implements PipeTransform {
     this.data.sendToGo(`envhubs[1]:setFuseState(${i}, ${state})`);
   }
 
-  removeDevice(table : string, peripheral: SensorPort) {
-    this.data.sendToGo(`emu.${peripheral.type}:cast(${table}:findDevice("${peripheral.serial_number}")):disconnect();`);
+  removeDevice(table : string, serial_number: string) {
+    this.data.sendToGo(`${table}:findDevice("${serial_number}"):disconnect();`);
   }
 
   async getLength(table: string): Promise<number> {
@@ -86,7 +86,7 @@ export class SensorsPipe implements PipeTransform {
           if (item.type === type) {
             const PeripheralDataSource = new MatTableDataSource<Peripheral>(this.getPeripheralByType(index,type));
             sensors.push({
-              id: index,
+              port_id: index,
               name: item.name,
               type: item.type,
               serial_number: serialNumber,
