@@ -2,7 +2,6 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Switch} from "../../model/interfaces";
 import {DataService} from "../../services/data.service";
 import {NotificationService} from "../../services/notification.service";
-import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-transfer-switch',
@@ -72,6 +71,7 @@ export class TransferSwitchComponent implements OnInit{
   }
 
   info() {
+      /*
     Swal.fire({
       title: 'switches[1..1]:methods',
       html: '<ul>' +
@@ -86,18 +86,18 @@ export class TransferSwitchComponent implements OnInit{
         `  <li><mark>Sets bypass selected Inlet </mark>   <pre>[0=none, 1 .. ${this.inputFromParent}] </pre> </li>` +
         '</ul>',
       icon: 'info',
-    });
+    });*/
 
   }
 
-  seeDetails() {
+  seeDetails() {/*
     Swal.fire({
       title: 'Switches[1..1]:value ',
       html: `<mark> Prefered Inlet: </mark> <pre> ${this.formData.preferredInlet} </pre>`+
         `<mark> Bypass Selected Inlet: </mark> <pre> ${this.formData.BypassSelectedInlet} </pre>`+
         `<mark> Bypass Active Inlet: </mark> <pre> ${this.formData.BypassActiveInlet} </pre>`,
       icon: 'info'
-    });
+    });*/
   }
 
 

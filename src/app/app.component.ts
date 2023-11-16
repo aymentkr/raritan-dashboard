@@ -3,7 +3,6 @@ import {NotificationService} from "./services/notification.service";
 import {Observable} from "rxjs";
 import {Notification} from "./model/interfaces";
 import {DataService} from "./services/data.service";
-import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-root',
@@ -36,7 +35,7 @@ export class AppComponent implements OnInit,OnDestroy{
     window.location.reload();
   }
 
-  Connection() {
+  Connection() {/*
     let title,text: string;
     if (this.data.isConnected()) {
       title = 'Your Connection is still opened!';
@@ -68,6 +67,6 @@ export class AppComponent implements OnInit,OnDestroy{
           this.reloadPage();
         }
       }
-    });
+    });*/
   }
 }

@@ -7,7 +7,6 @@ import {MatSort} from "@angular/material/sort";
 import {Peripheral, Device} from "../model/interfaces";
 import {DataService} from "../services/data.service";
 import {EditPeripheralDeviceComponent} from "./edit-peripheral-device/edit-peripheral-device.component";
-import Swal from 'sweetalert2';
 import {NotificationService} from "../services/notification.service";
 import {SensorsPipe} from "../pipes/sensors.pipe";
 import {animate, state, style, transition, trigger} from "@angular/animations";
@@ -120,6 +119,7 @@ export class PeripheralComponent implements OnInit {
   }
 
   deleteSelectedItems() {
+      /*
     const selectedItems = this.selection.selected;
     let title, text: string;
 
@@ -174,7 +174,7 @@ export class PeripheralComponent implements OnInit {
           this.notificationService.openToastr('Selected device(s) deleted successfully from Sensorports in Peripĥerals', 'Deleting Devices', 'warning');
         }
       }
-    });
+    });*/
   }
 
 

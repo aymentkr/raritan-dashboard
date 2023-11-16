@@ -9,7 +9,6 @@ import {NotificationService} from "../services/notification.service";
 import {DataService} from "../services/data.service";
 import {AddPeripheralDeviceComponent} from "../peripheral/add-peripheral-device/add-peripheral-device.component";
 import {EditPeripheralDeviceComponent} from "../peripheral/edit-peripheral-device/edit-peripheral-device.component";
-import Swal from "sweetalert2";
 import {PeripheralClass} from "../model/PeripheralClass";
 
 @Component({
@@ -125,6 +124,7 @@ export class EnvhubComponent implements OnInit{
 
 
   deleteSelectedItems(i: number) {
+      /*
     const selectedItems = this.selection[i].selected;
     let title, text: string;
 
@@ -178,7 +178,7 @@ export class EnvhubComponent implements OnInit{
           this.notificationService.openToastr('Selected device(s) deleted successfully from Envhubs', 'Deleting Devices', 'warning');
         }
       }
-    });
+    });*/
   }
 
 

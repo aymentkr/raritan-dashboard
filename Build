@@ -1,0 +1,142 @@
+#!/bin/bash
+
+THIS_DIR="$(dirname "$(readlink -f "$0")")"
+[ -n "$THIS_DIR" ] && cd "$THIS_DIR" || exit 1
+
+source ../Config.sh
+
+# tools
+FILEPP="filepp -m foreach.pm -imacros ${FW_TOPDIR}/pp_features.h"
+
+# build paths
+PRE_BUILD_PATH="pre-build"
+BUILD_PATH="dist/my-app-2"
+BUILD_PATH_DEST_FONTS="${BUILD_PATH}/fonts"
+BUILD_PATH_DEST_IMAGES="${BUILD_PATH}/img"
+BUILD_PATH_DIST="${BUILD_PATH}/dist"
+
+# dirs in install_root
+VPX_INSTALL_ROOT_DIR="${DESTDIR}/www/vpx"
+
+# Angular 11
+ANGULAR_DEV_DEP="../angular-build"
+ANGULAR_RUNTIME_DEP="../angular-runtime/node_modules/"
+LOCAL_BUILD_DEP_FOLDER="node_modules"
+
+# CSS
+RESPONSIVE_GUI_CSS_NAME="styles"
+
+ANGULAR_BUILD_DEP_NAME="$(basename $(find ${ANGULAR_DEV_DEP}/ -name 'node_modules.*.tar.gz'))"
+ANGULAR_BUILD_DEP="${ANGULAR_DEV_DEP}/${ANGULAR_BUILD_DEP_NAME}"
+ANGULAR_BUILD_CLI="./${LOCAL_BUILD_DEP_FOLDER}/@angular/cli/bin/ng.js"
+ANGULAR_LICENSES="3rdpartylicenses.txt"
+
+# NGX extract
+NGX_TRANSLATE_EXTRACT="${FW_TOPDIR}/ngx-translate-extract"
+I18N_FILES_DIR="./localization/po"
+I18N_FILES_DIST="./localization/dist"
+PO_2_JSON_CLI="${FW_TOPDIR}/po2json/bin/po2json"
+BUILD_PATH_DEST_LANGUAGES="src/assets/i18n"
+JSON_LANGUAGE_URLS=()
+
+JSON_LANGUAGE_URLS_FILE_NAME="json-language-urls.ts"
+JSON_LANGUAGE_URLS_FILE="src/generated/${JSON_LANGUAGE_URLS_FILE_NAME}"
+JSON_LANGUAGE_URLS_FILE_DEST="localization/dist"
+
+# Create angular build hash file
+TYPESCRIPT_PATH="${FW_TOPDIR}/typescript"
+ESLINT_PATH="./node_modules/eslint/bin/eslint.js"
+
+clean_in_install_root() {
+    echo "Cleaning below install_root..."
+    if [ -n "$VPX_INSTALL_ROOT_DIR" ]; then
+        rm -rf "${VPX_INSTALL_ROOT_DIR}/dist"
+        # remove symlinks to registered OEM FAB logos
+        rm -f "${VPX_INSTALL_ROOT_DIR}/img/OemLogoBW.svg"
+        rm -f "${VPX_INSTALL_ROOT_DIR}/img/OemLogoColor.svg"
+    fi
+}
+
+error() {
+    echo "ERROR: ${FUNCNAME[1]}: $1" >&2
+}
+
+copy_to_install_root() {
+    cp -r ${BUILD_PATH}/. "${VPX_INSTALL_ROOT_DIR}"
+}
+
+cleaning_local_build_dir() {
+    echo "Cleaning local build dir..."
+    # clean staging dir for build results
+    rm -rf "$BUILD_PATH"
+    rm -rf "$PRE_BUILD_PATH"
+    rm -rf ${I18N_FILES_DIST}
+    rm -rf ${BUILD_PATH_DEST_LANGUAGES}
+
+    # clean in install_root
+    clean_in_install_root
+}
+
+install_local_node_dependency() {
+    if [ ! -d "$LOCAL_BUILD_DEP_FOLDER" ]; then
+        echo "Install local node build dependency..."
+
+        # delete node folder
+        rm -rf "$LOCAL_BUILD_DEP_FOLDER"
+
+        # create new node folder
+        mkdir -p $LOCAL_BUILD_DEP_FOLDER
+
+        echo "Install Build dependencies..."
+        tar xzf $ANGULAR_BUILD_DEP -C $LOCAL_BUILD_DEP_FOLDER
+
+        echo "Install Runtime dependencies..."
+        cp -a $ANGULAR_RUNTIME_DEP/* $LOCAL_BUILD_DEP_FOLDER
+
+        echo "Install Typescript compiler... (symlink)"
+        ln -s "$TYPESCRIPT_PATH" "${LOCAL_BUILD_DEP_FOLDER}/typescript"
+    fi
+}
+
+pp_clean_local () {
+    cleaning_local_build_dir
+
+    echo "Cleaning angular tmp dir..."
+    # clean tmp .angular dir
+    rm -rf "./.angular"
+
+    echo "Cleaning local build dependency..."
+    # clean build dependency
+    rm -rf "$LOCAL_BUILD_DEP_FOLDER"
+
+    # clean in install_root
+    clean_in_install_root
+}
+
+pp_build_local () {
+    cleaning_local_build_dir
+
+    # Install local node build dependency...
+    install_local_node_dependency
+
+    if [[ $PP_CONFIG_BUILD_TYPE == devel ]]; then
+        echo "Build Devel GUI via Angular-CLI..."
+        $ANGULAR_BUILD_CLI build --configuration="development"
+    fi
+    copy_to_install_root
+    pp_build_default "$@"
+}
+
+pp_moddeps_local () {
+    echo filepp
+    echo bootstrap
+    echo roboto-fonts
+    echo angular-build
+    echo angular-runtime
+}
+
+pp_test_local () {
+    :
+}
+
+pp_do "$@"

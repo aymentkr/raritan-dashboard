@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import {Device, Peripheral, SensorElement} from "../model/interfaces";
-import Swal from "sweetalert2";
 import {SensorClass} from "../model/SensorClass";
 import {DataService} from "../services/data.service";
 import {MatTableDataSource} from "@angular/material/table";
@@ -21,6 +20,7 @@ export class SensorsPipe implements PipeTransform {
   }
 
   infoDevice = (obj: Device): void => {
+      /*
     let selectedSensor = this.sensors.find(sensor => sensor.type === obj.type);
     if (selectedSensor) {
       const formattedMethods = selectedSensor.methods.join('\n');
@@ -32,7 +32,7 @@ export class SensorsPipe implements PipeTransform {
       });
     } else {
       Swal.fire('Peripheral Device ID: ' + obj.device_id, 'Sensor not found', 'error');
-    }
+    }*/
   };
 
   removeAll(table:string) {

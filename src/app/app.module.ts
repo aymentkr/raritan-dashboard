@@ -42,7 +42,6 @@ import { SettingsComponent } from './settings/settings.component';
 import {MatCardModule} from "@angular/material/card";
 import { SmartlockComponent } from './smartlock/smartlock.component';
 import {MatBadgeModule} from "@angular/material/badge";
-import {ToastrModule} from "ngx-toastr";
 import { SensorsPipe } from './pipes/sensors.pipe';
 import { EnvhubComponent } from './envhub/envhub.component';
 import {InletPoleTableComponent} from "./inlet/inlet-pole-table/inlet-pole-table.component";
@@ -103,7 +102,6 @@ import {PeripheralClass} from "./model/PeripheralClass";
     MatSlideToggleModule,
     MatCardModule,
     MatBadgeModule,
-    ToastrModule.forRoot(),
   ],
   providers: [WebsocketService,DataService,SensorsPipe,PeripheralClass],
   bootstrap: [AppComponent]

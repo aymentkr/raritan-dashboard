@@ -1,5 +1,4 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
 import { Injectable } from '@angular/core';
 import { Notification } from '../model/interfaces';
 
@@ -10,12 +9,13 @@ export class NotificationService {
   private notifications: Notification[] = [];
   private notificationsSubject: BehaviorSubject<Notification[]> = new BehaviorSubject<Notification[]>(this.notifications);
 
-  constructor(private toast: ToastrService) {}
+  constructor() {}
 
   getNotifications(): Observable<Notification[]> {
     return this.notificationsSubject.asObservable();
   }
   openToastr(message: string, title: string, alert: 'error' | 'info' | 'done' | 'warning') {
+      /*
     const timeString = new Date().toLocaleString();
     switch (alert) {
       case 'error':
@@ -39,7 +39,7 @@ export class NotificationService {
       time: timeString,
       message: message,
       alert: alert,
-    });
+    });*/
   }
 
   addNotification(notification: Notification): void {

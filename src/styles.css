@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
-@import 'ngx-toastr/toastr';
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
 :root {
   --surface-card: #ffffff;

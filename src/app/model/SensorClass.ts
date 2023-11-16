@@ -303,17 +303,17 @@ export class SensorClass {
       methods: ['setDoorState', 'setHandleState', 'setCardId', 'setPIN'],
       devices: [
         {
-          size:1,
+          size:2,
           name: 'Door Lock',
           type : 'Door Lock'
         },
         {
-          size : 1,
+          size : 2,
           name: 'Door Handle',
           type : 'Handle State'
         },
         {
-          size : 1,
+          size : 2,
           name: 'Door State',
           type : 'Door State'
         },
