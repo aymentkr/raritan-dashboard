@@ -11,6 +11,7 @@ import {NotificationService} from "../services/notification.service";
 import {SensorsPipe} from "../pipes/sensors.pipe";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {PeripheralClass} from "../model/PeripheralClass";
+import {DeleteDeviceDialogComponent} from "./delete-device-dialog/delete-device-dialog.component";
 
 
 @Component({
@@ -119,18 +120,13 @@ export class PeripheralComponent implements OnInit {
   }
 
   deleteSelectedItems() {
-      /*
-    const selectedItems = this.selection.selected;
-    let title, text: string;
-
-    if (this.isAllSelected()) {
-      title = 'Are you sure?';
-      text = 'you want to remove all devices?';
-    } else {
-      title = 'Are you sure?';
-      text = 'You want to remove the selected device(s)?';
-    }
-
+    this.dialog.open(DeleteDeviceDialogComponent, {
+      width: '250px',
+      data: {
+        isAllSelected: this.isAllSelected()
+      }
+    });
+    /*
     Swal.fire({
       title: title,
       text: text,

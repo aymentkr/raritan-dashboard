@@ -89,3 +89,6 @@ tr.example-element-row:not(.example-expanded-row):active {
   border: none; /* Remove border from action button */
 }
 
+button {
+  margin-right: 8px;
+}

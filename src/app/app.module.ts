@@ -48,6 +48,7 @@ import {InletPoleTableComponent} from "./inlet/inlet-pole-table/inlet-pole-table
 import {InletTableComponent} from "./inlet/inlet-table/inlet-table.component";
 import { TransferSwitchComponent } from './inlet/transfer-switch/transfer-switch.component';
 import {PeripheralClass} from "./model/PeripheralClass";
+import { DeleteDeviceDialogComponent } from './peripheral/delete-device-dialog/delete-device-dialog.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import {PeripheralClass} from "./model/PeripheralClass";
     SensorsPipe,
     EnvhubComponent,
     TransferSwitchComponent,
+    DeleteDeviceDialogComponent,
   ],
   imports: [
     AppRoutingModule,
