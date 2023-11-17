@@ -1,5 +1,5 @@
 import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-delete-device-dialog',
@@ -9,10 +9,14 @@ import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 export class DeleteDeviceDialogComponent {
   msgContent ='';
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+  constructor(private dialogRef: MatDialogRef<DeleteDeviceDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
     if (data.isAllSelected)
       this.msgContent = 'you want to remove all devices?';
     else
       this.msgContent = 'You want to remove the selected device(s)?';
+  }
+
+  onYesClick(): void {
+    this.dialogRef.close(true);
   }
 }

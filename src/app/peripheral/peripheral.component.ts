@@ -120,29 +120,22 @@ export class PeripheralComponent implements OnInit {
   }
 
   deleteSelectedItems() {
-    this.dialog.open(DeleteDeviceDialogComponent, {
+    const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
       width: '250px',
       data: {
-        isAllSelected: this.isAllSelected()
-      }
+        isAllSelected: this.isAllSelected(),
+      },
     });
-    /*
-    Swal.fire({
-      title: title,
-      text: text,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
         this.data.removeMap(`sensorports[1]:listDevices`);
         if (this.isAllSelected()) {
           this.sp.removeAll('sensorports[1]');
           this.dataSource.data = [];
           this.dataSource._updateChangeSubscription();
         } else {
+          const selectedItems = this.selection.selected;
           selectedItems.forEach(item => {
             const index = this.dataSource.data.indexOf(item);
             if (index !== -1) {
@@ -155,22 +148,12 @@ export class PeripheralComponent implements OnInit {
         this.selection.clear();
         this.Peripheral.clear();
         if (this.isAllSelected()) {
-          Swal.fire(
-            'Deleted!',
-            'All devices deleted successfully',
-            'success'
-          )
           this.notificationService.openToastr('All devices deleted successfully from Sensorports in Peripĥerals', 'Deleting Devices', 'warning');
         } else {
-          Swal.fire(
-            'Deleted!',
-            'Selected device(s) deleted successfully',
-            'success'
-          )
           this.notificationService.openToastr('Selected device(s) deleted successfully from Sensorports in Peripĥerals', 'Deleting Devices', 'warning');
         }
       }
-    });*/
+    });
   }
 
 
