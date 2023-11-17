@@ -10,6 +10,7 @@ import {DataService} from "../services/data.service";
 import {AddPeripheralDeviceComponent} from "../peripheral/add-peripheral-device/add-peripheral-device.component";
 import {EditPeripheralDeviceComponent} from "../peripheral/edit-peripheral-device/edit-peripheral-device.component";
 import {PeripheralClass} from "../model/PeripheralClass";
+import {DeleteDeviceDialogComponent} from "../peripheral/delete-device-dialog/delete-device-dialog.component";
 
 @Component({
   selector: 'app-envhub',
@@ -122,36 +123,23 @@ export class EnvhubComponent implements OnInit{
     return numSelected === numRows;
   }
 
-
   deleteSelectedItems(i: number) {
-      /*
-    const selectedItems = this.selection[i].selected;
-    let title, text: string;
+    const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
+      width: '250px',
+      data: {
+        isAllSelected: this.isAllSelected(i),
+      },
+    });
 
-    if (this.isAllSelected(i)) {
-      title = 'Are you sure?';
-      text = 'you want to remove all devices?';
-    } else {
-      title = 'Are you sure?';
-      text = 'You want to remove the selected device(s)?';
-    }
-
-    Swal.fire({
-      title: title,
-      text: text,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
         this.data.removeMap(`envhubs[1]:getPort(${i}):listDevices`);
         if (this.isAllSelected(i)) {
           this.sp.removeAll(`envhubs[1]:getPort(${i})`);
           this.dataSource[i].data = [];
           this.dataSource[i]._updateChangeSubscription();
         } else {
+          const selectedItems = this.selection[i].selected;
           selectedItems.forEach((item: Device) => {
             const index = this.dataSource[i].data.indexOf(item);
             if (index !== -1) {
@@ -163,22 +151,12 @@ export class EnvhubComponent implements OnInit{
         }
         this.selection[i].clear();
         if (this.isAllSelected(i)) {
-          Swal.fire(
-            'Deleted!',
-            'All devices deleted successfully',
-            'success'
-          )
           this.notificationService.openToastr('All devices deleted successfully from Envhubs', 'Deleting Devices', 'warning');
         } else {
-          Swal.fire(
-            'Deleted!',
-            'Selected device(s) deleted successfully',
-            'success'
-          )
           this.notificationService.openToastr('Selected device(s) deleted successfully from Envhubs', 'Deleting Devices', 'warning');
         }
       }
-    });*/
+    });
   }
 
 
