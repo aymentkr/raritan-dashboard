@@ -10,8 +10,10 @@ import {NotificationService} from "../services/notification.service";
   name: 'sensors'
 })
 export class SensorsPipe implements PipeTransform {
+  DeviceMap = new Map<string,Device>;
+  peripheralMap = new Map<number,Device>;
+  pIndex = 0 ;
   sensors = new SensorClass().getSensors();
-  devices :Peripheral[] = [];
   constructor(
     private data: DataService,
     private Peripheral: PeripheralClass,
@@ -72,26 +74,35 @@ export class SensorsPipe implements PipeTransform {
 
   convertLinesToDevices(lines: string[]): Device[] {
     const devices: Device[] = [];
-    //this.size_devices = 0;
     for (const line of lines) {
       const match = line.match(/([A-Z0-9_]+): ([A-Z0-9]+)/);
       if (match) {
         const type = match[1];
         const serialNumber = match[2];
-        this.sensors.filter((item) => {
-          if (item.type === type) {
-            const PeripheralDataSource = new MatTableDataSource<Peripheral>(this.getPeripheralByType(type));
-            devices.push({
-              device_id: this.Peripheral.getIndex(),
-              name: item.name,
-              type: item.type,
-              serial_number: serialNumber,
-              peripherals: PeripheralDataSource,
-            });
+        this.sensors.filter((sensor) => {
+          if (sensor.type === type) {
+            const device = this.DeviceMap.get(type)
+            if (device) {
+              devices.push(device);
+            }
+            else {
+              this.pIndex++;
+              const PeripheralDataSource = new MatTableDataSource<Peripheral>(this.getPeripheralByType(type));
+              const dev : Device = {
+                device_id: this.pIndex,
+                name: sensor.name,
+                type: sensor.type,
+                serial_number: serialNumber,
+                peripherals: PeripheralDataSource,
+              }
+              devices.push(dev)
+              this.DeviceMap.set(type,dev);
+            }
           }
         });
       }
     }
+    console.log(this.DeviceMap)
     return devices;
   }
 

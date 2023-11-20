@@ -358,7 +358,23 @@ export class SensorClass {
       generation: 3,
       prefix: '28G',
       methods: ['setCableLength', 'setLeakDetected', 'setLeakDistance', 'setCableLengthInvalid', 'setLeakDistanceInvalid'],
-      devices: []
+      devices: [
+        {
+        size:1,
+        name: 'Leakage Detector',
+        type: 'Water Detection',
+        },
+        {
+          size:1,
+          name: 'Distance',
+          type: 'Leak Distance',
+        },
+        {
+          size:1,
+          name: 'Length',
+          type: 'Cable Length',
+        },
+      ]
     },
     {
       name: 'Particle Sensor',
@@ -366,9 +382,35 @@ export class SensorClass {
       generation: 3,
       prefix: '2D7',
       methods: ['setMassPM10', 'setMassPM25', 'setMassPM40', 'setMassPM100', 'setMassInvalid'],
-      devices: []
+      devices: [
+        {
+          size:1,
+          name: 'Particle Density PM10.0',
+          type: 'particle Density',
+        },
+        {
+          size:1,
+          name: 'Particle Density PM1.0',
+          type: 'particle Density',
+        },
+        {
+          size:1,
+          name: 'Particle Density PM2.5',
+          type: 'particle Density',
+        },
+        {
+          size:1,
+          name: 'Particle Density PM4.0',
+          type: 'particle Density',
+        },
+      ]
     }
   ];
+
+  constructor() {
+  }
+
+
 
   getSensors(): SensorElement[] {
     return this.sensors;

@@ -146,7 +146,6 @@ export class PeripheralComponent implements OnInit {
           });
         }
         this.selection.clear();
-        this.Peripheral.clear();
         if (this.isAllSelected()) {
           this.notificationService.openToastr('All devices deleted successfully from Sensorports in Peripĥerals', 'Deleting Devices', 'warning');
         } else {

@@ -6,20 +6,12 @@ interface Size {
 }
 
 export class PeripheralClass {
-  private devices = new Map<number, Peripheral[]>();
   size: Size = {
     total: 0,
   };
-  index=0;
   constructor() {
   }
-
-  getIndex() {
-    return this.index;
-  }
-
   getDevices(selectedSensor: SensorElement) {
-    this.index ++;
     const peripherals:Peripheral[] = [];
     selectedSensor.devices.forEach((device) => {
       this.size.total+=device.size;
@@ -36,15 +28,7 @@ export class PeripheralClass {
         });
       }
     });
-    this.devices.set(this.index,peripherals);
-    return this.devices.get(this.index);
-  }
-
-  clear (){
-    this.devices.clear();
-    this.size = {
-      total: 0
-    }
+    return peripherals
   }
 
 }
