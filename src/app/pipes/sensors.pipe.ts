@@ -4,6 +4,7 @@ import {SensorClass} from "../model/SensorClass";
 import {DataService} from "../services/data.service";
 import {MatTableDataSource} from "@angular/material/table";
 import {PeripheralClass} from "../model/PeripheralClass";
+import {NotificationService} from "../services/notification.service";
 
 @Pipe({
   name: 'sensors'
@@ -11,28 +12,24 @@ import {PeripheralClass} from "../model/PeripheralClass";
 export class SensorsPipe implements PipeTransform {
   sensors = new SensorClass().getSensors();
   devices :Peripheral[] = [];
-  constructor(private data: DataService,private Peripheral: PeripheralClass) {
-
-  }
+  constructor(
+    private data: DataService,
+    private Peripheral: PeripheralClass,
+    private notificationService: NotificationService,
+  ) {}
 
   transform(value: any, ...args: any[]): any {
     return this.sensors;
   }
 
   infoDevice = (obj: Device): void => {
-      /*
     let selectedSensor = this.sensors.find(sensor => sensor.type === obj.type);
     if (selectedSensor) {
       const formattedMethods = selectedSensor.methods.join('\n');
-
-      Swal.fire({
-        title: 'Device ID: ' + obj.device_id,
-        html: '<mark>' + 'Methods:' + '</mark>' + '<pre>' + formattedMethods + '</pre>',
-        icon: 'info'
-      });
+      this.notificationService.openToastr(formattedMethods, `Device ID: ${obj.device_id} (Methods)`, 'info');
     } else {
-      Swal.fire('Peripheral Device ID: ' + obj.device_id, 'Sensor not found', 'error');
-    }*/
+      this.notificationService.openToastr('Peripheral Device ID: ' + obj.device_id, 'Sensor not found', 'error');
+    }
   };
 
   removeAll(table:string) {
