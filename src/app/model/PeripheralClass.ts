@@ -6,29 +6,34 @@ interface Size {
 }
 
 export class PeripheralClass {
+  private devices = new Map<number, Peripheral[]>();
   size: Size = {
     total: 0,
   };
   constructor() {
   }
-  getDevices(selectedSensor: SensorElement) {
-    const peripherals:Peripheral[] = [];
-    selectedSensor.devices.forEach((device) => {
-      this.size.total+=device.size;
-      for (let i  = 1 ; i<=device.size; i++) {
-        // Update device-specific size
-        if (!this.size[device.name]) {
-          this.size[device.name] = 0;
+
+  getDevices(index:number,selectedSensor: SensorElement) {
+    if (!this.devices.get(index)){
+      const peripherals:Peripheral[] = [];
+      selectedSensor.devices.forEach((device) => {
+        for (let i  = 1 ; i<=device.size; i++) {
+          // Update device-specific size
+          if (!this.size[device.name]) {
+            this.size[device.name] = 0;
+          }
+          this.size.total++;
+          this.size[device.name] ++;
+          peripherals.push({
+            peripheral_id: this.size.total ,
+            name: `${device.name}  ${this.size[device.name]}`,
+            type: device.type
+          });
         }
-        this.size[device.name] ++;
-        peripherals.push({
-          peripheral_id: this.size.total ,
-          name: `${device.name}  ${this.size[device.name]}`,
-          type: device.type
-        });
-      }
-    });
-    return peripherals
+      });
+      this.devices.set(index,peripherals);
+    }
+    return this.devices.get(index);
   }
 
 }

@@ -10,9 +10,8 @@ import {NotificationService} from "../services/notification.service";
   name: 'sensors'
 })
 export class SensorsPipe implements PipeTransform {
-  DeviceMap = new Map<string,Device>;
-  peripheralMap = new Map<number,Device>;
-  pIndex = 0 ;
+  deviceMap = new Map<string,Device>;
+  device_id = 1;
   sensors = new SensorClass().getSensors();
   constructor(
     private data: DataService,
@@ -63,14 +62,13 @@ export class SensorsPipe implements PipeTransform {
     return this.sensors.find(sensor => sensor.type === type);
   }
 
-  getPeripheralByType(type : string) {
+  getPeripheralByType(index:number,type : string) {
     const selectedSensor = this.sensors.find(sensor => sensor.type === type);
     if (selectedSensor){
-      return this.Peripheral.getDevices(selectedSensor)
+      return this.Peripheral.getDevices(index,selectedSensor)
     } else
-    return [];
+      return [];
   }
-
 
   convertLinesToDevices(lines: string[]): Device[] {
     const devices: Device[] = [];
@@ -79,30 +77,28 @@ export class SensorsPipe implements PipeTransform {
       if (match) {
         const type = match[1];
         const serialNumber = match[2];
-        this.sensors.filter((sensor) => {
-          if (sensor.type === type) {
-            const device = this.DeviceMap.get(type)
-            if (device) {
-              devices.push(device);
-            }
-            else {
-              this.pIndex++;
-              const PeripheralDataSource = new MatTableDataSource<Peripheral>(this.getPeripheralByType(type));
+        const myDevice = this.deviceMap.get(serialNumber);
+        if (myDevice) {
+          devices.push(myDevice);
+        } else {
+          this.sensors.filter((item) => {
+            if (item.type === type) {
+              const PeripheralDataSource = new MatTableDataSource<Peripheral>(this.getPeripheralByType(this.device_id,type));
               const dev : Device = {
-                device_id: this.pIndex,
-                name: sensor.name,
-                type: sensor.type,
+                device_id: this.device_id,
+                name: item.name,
+                type: item.type,
                 serial_number: serialNumber,
                 peripherals: PeripheralDataSource,
               }
-              devices.push(dev)
-              this.DeviceMap.set(type,dev);
+              devices.push(dev);
+              this.deviceMap.set(serialNumber,dev);
+              this.device_id++;
             }
-          }
-        });
+          });
+        }
       }
     }
-    console.log(this.DeviceMap)
     return devices;
   }
 
