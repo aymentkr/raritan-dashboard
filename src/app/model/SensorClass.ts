@@ -119,6 +119,11 @@ export class SensorClass {
           size:1,
           name: 'Relative humidity',
           type: 'Humidity',
+        },
+        {
+          size: 1,
+          name: 'Dew Point',
+          type: 'Dew Point',
         }]
     },
     {
@@ -142,6 +147,11 @@ export class SensorClass {
           size:1,
           name: 'Relative humidity',
           type: 'Humidity',
+        },
+        {
+          size: 1,
+          name: 'Dew Point',
+          type: 'Dew Point',
         }]
     },
     {
@@ -165,7 +175,12 @@ export class SensorClass {
           size: 1,
           name: 'Absolute Humidity',
           type: 'Absolute Humidity',
-        },]
+        },
+        {
+          size: 1,
+          name: 'Dew Point',
+          type: 'Dew Point',
+        }]
     },
     {
       name: 'Dry Contact/Contact Closure 1',

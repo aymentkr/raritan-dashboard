@@ -64,10 +64,10 @@ export class SensorsPipe implements PipeTransform {
     return this.sensors.find(sensor => sensor.type === type);
   }
 
-  getPeripheralByType(index:number,type : string) {
+  getPeripheralByType(type : string) {
     const selectedSensor = this.sensors.find(sensor => sensor.type === type);
     if (selectedSensor){
-      return this.Peripheral.getDevices(index,selectedSensor)
+      return this.Peripheral.getDevices(selectedSensor)
     } else
     return [];
   }
@@ -76,7 +76,6 @@ export class SensorsPipe implements PipeTransform {
   convertLinesToDevices(lines: string[]): Device[] {
     const devices: Device[] = [];
     //this.size_devices = 0;
-    let index = 1;
     for (const line of lines) {
       const match = line.match(/([A-Z0-9_]+): ([A-Z0-9]+)/);
       if (match) {
@@ -84,15 +83,14 @@ export class SensorsPipe implements PipeTransform {
         const serialNumber = match[2];
         this.sensors.filter((item) => {
           if (item.type === type) {
-            const PeripheralDataSource = new MatTableDataSource<Peripheral>(this.getPeripheralByType(index,type));
+            const PeripheralDataSource = new MatTableDataSource<Peripheral>(this.getPeripheralByType(type));
             devices.push({
-              device_id: index,
+              device_id: this.Peripheral.getIndex(),
               name: item.name,
               type: item.type,
               serial_number: serialNumber,
               peripherals: PeripheralDataSource,
             });
-            index++;
           }
         });
       }

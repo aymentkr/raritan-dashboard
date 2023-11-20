@@ -1,5 +1,5 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import {MatTableDataSource} from "@angular/material/table";
+import {ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {MatTable, MatTableDataSource} from "@angular/material/table";
 import {Peripheral, Device} from "../model/interfaces";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
@@ -11,26 +11,38 @@ import {AddPeripheralDeviceComponent} from "../peripheral/add-peripheral-device/
 import {EditPeripheralDeviceComponent} from "../peripheral/edit-peripheral-device/edit-peripheral-device.component";
 import {PeripheralClass} from "../model/PeripheralClass";
 import {DeleteDeviceDialogComponent} from "../peripheral/delete-device-dialog/delete-device-dialog.component";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-envhub',
   templateUrl: './envhub.component.html',
-  styleUrls: ['./envhub.component.css']
+  styleUrls: ['./envhub.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed,void', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
 })
 export class EnvhubComponent implements OnInit{
   isLoading: boolean = true;
+  dataSource: MatTableDataSource<Device>[] = [];
   columns: string[] = ['device_id', 'name', 'type', 'serial_number'];
+  innercolumns: string[] = ['peripheral_id', 'name', 'type'];
   displayedColumns: string[] = ['select' ,...this.columns,'actions']
   state!: boolean;
-  dataSource: MatTableDataSource<Device>[] = [];
+  expandedElement!: Device;
   selection: SelectionModel<Device>[] = [];
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChildren('innerTables') innerTables!: QueryList<MatTable<Peripheral>>;
+  @ViewChildren('innerSort') innerSort!: QueryList<MatSort>;
 
   constructor(
     private dialog: MatDialog,
     private sp: SensorsPipe,
     public Peripheral: PeripheralClass,
-    private cdr: ChangeDetectorRef,
+    private cdRef: ChangeDetectorRef,
     private notificationService: NotificationService,
     private data: DataService
   ) {}
@@ -38,7 +50,7 @@ export class EnvhubComponent implements OnInit{
   ngOnInit(): void {
     this.fetchEnvhubsData()
       .then(() => {
-        this.cdr.detectChanges();
+        this.cdRef.detectChanges();
         this.isLoading = false;
       })
       .catch((error) => {
@@ -80,6 +92,7 @@ export class EnvhubComponent implements OnInit{
       if (result) this.editRowData(result.data);
     });
   }
+
 
   async addRowData(type: string, p: number ) {
     if (type != '' ) {
@@ -158,10 +171,14 @@ export class EnvhubComponent implements OnInit{
       }
     });
   }
-
-
   async isEmpty(): Promise<boolean> {
     return await this.sp.getLength('envhubs') == 0;
+  }
+
+  toggleRow(element: Device) {
+    this.expandedElement = element;
+    this.cdRef.detectChanges();
+    this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<Peripheral>).sort = this.innerSort.toArray()[index]);
   }
 
 }

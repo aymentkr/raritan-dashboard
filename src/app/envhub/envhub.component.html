@@ -17,7 +17,7 @@
                 <button mat-icon-button color="warn" (click)="deleteSelectedItems(i)" [hidden]="!selection[i].hasValue()">
                   <mat-icon>delete</mat-icon>
                 </button>
-                <table mat-table [dataSource]="port" matSort class="mat-elevation-z8">
+                <table mat-table #outerSort="matSort" [dataSource]="port" class="my-table mat-elevation-z8" matSort multiTemplateDataRows>
                   <!-- Selection Column -->
                   <ng-container matColumnDef="select">
                     <th mat-header-cell *matHeaderCellDef>
@@ -38,6 +38,26 @@
                       <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
                     </ng-container>
                   </ng-container>
+
+                  <!-- expandedDetail Column -->
+                  <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+                      <div class="example-element-detail" *ngIf="element.peripherals.data.length" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                        <div class="inner-table mat-elevation-z8" *ngIf="expandedElement">
+                          <table #innerTables mat-table [dataSource]="expandedElement.peripherals" matSort>
+                            <!-- Add a new row for the button -->
+                            <ng-container *ngFor="let innerColumn of innercolumns" matColumnDef="{{innerColumn}}">
+                              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ innerColumn }}</th>
+                              <td mat-cell *matCellDef="let innerElement">{{ innerElement[innerColumn] }}</td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="innercolumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: innercolumns"></tr>
+                          </table>
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+
                   <!-- Actions Column -->
                   <ng-container matColumnDef="actions">
                     <th mat-header-cell *matHeaderCellDef="let element">
@@ -55,7 +75,12 @@
                     </td>
                   </ng-container>
                   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
+                      [class.example-expanded-row]="expandedElement === row"
+                      [class.selected-row]="expandedElement === row"
+                      (click)="toggleRow(row)">
+                  </tr>
+                  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
                 </table>
               </ng-container>
               <ng-container *ngIf="port.data.length === 0">
