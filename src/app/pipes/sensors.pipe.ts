@@ -102,5 +102,9 @@ export class SensorsPipe implements PipeTransform {
     return devices;
   }
 
+  getDeviceMap(){
+    return this.deviceMap;
+  }
+
 
 }

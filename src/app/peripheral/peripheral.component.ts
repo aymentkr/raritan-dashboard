@@ -29,8 +29,10 @@ import {DeleteDeviceDialogComponent} from "./delete-device-dialog/delete-device-
 export class PeripheralComponent implements OnInit {
   isLoading: boolean = true;
   dataSource = new MatTableDataSource<Device>();
+  VPDdataSource = new MatTableDataSource<any>();
   columns: string[] = ['device_id', 'name', 'type', 'serial_number'];
   innercolumns: string[] = ['peripheral_id', 'name', 'type'];
+  vpdcolumns: string[] = ['peripheral_id','device_name','device_type','sensor_type','serial_number']
   displayedColumns: string[] = ['select', ...this.columns, 'actions'];
   expandedElement!: Device;
   selection = new SelectionModel<any>(true, []);
@@ -54,8 +56,7 @@ export class PeripheralComponent implements OnInit {
       this.dataSource.sort = this.sort;
       this.cdRef.detectChanges();
       this.isLoading = false;
-    })
-      .catch((error) => {
+    }).catch((error) => {
         console.error('Data fetching failed:', error);
       });
   }

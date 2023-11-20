@@ -95,6 +95,30 @@
       <mat-card-subtitle>[{{ Peripheral.size.total }}]</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
+      <div class="spinner-container" *ngIf="isLoading; else VPDs">
+        <mat-spinner></mat-spinner>
+      </div>
+      <ng-template #VPDs>
+        <mat-divider></mat-divider>
+        <!-- Apply MatSort directive to the mat-table element -->
+        <table mat-table [dataSource]="VPDdataSource | devices" class="my-table mat-elevation-z8" matSort>
+
+          <!-- Column definition using ngFor -->
+          <ng-container *ngFor="let column of vpdcolumns" matColumnDef="{{column}}">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column.toUpperCase() }}</th>
+            <td mat-cell *matCellDef="let innerElement">{{ innerElement[column] }}</td>
+          </ng-container>
+
+          <!-- Header row definition -->
+          <tr mat-header-row *matHeaderRowDef="vpdcolumns"></tr>
+
+          <!-- Row definition -->
+          <tr mat-row *matRowDef="let row; columns: vpdcolumns"></tr>
+        </table>
+      </ng-template>
+      <ng-container *ngIf="Peripheral.size.total === 0">
+        <h2>No Virtual Peripheral Device available</h2>
+      </ng-container>
     </mat-card-content>
   </mat-card>
 </div>
