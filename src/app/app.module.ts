@@ -50,6 +50,7 @@ import { TransferSwitchComponent } from './inlet/transfer-switch/transfer-switch
 import {PeripheralClass} from "./model/PeripheralClass";
 import { DeleteDeviceDialogComponent } from './peripheral/delete-device-dialog/delete-device-dialog.component';
 import { DevicesPipe } from './pipes/devices.pipe';
+import { SensorportComponent } from './sensorport/sensorport.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { DevicesPipe } from './pipes/devices.pipe';
     TransferSwitchComponent,
     DeleteDeviceDialogComponent,
     DevicesPipe,
+    SensorportComponent,
   ],
   imports: [
     AppRoutingModule,

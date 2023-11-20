@@ -9,6 +9,7 @@ import {SettingsComponent} from "./settings/settings.component";
 import {SmartlockComponent} from "./smartlock/smartlock.component";
 import {DeactivateGuard} from "./deactivate.guard";
 import {EnvhubComponent} from "./envhub/envhub.component";
+import {SensorportComponent} from "./sensorport/sensorport.component";
 
 
 const routes: Routes= [
@@ -17,6 +18,7 @@ const routes: Routes= [
   {path: 'inlets', component:InletComponent,canDeactivate: [DeactivateGuard]},
   {path: 'ocps', component:OcpsComponent,canDeactivate: [DeactivateGuard]},
   {path: 'peripherals', component:PeripheralComponent,canDeactivate: [DeactivateGuard]},
+  {path: 'sensorport', component:SensorportComponent,canDeactivate: [DeactivateGuard]},
   {path: 'envhub', component:EnvhubComponent,canDeactivate: [DeactivateGuard]},
   {path: 'smartlock', component:SmartlockComponent,canDeactivate: [DeactivateGuard]},
   {path: 'settings', component:SettingsComponent},
