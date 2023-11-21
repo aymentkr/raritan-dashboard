@@ -60,8 +60,9 @@ export interface Peripheral {
 
 export interface VPD {
   peripheral_id :number,
-  device_name : string,
-  device_type : string,
+  name : string,
+  type : string,
+  sensor_name : string,
   sensor_type : string,
   serial_number : string
 }

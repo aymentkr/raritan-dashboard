@@ -18,8 +18,9 @@ export class DevicesPipe implements PipeTransform {
       device.peripherals.data.forEach((peripheral) => {
         VPDs.push({
           peripheral_id: peripheral.peripheral_id,
-          device_name: device.name,
-          device_type: peripheral.type,
+          name: peripheral.name,
+          type: peripheral.type,
+          sensor_name: device.name,
           sensor_type: device.type,
           serial_number: serial_number,
         });

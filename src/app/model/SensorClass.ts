@@ -1,6 +1,27 @@
 import {SensorElement} from "./interfaces";
 
 export class SensorClass {
+  deviceTypes: string[] = [
+    'Air Flow',
+    'Temperature',
+    'Air Pressure',
+    'Absolute Humidity',
+    'Humidity',
+    'Dew Point',
+    'Dry Contact',
+    'Contact Closure',
+    'Magnetic Contact',
+    'Motion Detected',
+    'Tamper Alarm',
+    'Door Lock',
+    'Handle State',
+    'Door State',
+    'Vibration',
+    'Water Detection',
+    'Leak Distance',
+    'Cable Length',
+    'Particle Density',
+  ];
   sensors: SensorElement[] = [
     {
       name: 'Air Flow 1',
@@ -10,8 +31,8 @@ export class SensorClass {
       methods: ['setAirFlow'],
       devices: [{
         size:1,
-        name: 'Air Flow',
-        type: 'Air Flow',
+        name: this.deviceTypes[0], // 'Air Flow'
+        type: this.deviceTypes[0], // 'Air Flow'
       }]
     },
     {
@@ -22,8 +43,8 @@ export class SensorClass {
       methods: ['setAirFlow', 'setAirFlowInvalid'],
       devices: [{
         size:1,
-        name: 'Air Flow',
-        type: 'Air Flow',
+        name: this.deviceTypes[0], // 'Air Flow'
+        type: this.deviceTypes[0], // 'Air Flow'
       }]
     },
     {
@@ -34,8 +55,8 @@ export class SensorClass {
       methods: ['setTemperature'],
       devices: [{
         size:1,
-        name: 'Temperature',
-        type: 'Temperature',
+        name: this.deviceTypes[1], // 'Temperature'
+        type: this.deviceTypes[1], // 'Temperature'
       }]
     },
     {
@@ -46,8 +67,8 @@ export class SensorClass {
       methods: ['setTemperature'],
       devices: [{
         size:1,
-        name: 'Temperature',
-        type: 'Temperature',
+        name: this.deviceTypes[1], // 'Temperature'
+        type: this.deviceTypes[1], // 'Temperature'
       }]
     },
     {
@@ -58,8 +79,8 @@ export class SensorClass {
       methods: ['setTemperature', 'setTemperatureInvalid'],
       devices: [{
         size:1,
-        name: 'Temperature',
-        type: 'Temperature',
+        name: this.deviceTypes[1], // 'Temperature'
+        type: this.deviceTypes[1], // 'Temperature'
       }]
     },
     {
@@ -71,13 +92,13 @@ export class SensorClass {
       devices: [
         {
         size:1,
-        name: 'Temperature',
-        type: 'Temperature',
+          name: this.deviceTypes[1], // 'Temperature'
+          type: this.deviceTypes[1], // 'Temperature'
         },
         {
           size:1,
-          name: 'Air Pressure',
-          type: 'Air Pressure',
+          name: this.deviceTypes[2], // 'Air Pressure'
+          type: this.deviceTypes[2], // 'Air Pressure'
         }]
     },
     {
@@ -89,13 +110,13 @@ export class SensorClass {
       devices: [
         {
           size:1,
-          name: 'Temperature',
-          type: 'Temperature',
+          name: this.deviceTypes[1], // 'Temperature'
+          type: this.deviceTypes[1], // 'Temperature'
         },
         {
           size:1,
-          name: 'Air Pressure',
-          type: 'Air Pressure',
+          name: this.deviceTypes[2], // 'Air Pressure'
+          type: this.deviceTypes[2], // 'Air Pressure'
         }]
     },
     {
@@ -107,23 +128,23 @@ export class SensorClass {
       devices: [
         {
           size:1,
-          name: 'Temperature',
-          type: 'Temperature',
+          name: this.deviceTypes[1], // 'Temperature'
+          type: this.deviceTypes[1], // 'Temperature'
         },
         {
           size: 1,
-          name: 'Absolute Humidity',
-          type: 'Absolute Humidity',
+          name: this.deviceTypes[3], // 'Absolute Humidity'
+          type: this.deviceTypes[3], // 'Absolute Humidity'
         },
         {
           size:1,
           name: 'Relative humidity',
-          type: 'Humidity',
+          type: this.deviceTypes[4], // 'humidity'
         },
         {
           size: 1,
-          name: 'Dew Point',
-          type: 'Dew Point',
+          name: this.deviceTypes[5], // 'Dew Point'
+          type: this.deviceTypes[5], // 'Dew Point'
         }]
     },
     {
@@ -135,23 +156,23 @@ export class SensorClass {
       devices: [
         {
           size:1,
-          name: 'Temperature',
-          type: 'Temperature',
+          name: this.deviceTypes[1], // 'Temperature'
+          type: this.deviceTypes[1], // 'Temperature'
         },
         {
           size: 1,
-          name: 'Absolute Humidity',
-          type: 'Absolute Humidity',
+          name: this.deviceTypes[3], // 'Absolute Humidity'
+          type: this.deviceTypes[3], // 'Absolute Humidity'
         },
         {
           size:1,
           name: 'Relative humidity',
-          type: 'Humidity',
+          type: this.deviceTypes[4], // 'humidity'
         },
         {
           size: 1,
-          name: 'Dew Point',
-          type: 'Dew Point',
+          name: this.deviceTypes[5], // 'Dew Point'
+          type: this.deviceTypes[5], // 'Dew Point'
         }]
     },
     {
@@ -163,23 +184,23 @@ export class SensorClass {
       devices: [
         {
           size:1,
-          name: 'Temperature',
-          type: 'Temperature',
+          name: this.deviceTypes[1], // 'Temperature'
+          type: this.deviceTypes[1], // 'Temperature'
+        },
+        {
+          size: 1,
+          name: this.deviceTypes[3], // 'Absolute Humidity'
+          type: this.deviceTypes[3], // 'Absolute Humidity'
         },
         {
           size:1,
           name: 'Relative humidity',
-          type: 'Humidity',
+          type: this.deviceTypes[4], // 'humidity'
         },
         {
           size: 1,
-          name: 'Absolute Humidity',
-          type: 'Absolute Humidity',
-        },
-        {
-          size: 1,
-          name: 'Dew Point',
-          type: 'Dew Point',
+          name: this.deviceTypes[5], // 'Dew Point'
+          type: this.deviceTypes[5], // 'Dew Point'
         }]
     },
     {
@@ -191,18 +212,18 @@ export class SensorClass {
       devices: [
         {
           size:2,
-          name: 'Dry Contact',
-          type: 'Dry Contact',
+          name: this.deviceTypes[6], // 'Dry Contact'
+          type: this.deviceTypes[6], // 'Dry Contact'
         },
         {
           size:5,
           name: 'On/Off',
-          type: 'Contact Closure',
+          type: this.deviceTypes[7], // 'Contact Closure'
         },
         {
           size: 1,
           name: 'Hall Effect',
-          type: 'Magnetic Contact',
+          type: this.deviceTypes[8], // 'Magnetic Contact'
         }]
     },
     {
@@ -214,18 +235,18 @@ export class SensorClass {
       devices: [
         {
           size:2,
-          name: 'Dry Contact',
-          type: 'Dry Contact',
+          name: this.deviceTypes[6], // 'Dry Contact'
+          type: this.deviceTypes[6], // 'Dry Contact'
         },
         {
           size:5,
           name: 'On/Off',
-          type: 'Contact Closure',
+          type: this.deviceTypes[7], // 'Contact Closure'
         },
         {
           size: 1,
           name: 'Hall Effect',
-          type: 'Magnetic Contact',
+          type: this.deviceTypes[8], // 'Magnetic Contact'
         }]
     },
     {
@@ -237,13 +258,13 @@ export class SensorClass {
       devices: [
         {
           size:2,
-          name: 'Dry Contact',
-          type: 'Dry Contact',
+          name: this.deviceTypes[6], // 'Dry Contact'
+          type: this.deviceTypes[6], // 'Dry Contact'
         },
         {
           size:5,
           name: 'On/Off',
-          type: 'Contact Closure',
+          type: this.deviceTypes[7], // 'Contact Closure'
         }]
     },
     {
@@ -255,13 +276,13 @@ export class SensorClass {
       devices: [
         {
           size:2,
-          name: 'Dry Contact',
-          type: 'Dry Contact',
+          name: this.deviceTypes[6], // 'Dry Contact'
+          type: this.deviceTypes[6], // 'Dry Contact'
         },
         {
           size:5,
           name: 'On/Off',
-          type: 'Contact Closure',
+          type: this.deviceTypes[7], // 'Contact Closure'
         }]
     },
     {
@@ -273,18 +294,18 @@ export class SensorClass {
       devices: [
         {
           size:1,
-          name: 'Motion Detected',
-          type: 'Motion Detected',
+          name: this.deviceTypes[9], // 'Motion Detected'
+          type: this.deviceTypes[9], // 'Motion Detected'
         },
         {
           size:1,
           name: 'On/Off',
-          type: 'Contact Closure',
+          type: this.deviceTypes[7], // 'Contact Closure'
         },
         {
           size:1,
-          name: 'Tamper Alarm',
-          type: 'Tamper Alarm',
+          name: this.deviceTypes[10], // 'Tamper Alarm'
+          type: this.deviceTypes[10], // 'Tamper Alarm'
         }]
     },
     {
@@ -296,18 +317,18 @@ export class SensorClass {
       devices: [
         {
           size:1,
-          name: 'Motion Detected',
-          type: 'Motion Detected',
+          name: this.deviceTypes[9], // 'Motion Detected'
+          type: this.deviceTypes[9], // 'Motion Detected'
         },
         {
           size:1,
           name: 'On/Off',
-          type: 'Contact Closure',
+          type: this.deviceTypes[7], // 'Contact Closure'
         },
         {
           size:1,
-          name: 'Tamper Alarm',
-          type: 'Tamper Alarm',
+          name: this.deviceTypes[10], // 'Tamper Alarm'
+          type: this.deviceTypes[10], // 'Tamper Alarm'
         }]
     },
     {
@@ -319,18 +340,18 @@ export class SensorClass {
       devices: [
         {
           size:2,
-          name: 'Door Lock',
-          type : 'Door Lock'
+          name: this.deviceTypes[11], // 'Door Lock'
+          type: this.deviceTypes[11], // 'Door Lock'
         },
         {
           size : 2,
           name: 'Door Handle',
-          type : 'Handle State'
+          type: this.deviceTypes[12]
         },
         {
           size : 2,
           name: 'Door State',
-          type : 'Door State'
+          type: this.deviceTypes[13]
         },
       ]
     },
@@ -343,13 +364,13 @@ export class SensorClass {
       devices: [
         {
           size:1,
-          name: 'Vibration',
-          type: 'Vibration',
+          name: this.deviceTypes[14], // 'Vibration'
+          type: this.deviceTypes[14], // 'Vibration'
         },
         {
           size:1,
           name: 'On/Off',
-          type: 'Contact Closure',
+          type: this.deviceTypes[7], // 'Contact Closure'
         }]
     },
     {
@@ -362,17 +383,17 @@ export class SensorClass {
         {
         size:1,
         name: 'Leakage Detector',
-        type: 'Water Detection',
+          type: this.deviceTypes[16], // 'Water Detection'
         },
         {
           size:1,
           name: 'Distance',
-          type: 'Leak Distance',
+          type: this.deviceTypes[17], // 'Leak Distance'
         },
         {
           size:1,
           name: 'Length',
-          type: 'Cable Length',
+          type: this.deviceTypes[18], // 'Cable Length'
         },
       ]
     },
@@ -386,22 +407,22 @@ export class SensorClass {
         {
           size:1,
           name: 'Particle Density PM10.0',
-          type: 'particle Density',
+          type: this.deviceTypes[19], // 'Particle Density
         },
         {
           size:1,
           name: 'Particle Density PM1.0',
-          type: 'particle Density',
+          type: this.deviceTypes[19], // 'Particle Density
         },
         {
           size:1,
           name: 'Particle Density PM2.5',
-          type: 'particle Density',
+          type: this.deviceTypes[19], // 'Particle Density
         },
         {
           size:1,
           name: 'Particle Density PM4.0',
-          type: 'particle Density',
+          type: this.deviceTypes[19], // 'Particle Density
         },
       ]
     }
@@ -410,9 +431,11 @@ export class SensorClass {
   constructor() {
   }
 
-
-
-  getSensors(): SensorElement[] {
+  getSensors(){
     return this.sensors;
+  }
+
+  getDeviceTypes() {
+    return this.deviceTypes
   }
 }

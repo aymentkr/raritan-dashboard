@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, N
 import { MatTableDataSource } from "@angular/material/table";
 import { VPD } from "../model/interfaces";
 import * as Chart from 'chart.js';
+import {SensorClass} from "../model/SensorClass";
 
 @Component({
   selector: 'app-peripheral',
@@ -11,8 +12,9 @@ import * as Chart from 'chart.js';
 })
 export class PeripheralComponent implements AfterViewInit {
   chart: any;
+  deviceTypes = new SensorClass().getDeviceTypes();
   dataSource = new MatTableDataSource<VPD>();
-  Columns: string[] = ['peripheral_id', 'device_name', 'device_type', 'sensor_type', 'serial_number'];
+  Columns: string[] = ['peripheral_id', 'name', 'type','sensor_name','sensor_type', 'serial_number'];
 
   constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) {}
 
@@ -26,10 +28,10 @@ export class PeripheralComponent implements AfterViewInit {
     this.chart = new Chart('InletChart', {
       type: 'line',
       data: {
-        labels: [],
+        labels: this.deviceTypes,
         datasets: [
           {
-            label: 'Frequency Hz',
+            label: this.deviceTypes [0],
             data: [],
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
