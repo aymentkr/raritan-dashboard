@@ -34,8 +34,8 @@ export class DevicesPipe implements PipeTransform {
         })
       })
     })
-    console.log(this.myMap)
     return new MatTableDataSource<VPD>(VPDs)
   }
+  
 
 }

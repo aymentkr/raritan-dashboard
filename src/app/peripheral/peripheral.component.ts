@@ -12,7 +12,7 @@ export class PeripheralComponent  {
   dataSource = new MatTableDataSource<any>();
   Columns: string[] = ['peripheral_id','device_name','device_type','sensor_type','serial_number']
 
-  constructor( public Peripheral:PeripheralClass) {
+  constructor( public Peripheral:PeripheralClass ) {
 
   }
 
