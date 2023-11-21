@@ -48,7 +48,7 @@ export class SensorportComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.fetchPeripheralData().then((data) => {
+    this.fetchSensorPortData().then((data) => {
       this.dataSource.data = data;
       this.dataSource.sort = this.sort;
       this.cdRef.detectChanges();
@@ -58,7 +58,7 @@ export class SensorportComponent implements OnInit{
     });
   }
 
-  async fetchPeripheralData() {
+  async fetchSensorPortData() {
     const size = parseFloat(await this.data.getResult('#sensorports', 'print(#sensorports)'));
     if (size === 1) {
       const lines = (await this.data.getResult('sensorports[1]:listDevices', 'print(sensorports[1]:listDevices())')).split('\n');
@@ -95,7 +95,7 @@ export class SensorportComponent implements OnInit{
       this.selection.clear();
       this.sp.saveDevice('sensorports[1]', type)
       this.data.removeMap(`sensorports[1]:listDevices`);
-      this.dataSource.data = await this.fetchPeripheralData();
+      this.dataSource.data = await this.fetchSensorPortData();
       this.notificationService.openToastr(`New Device with type ${type} saved successfully`, 'Adding Device to Sensorports', 'done');
     } else {
       this.notificationService.openToastr('Failed to save data', 'Adding Device to Sensorports', 'error');

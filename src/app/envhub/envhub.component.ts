@@ -9,7 +9,6 @@ import {NotificationService} from "../services/notification.service";
 import {DataService} from "../services/data.service";
 import {AddPeripheralDeviceComponent} from "../peripheral/add-peripheral-device/add-peripheral-device.component";
 import {EditPeripheralDeviceComponent} from "../peripheral/edit-peripheral-device/edit-peripheral-device.component";
-import {PeripheralClass} from "../model/PeripheralClass";
 import {DeleteDeviceDialogComponent} from "../peripheral/delete-device-dialog/delete-device-dialog.component";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 
@@ -41,7 +40,6 @@ export class EnvhubComponent implements OnInit{
   constructor(
     private dialog: MatDialog,
     private sp: SensorsPipe,
-    public Peripheral: PeripheralClass,
     private cdRef: ChangeDetectorRef,
     private notificationService: NotificationService,
     private data: DataService

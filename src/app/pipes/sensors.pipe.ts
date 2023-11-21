@@ -33,10 +33,6 @@ export class SensorsPipe implements PipeTransform {
     }
   };
 
-  removeAll(table:string) {
-    this.deviceMap.clear();
-    this.data.sendToGo(table+':removeAll()');
-  }
   saveDevice(table:string,type: string ) {
     this.data.sendToGo(`
     new_sensor = emu.${type}:create(tfw_core)
@@ -53,7 +49,13 @@ export class SensorsPipe implements PipeTransform {
 
   removeDevice(table : string, serial_number: string) {
     this.deviceMap.delete(serial_number);
+    console.log(`${table}:findDevice("${serial_number}"):disconnect();`)
     this.data.sendToGo(`${table}:findDevice("${serial_number}"):disconnect();`);
+  }
+
+  removeAll(table:string) {
+    this.deviceMap.clear();
+    this.data.sendToGo(table+':removeAll()');
   }
 
   async getLength(table: string): Promise<number> {

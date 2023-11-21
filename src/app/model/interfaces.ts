@@ -57,6 +57,14 @@ export interface Peripheral {
   name : string,
   type : string,
 }
+
+export interface VPD {
+  peripheral_id :number,
+  device_name : string,
+  device_type : string,
+  sensor_type : string,
+  serial_number : string
+}
 export interface Device {
   device_id : number;
   name : string;
@@ -64,7 +72,6 @@ export interface Device {
   serial_number : string;
   peripherals: MatTableDataSource<Peripheral>;
 }
-
 
 export interface Notification {
   title: string;

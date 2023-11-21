@@ -17,7 +17,7 @@ const routes: Routes= [
   {path: 'outlets', component:OutletComponent,canDeactivate: [DeactivateGuard]},
   {path: 'inlets', component:InletComponent,canDeactivate: [DeactivateGuard]},
   {path: 'ocps', component:OcpsComponent,canDeactivate: [DeactivateGuard]},
-  {path: 'peripherals', component:PeripheralComponent,canDeactivate: [DeactivateGuard]},
+  {path: 'peripherals', component:PeripheralComponent},
   {path: 'sensorport', component:SensorportComponent,canDeactivate: [DeactivateGuard]},
   {path: 'envhub', component:EnvhubComponent,canDeactivate: [DeactivateGuard]},
   {path: 'smartlock', component:SmartlockComponent,canDeactivate: [DeactivateGuard]},

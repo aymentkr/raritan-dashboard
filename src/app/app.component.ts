@@ -21,7 +21,7 @@ export class AppComponent implements OnInit,OnDestroy{
     this.notifications = this.notificationService.getNotifications();
     setTimeout(() => {
       this.isLoading = false;
-    },1000)
+    },2000)
   }
   ngOnInit() {
     this.data.open();
