@@ -1,7 +1,24 @@
 <div class="card">
-  <mat-card>
+  <div class="mat-card-container">
+    <mat-card class="mat-card">
     <mat-card-header>
-      <mat-card-title>Virtual Peripheral Devices</mat-card-title>
+      <mat-card-title>Virtual Peripheral Devices History</mat-card-title>
+      <mat-card-subtitle>Tracking progress</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="chart-container">
+        <canvas  id="virtualDevicesChart" >{{ chart }}</canvas>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  </div>
+</div>
+
+<div class="card">
+  <div class="mat-card-container">
+    <mat-card class="mat-card">
+    <mat-card-header>
+      <mat-card-title>Virtual Peripheral Devices List</mat-card-title>
       <mat-card-subtitle>[{{ (dataSource | devices).data.length }}]</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
@@ -23,6 +40,10 @@
       <ng-container *ngIf="(dataSource | devices).data.length  === 0">
         <h2>No Virtual Peripheral Device available</h2>
       </ng-container>
+      <div class="subtitle">
+        <p>Note: In order to view all Virtual Peripheral Devices, ensure that both Envhubs and SensorPorts are opened.</p>
+      </div>
     </mat-card-content>
   </mat-card>
+  </div>
 </div>
