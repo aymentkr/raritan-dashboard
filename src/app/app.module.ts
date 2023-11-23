@@ -51,6 +51,8 @@ import {PeripheralClass} from "./model/PeripheralClass";
 import { DeleteDeviceDialogComponent } from './peripheral/delete-device-dialog/delete-device-dialog.component';
 import { DevicesPipe } from './pipes/devices.pipe';
 import { SensorportComponent } from './sensorport/sensorport.component';
+import { BottomSheetInfoComponent } from './inlet/transfer-switch/bottom-sheet-info/bottom-sheet-info.component';
+import { BottomSheetDetailsComponent } from './inlet/transfer-switch/bottom-sheet-details/bottom-sheet-details.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +74,8 @@ import { SensorportComponent } from './sensorport/sensorport.component';
     DeleteDeviceDialogComponent,
     DevicesPipe,
     SensorportComponent,
+    BottomSheetInfoComponent,
+    BottomSheetDetailsComponent,
   ],
   imports: [
     AppRoutingModule,

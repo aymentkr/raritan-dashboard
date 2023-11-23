@@ -2,6 +2,9 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Switch} from "../../model/interfaces";
 import {DataService} from "../../services/data.service";
 import {NotificationService} from "../../services/notification.service";
+import {MatBottomSheet} from "@angular/material/bottom-sheet";
+import {BottomSheetInfoComponent} from "./bottom-sheet-info/bottom-sheet-info.component";
+import {BottomSheetDetailsComponent} from "./bottom-sheet-details/bottom-sheet-details.component";
 
 @Component({
   selector: 'app-transfer-switch',
@@ -26,6 +29,7 @@ export class TransferSwitchComponent implements OnInit{
   constructor(
     private data: DataService,
     private notificationService: NotificationService,
+    private bottomSheet: MatBottomSheet,
   ) {}
 
   ngOnInit(): void {
@@ -71,26 +75,18 @@ export class TransferSwitchComponent implements OnInit{
   }
 
   info() {
-      /*
+    this.bottomSheet.open(BottomSheetInfoComponent);
+    /*
     Swal.fire({
-      title: 'switches[1..1]:methods',
-      html: '<ul>' +
-        '  <li><mark>Sets fault flags</mark>  <pre> (1=phase, 2=overload) </pre> </li>' +
-        '  <li><mark>Sets Inlet 1 fault flags </mark> </li>' +
-        '  <li><mark>Sets Inlet 2 fault flags </mark>  <pre>(1=SMPS, 2=MOV, 4=short, 8=open) </pre> </li>' +
-        '  <li><mark>Sets Inlet phase angle</mark>   <pre>to 15 f.e </pre> </li>' +
-        `  <li><mark>Sets preferred Inlet </mark>  <pre> [1 .. ${this.inputFromParent}] </pre> </li>` +
-        '  <li><mark>Sets power fail detect time</mark> </li>' +
-        '  <li><mark>Sets relay open time</mark></li>' +
-        '  <li><mark>Sets total transfer time</mark> <pre>  (microseconds) </pre> </li>' +
-        `  <li><mark>Sets bypass selected Inlet </mark>   <pre>[0=none, 1 .. ${this.inputFromParent}] </pre> </li>` +
-        '</ul>',
-      icon: 'info',
-    });*/
 
+      icon: 'info',
+    });
+*/
   }
 
-  seeDetails() {/*
+  seeDetails() {
+    this.bottomSheet.open(BottomSheetDetailsComponent);
+    /*
     Swal.fire({
       title: 'Switches[1..1]:value ',
       html: `<mark> Prefered Inlet: </mark> <pre> ${this.formData.preferredInlet} </pre>`+
@@ -99,6 +95,4 @@ export class TransferSwitchComponent implements OnInit{
       icon: 'info'
     });*/
   }
-
-
 }

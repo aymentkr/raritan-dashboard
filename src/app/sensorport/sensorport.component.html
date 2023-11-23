@@ -42,7 +42,7 @@
                   <table #innerTables mat-table [dataSource]="element.peripherals" matSort>
                     <!-- Add a new row for the button -->
                     <ng-container *ngFor="let innerColumn of innercolumns" matColumnDef="{{innerColumn}}">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ innerColumn }}</th>
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ innerColumn.toUpperCase()  }}</th>
                       <td mat-cell *matCellDef="let innerElement">{{ innerElement[innerColumn] }}</td>
                     </ng-container>
                     <tr mat-header-row *matHeaderRowDef="innercolumns"></tr>

@@ -7,11 +7,6 @@
   margin-top: 15px;
   width: 100%;
 }
-.chart-container {
-  width: 90%;
-  height: 320px;
-}
-
 .subtitle {
   font-size: 14px;
   margin-top: 5px;
@@ -31,4 +26,12 @@
 .mat-card {
   flex: 1;
   margin-right: 20px;
+}
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card {
+  width: 48%; /* Adjust the width as needed */
 }
