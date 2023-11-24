@@ -75,24 +75,14 @@ export class TransferSwitchComponent implements OnInit{
   }
 
   info() {
-    this.bottomSheet.open(BottomSheetInfoComponent);
-    /*
-    Swal.fire({
-
-      icon: 'info',
+    this.bottomSheet.open(BottomSheetInfoComponent,{
+      data: {length: this.inputFromParent}
     });
-*/
   }
 
   seeDetails() {
-    this.bottomSheet.open(BottomSheetDetailsComponent);
-    /*
-    Swal.fire({
-      title: 'Switches[1..1]:value ',
-      html: `<mark> Prefered Inlet: </mark> <pre> ${this.formData.preferredInlet} </pre>`+
-        `<mark> Bypass Selected Inlet: </mark> <pre> ${this.formData.BypassSelectedInlet} </pre>`+
-        `<mark> Bypass Active Inlet: </mark> <pre> ${this.formData.BypassActiveInlet} </pre>`,
-      icon: 'info'
-    });*/
+    this.bottomSheet.open(BottomSheetDetailsComponent, {
+      data: {formData : this.formData }
+    });
   }
 }

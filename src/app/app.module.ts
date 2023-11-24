@@ -53,6 +53,7 @@ import { DevicesPipe } from './pipes/devices.pipe';
 import { SensorportComponent } from './sensorport/sensorport.component';
 import { BottomSheetInfoComponent } from './inlet/transfer-switch/bottom-sheet-info/bottom-sheet-info.component';
 import { BottomSheetDetailsComponent } from './inlet/transfer-switch/bottom-sheet-details/bottom-sheet-details.component';
+import {MatBottomSheet} from "@angular/material/bottom-sheet";
 
 @NgModule({
   declarations: [
@@ -113,7 +114,7 @@ import { BottomSheetDetailsComponent } from './inlet/transfer-switch/bottom-shee
     MatCardModule,
     MatBadgeModule,
   ],
-  providers: [WebsocketService,DataService,SensorsPipe,PeripheralClass],
+  providers: [WebsocketService,DataService,SensorsPipe,PeripheralClass,MatBottomSheet],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
