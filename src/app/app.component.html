@@ -8,9 +8,19 @@
   <button mat-icon-button class="reload-button" aria-label="Reload" (click)="reloadPage()">
     <mat-icon>autorenew</mat-icon>
   </button>
-  <button mat-icon-button class="reload-button" aria-label="Reload" (click)="Connection()">
+  <button mat-icon-button class="reload-button" aria-label="Reload" (click)="checkConnection(template)">
     <mat-icon>signal_wifi_off</mat-icon>
   </button>
+  <ng-template #template>
+    <h2 matDialogTitle>{{isConn}}</h2>
+    <mat-dialog-content>
+      <p>{{askConn}}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button color="accent" (click)="Connection()">Yes</button>
+      <button mat-button matDialogClose>No</button>
+    </mat-dialog-actions>
+  </ng-template>
 
   <button mat-icon-button [matMenuTriggerFor]="menu">
     <mat-icon [matBadge]="(notifications | async)?.length" matBadgeColor="warn" aria-hidden="false">notifications</mat-icon>

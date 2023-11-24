@@ -1,8 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
 import {NotificationService} from "./services/notification.service";
 import {Observable} from "rxjs";
 import {Notification} from "./model/interfaces";
 import {DataService} from "./services/data.service";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-root',
@@ -10,19 +11,24 @@ import {DataService} from "./services/data.service";
   styleUrls: ['./app.component.css'],
 })
 
-export class AppComponent implements OnInit,OnDestroy{
+export class AppComponent implements OnInit,OnDestroy {
   notifications!: Observable<Notification[]>;
   title = 'Raritan';
+  isConn = "";
+  askConn = "";
   isLoading: boolean = true;
+
   constructor(
     private notificationService: NotificationService,
-    private data: DataService
+    private data: DataService,
+    public dialog: MatDialog
   ) {
     this.notifications = this.notificationService.getNotifications();
     setTimeout(() => {
       this.isLoading = false;
-    },2000)
+    }, 2000)
   }
+
   ngOnInit() {
     this.data.open();
   }
@@ -35,38 +41,27 @@ export class AppComponent implements OnInit,OnDestroy{
     window.location.reload();
   }
 
-  Connection() {/*
-    let title,text: string;
+  checkConnection(templateRef: TemplateRef<any>) {
     if (this.data.isConnected()) {
-      title = 'Your Connection is still opened!';
-      text = 'You want to disconnect ?';
+      this.isConn = 'Your Connection is still opened!';
+      this.askConn = 'You want to disconnect ?';
     } else {
-      title = 'Your Connection is closed!';
-      text = 'You want to reconnect again ? (this will refresh the page)';
+      this.isConn = 'Your Connection is closed!';
+      this.askConn = 'You want to reconnect again ? (this will refresh the page)';
     }
-    Swal.fire({
-      title: title,
-      text: text,
-      icon: 'warning',
-      showConfirmButton : true,
-      showDenyButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        if (this.data.isConnected()) {
-          Swal.fire(
-            'Disconnected!',
-            'You are disconnected from the server',
-            'success'
-          )
-          this.notificationService.openToastr('You are disconnected from the server', 'Connection', 'warning');
-          this.data.close();
-        } else {
-          this.reloadPage();
-        }
-      }
-    });*/
+    this.dialog.open(templateRef, {
+      width: '600px',
+      maxHeight: '400px',
+    });
+  }
+
+  Connection() {
+    if (this.data.isConnected()) {
+      this.notificationService.openToastr('You are disconnected from the server', 'Connection', 'warning');
+      this.data.close();
+      this.dialog.closeAll();
+    } else {
+      this.reloadPage();
+    }
   }
 }
