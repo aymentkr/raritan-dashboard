@@ -44,6 +44,81 @@
     </mat-card-content>
   </mat-card>
 </div>
+
+<div class="card">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Manage Door </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <ng-container *ngIf="deviceIds.length === 0; else manage">
+        <h2>No Door available</h2>
+      </ng-container>
+      <ng-template #manage>
+        <div class="form-group">
+          <form (ngSubmit)="onFormSubmit()" #deviceForm="ngForm">
+            <mat-list>
+              <mat-list-item>
+                <div class="form-fields">
+                  <h3>Door 1: </h3>
+                  <mat-form-field>
+                    <mat-label>Select Device ID</mat-label>
+                    <mat-select ngModel name="deviceId1" required>
+                      <mat-option *ngFor="let deviceId of deviceIds" [value]="deviceId">
+                        {{ deviceId }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field>
+                    <mat-label>State</mat-label>
+                    <mat-select ngModel name="state1" disableRipple required>
+                      <mat-option value="true">True</mat-option>
+                      <mat-option value="false">False</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field>
+                    <mat-label>Enter PIN</mat-label>
+                    <input matInput type="text" ngModel name="pin1" pattern = "[0-9]" required>
+                  </mat-form-field>
+                  <button mat-raised-button color="accent" type="submit" [disabled]="!deviceForm.valid">Submit</button>
+                </div>
+              </mat-list-item>
+              <mat-list-item>
+                <div class="form-fields">
+                  <h3>Door 2: </h3>
+                  <mat-form-field>
+                    <mat-label>Select Device ID</mat-label>
+                    <mat-select ngModel name="deviceId" required>
+                      <mat-option *ngFor="let deviceId of deviceIds" [value]="deviceId">
+                        {{ deviceId }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-label>State</mat-label>
+                    <mat-select ngModel name="state2" disableRipple required>
+                      <mat-option value="true">True</mat-option>
+                      <mat-option value="false">False</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field>
+                    <mat-label>Enter PIN</mat-label>
+                    <input matInput type="text" ngModel name="pin2" required>
+                  </mat-form-field>
+                  <button mat-raised-button color="accent" type="submit" [disabled]="!deviceForm.valid">Submit</button>
+                </div>
+              </mat-list-item>
+            </mat-list>
+          </form>
+        </div>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
+</div>
+
 <div class="card">
   <mat-card>
     <mat-card-header>

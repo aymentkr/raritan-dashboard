@@ -14,11 +14,12 @@ import {DataService} from "../services/data.service";
 export class SmartlockComponent implements OnInit{
   isLoading: boolean = true;
   dataSource = new MatTableDataSource<Device>();
-  columns : string[] = [ 'name', 'type', 'serial_number'];
+  columns : string[] = [ 'device_id','name', 'type', 'serial_number'];
   displayedColumns: string[] = ['select', ...this.columns];
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
   sensor: any ;
+  deviceIds: number[] = [];
 
   constructor(
     private data: DataService,
@@ -32,6 +33,9 @@ export class SmartlockComponent implements OnInit{
     this.fetchSmartLockData()
       .then((data: Device[]) => {
         this.dataSource.data = data;
+        data.forEach(value => {
+          this.deviceIds.push(value.device_id);
+        })
         this.dataSource.sort = this.sort;
         this.cdr.detectChanges()
         this.isLoading = false;
@@ -69,4 +73,7 @@ export class SmartlockComponent implements OnInit{
       this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
+  onFormSubmit() {
+
+  }
 }
