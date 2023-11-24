@@ -54,7 +54,7 @@
     </mat-card-header>
     <mat-card-content>
       <mat-divider></mat-divider>
-      <ng-container *ngIf="deviceIds.length === 0; else manage">
+      <ng-container *ngIf="dataSource.data.length === 0; else manage">
         <h2>No Door available</h2>
       </ng-container>
       <ng-template #manage>
@@ -71,15 +71,17 @@
               <mat-form-field>
                 <mat-label>Select Device ID</mat-label>
                 <mat-select ngModel name="deviceId" required>
-                  <mat-option *ngFor="let deviceId of deviceIds" [value]="deviceId">
-                    {{ deviceId }}
+                  <mat-option *ngFor="let row of dataSource.data" [value]="row.device_id">
+                    {{ row.device_id }}
                   </mat-option>
                 </mat-select>
+
+
               </mat-form-field>
 
               <mat-form-field>
-                <mat-label>State</mat-label>
-                <mat-select ngModel name="state">
+                <mat-label>Door State</mat-label>
+                <mat-select ngModel name="doorState">
                   <mat-option>None</mat-option>
                   <mat-option value="true">True</mat-option>
                   <mat-option value="false">False</mat-option>
@@ -87,7 +89,20 @@
               </mat-form-field>
 
               <mat-form-field>
-                <mat-label>Enter PIN</mat-label>
+                <mat-label>Handle State</mat-label>
+                <mat-select ngModel name="handleState">
+                  <mat-option>None</mat-option>
+                  <mat-option value="true">True</mat-option>
+                  <mat-option value="false">False</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Enter ID</mat-label>
+                <input matInput type="text" ngModel name="id" pattern="[0-9]+">
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Enter CARD PIN</mat-label>
                 <input matInput type="text" ngModel name="pin" pattern="[0-9]+">
               </mat-form-field>
               <button mat-raised-button color="accent" type="submit" [disabled]="!doorForm.valid">Submit</button>
