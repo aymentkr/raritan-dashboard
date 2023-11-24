@@ -19,8 +19,7 @@ export class SmartlockComponent implements OnInit{
   displayedColumns: string[] = ['select', ...this.columns];
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild('doorForm1', { static: false }) doorForm1!: NgForm;
-  @ViewChild('doorForm2', { static: false }) doorForm2!: NgForm;
+  @ViewChild('doorForm', { static: false }) doorForm!: NgForm;
 
   sensor: any ;
   deviceIds: number[] = [];
@@ -78,16 +77,10 @@ export class SmartlockComponent implements OnInit{
   }
   onFormSubmit(doorForm: NgForm) {
     if (doorForm.valid) {
+      const selectedDoorNr = doorForm.value.doorNr;
       const selectedDeviceId = doorForm.value.deviceId;
       const selectedState = doorForm.value.state;
       const enteredPin = doorForm.value.pin;
-
-      if (doorForm === this.doorForm1) {
-        // Logic for Form 1
-        console.log('Handling Form 1 submission');
-      } else  {
-        console.log('Handling Form 2 submission');
-      }
 
       // Your common logic here
       console.log('Selected Device ID:', selectedDeviceId);
