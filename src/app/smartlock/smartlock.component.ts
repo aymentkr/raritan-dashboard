@@ -5,6 +5,7 @@ import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
 import {SensorsPipe} from "../pipes/sensors.pipe";
 import {DataService} from "../services/data.service";
+import {NgForm} from "@angular/forms";
 
 @Component({
   selector: 'app-smartlock',
@@ -18,6 +19,9 @@ export class SmartlockComponent implements OnInit{
   displayedColumns: string[] = ['select', ...this.columns];
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('doorForm1', { static: false }) doorForm1!: NgForm;
+  @ViewChild('doorForm2', { static: false }) doorForm2!: NgForm;
+
   sensor: any ;
   deviceIds: number[] = [];
 
@@ -72,8 +76,26 @@ export class SmartlockComponent implements OnInit{
       this.selection.clear() :
       this.dataSource.data.forEach(row => this.selection.select(row));
   }
+  onFormSubmit(doorForm: NgForm) {
+    if (doorForm.valid) {
+      const selectedDeviceId = doorForm.value.deviceId;
+      const selectedState = doorForm.value.state;
+      const enteredPin = doorForm.value.pin;
 
-  onFormSubmit() {
+      if (doorForm === this.doorForm1) {
+        // Logic for Form 1
+        console.log('Handling Form 1 submission');
+      } else  {
+        console.log('Handling Form 2 submission');
+      }
 
+      // Your common logic here
+      console.log('Selected Device ID:', selectedDeviceId);
+      console.log('Selected State:', selectedState);
+      console.log('Entered PIN:', enteredPin);
+    } else {
+      // Handle the case when the form is not valid
+      console.log('Form is not valid');
+    }
   }
 }
