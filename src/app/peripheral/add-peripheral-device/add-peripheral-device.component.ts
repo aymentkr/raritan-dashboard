@@ -8,7 +8,7 @@ import {DeviceElement} from "../../model/interfaces";
   styleUrls: ['./add-peripheral-device.component.css']
 })
 export class AddPeripheralDeviceComponent {
-  device: DeviceElement | undefined;
+  device!: DeviceElement;
 
   constructor(
     public dialogRef: MatDialogRef<AddPeripheralDeviceComponent>,
@@ -16,7 +16,7 @@ export class AddPeripheralDeviceComponent {
   ) {}
 
   doAction() {
-    this.dialogRef.close({ data: this.device?.type });
+    this.dialogRef.close({ data: this.device.type });
   }
 
   closeDialog() {

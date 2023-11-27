@@ -29,6 +29,9 @@
       <mat-icon class="icon" color="primary">compare_arrows</mat-icon>
       <span>Bypass Settings</span>
     </div>
+
+    <h2> <mark> Bypass Active Inlet: </mark>{{formData.BypassActiveInlet}}  </h2>
+
     <div class="form-fields">
       <mat-form-field>
         <mat-label>Bypass Selected Inlet</mat-label>
@@ -41,20 +44,9 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>Bypass Active Inlet</mat-label>
-        <mat-select [(ngModel)]="formData.BypassActiveInlet" name="BypassActiveInlet" disableRipple>
-          <!-- Default option for 0 -->
-          <mat-option value="int0">0</mat-option>
-          <!-- Options generated from the range -->
-          <mat-option *ngFor="let index of generateInletRange()" [value]="index">
-            Inlet {{ index }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
     </div>
   </div>
+
 
   <!-- Fault Flags Section -->
   <div class="form-group">

@@ -75,7 +75,9 @@ export class SensorportComponent implements OnInit{
           data: this.dataSource.data
         });
         dialogRef.afterClosed().subscribe(result => {
-          if (result) this.addRowData(result.data);
+          if (result) {
+            this.addRowData(result.data);
+          }
         });
       }
     })

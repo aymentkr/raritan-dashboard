@@ -28,6 +28,7 @@ export class DataService {
     }
     this.ws.close();
   }
+
   send(key: string, msgToSend: string) {
     if (!this.isSending) {
       this.key = key;
@@ -38,6 +39,10 @@ export class DataService {
         this.send(key, msgToSend);
       }, 0);
     }
+  }
+  sendToGo(msgToSend: string) {
+    this.key = '';
+    this.ws.sendMessage(msgToSend);
   }
   getResult(key: string, msg: string): Promise<string> {
     return new Promise((resolve) => {
