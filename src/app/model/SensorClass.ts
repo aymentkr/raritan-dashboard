@@ -204,6 +204,18 @@ export class SensorClass {
         }]
     },
     {
+      name: 'Contact Closure',
+      type: 'DX2_CC2',
+      generation: 3,
+      prefix: '1J7',
+      methods: ['setContactClosure'],
+      devices: [{
+        size:2,
+        name: 'On/Off',
+        type: this.deviceTypes[7],
+      }]
+    },
+    {
       name: 'Dry Contact/Contact Closure 1',
       type: 'DX_D2C6',
       generation: 2,

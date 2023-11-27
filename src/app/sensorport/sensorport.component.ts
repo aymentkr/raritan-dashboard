@@ -95,7 +95,7 @@ export class SensorportComponent implements OnInit{
   async addRowData(type: string) {
     if (type != '') {
       this.selection.clear();
-      this.sp.saveDevice('sensorports[1]', type)
+      this.sp.saveDevice(this.dataSource.data,'sensorports[1]', type)
       this.data.removeMap(`sensorports[1]:listDevices`);
       this.dataSource.data = await this.fetchSensorPortData();
       this.notificationService.openToastr(`New Device with type ${type} saved successfully`, 'Adding Device to Sensorports', 'done');

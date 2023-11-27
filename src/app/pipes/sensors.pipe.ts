@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import {Pipe, PipeTransform} from '@angular/core';
 import {Device, Peripheral, SensorElement} from "../model/interfaces";
 import {SensorClass} from "../model/SensorClass";
 import {DataService} from "../services/data.service";
@@ -10,14 +10,16 @@ import {NotificationService} from "../services/notification.service";
   name: 'sensors'
 })
 export class SensorsPipe implements PipeTransform {
-  deviceMap = new Map<string,Device>;
+  deviceMap = new Map<string, Device>;
   device_id = 1;
   sensors = new SensorClass().getSensors();
+
   constructor(
     private data: DataService,
     private Peripheral: PeripheralClass,
     private notificationService: NotificationService,
-  ) {}
+  ) {
+  }
 
   transform(value: any, ...args: any[]): any {
     return this.sensors;
@@ -33,13 +35,23 @@ export class SensorsPipe implements PipeTransform {
     }
   };
 
-  saveDevice(table:string,type: string ) {
-    this.data.sendToGo(`
-    new_sensor = emu.${type}:create(tfw_core)
-    new_sensor:connect(${table})
-    `);
+  saveDevice(list: Device[], table: string, type: string) {
+    if (list.length > 0) {
+      const lastDevice = list[list.length - 1];
+      this.data.sendToGo(`
+      new_sensor = emu.${type}:create(tfw_core)
+      parent = emu.${lastDevice.type}:cast(${table}:findDevice("${lastDevice.serial_number}"))
+      new_sensor:connect(parent)
+      `);
+    } else {
+      this.data.sendToGo(`
+      new_sensor = emu.${type}:create(tfw_core)
+      new_sensor:connect(${table})
+      `);
+    }
   }
-  callMethod(table:string, data: any) {
+
+  callMethod(table: string, data: any) {
     this.data.sendToGo(`emu.${data.device.type}:cast(${table}:findDevice("${data.device.serial_number}")):${data.methodName}`);
   }
 
@@ -47,29 +59,29 @@ export class SensorsPipe implements PipeTransform {
     this.data.sendToGo(`envhubs[1]:setFuseState(${i}, ${state})`);
   }
 
-  removeDevice(table : string, device: Device) {
+  removeDevice(table: string, device: Device) {
     this.deviceMap.delete(device.serial_number);
     // console.log(`emu.${device.type}:cast(${table}:findDevice("${device.serial_number}")):disconnect();`)
     this.data.sendToGo(`emu.${device.type}:cast(${table}:findDevice("${device.serial_number}")):disconnect();`);
   }
 
-  removeAll(table:string) {
+  removeAll(table: string) {
     this.deviceMap.clear();
-    this.data.sendToGo(table+':removeAll()');
+    this.data.sendToGo(table + ':removeAll()');
   }
 
   async getLength(table: string): Promise<number> {
-    return parseFloat(await this.data.getResult(`#${table}`,`print(#${table})`))
+    return parseFloat(await this.data.getResult(`#${table}`, `print(#${table})`))
   }
 
   filterSensorsByType(type: string): SensorElement | undefined {
     return this.sensors.find(sensor => sensor.type === type);
   }
 
-  getPeripheralByType(index:number,type : string) {
+  getPeripheralByType(index: number, type: string) {
     const selectedSensor = this.sensors.find(sensor => sensor.type === type);
-    if (selectedSensor){
-      return this.Peripheral.getDevices(index,selectedSensor)
+    if (selectedSensor) {
+      return this.Peripheral.getDevices(index, selectedSensor)
     } else
       return [];
   }
@@ -87,8 +99,8 @@ export class SensorsPipe implements PipeTransform {
         } else {
           this.sensors.filter((item) => {
             if (item.type === type) {
-              const PeripheralDataSource = new MatTableDataSource<Peripheral>(this.getPeripheralByType(this.device_id,type));
-              const dev : Device = {
+              const PeripheralDataSource = new MatTableDataSource<Peripheral>(this.getPeripheralByType(this.device_id, type));
+              const dev: Device = {
                 device_id: this.device_id,
                 name: item.name,
                 type: item.type,
@@ -96,7 +108,7 @@ export class SensorsPipe implements PipeTransform {
                 peripherals: PeripheralDataSource,
               }
               devices.push(dev);
-              this.deviceMap.set(serialNumber,dev);
+              this.deviceMap.set(serialNumber, dev);
               this.device_id++;
             }
           });
@@ -106,7 +118,7 @@ export class SensorsPipe implements PipeTransform {
     return devices;
   }
 
-  getDeviceMap(){
+  getDeviceMap() {
     return this.deviceMap;
   }
 
