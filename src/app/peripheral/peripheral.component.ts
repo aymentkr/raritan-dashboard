@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone } from '@angular/core';
 import { MatTableDataSource } from "@angular/material/table";
 import {VPD} from "../model/interfaces";
-import * as Chart from 'chart.js';
+import { Chart } from 'chart.js/auto';
 import {SensorClass} from "../model/SensorClass";
 import {SensorsPipe} from "../pipes/sensors.pipe";
 
