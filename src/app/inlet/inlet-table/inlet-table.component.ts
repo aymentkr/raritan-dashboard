@@ -79,7 +79,7 @@ export class InletTableComponent implements OnInit{
         act_energy,
         app_energy
       } = inlet;
-      this.data.sendToGo(`
+      this.data.send('',`
         inlets[${id}]:setFrequency(${frequency})
         inlets[${id}]:setVoltage(${voltage});
         inlets[${id}]:setCurrent(${current});

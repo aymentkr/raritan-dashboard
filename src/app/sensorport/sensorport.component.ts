@@ -119,14 +119,15 @@ export class SensorportComponent implements OnInit{
 
   deleteSelectedItems() {
     const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
-      width: '250px',
+      width: '600px',
+      maxHeight: '400px',
       data: {
         isAllSelected: this.isAllSelected(),
       },
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result === true) {
+      if (result) {
         this.data.removeMap(`sensorports[1]:listDevices`);
         if (this.isAllSelected()) {
           this.sp.removeAll('sensorports[1]');
@@ -137,7 +138,7 @@ export class SensorportComponent implements OnInit{
           selectedItems.forEach(item => {
             const index = this.dataSource.data.indexOf(item);
             if (index !== -1) {
-              this.sp.removeDevice('sensorports[1]', item.serial_number);
+              this.sp.removeDevice('sensorports[1]', item);
               this.dataSource.data.splice(index, 1);
               this.dataSource._updateChangeSubscription();
             }

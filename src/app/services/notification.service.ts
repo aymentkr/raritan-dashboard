@@ -20,16 +20,16 @@ export class NotificationService {
     const timeString = new Date().toLocaleString();
     switch (alert) {
       case 'error':
-        this.snackBar.open(message, title , snackbarConfig('error-snackbar'));
+        this.snackBar.open(title + ': \n' +message, '' , snackbarConfig('error-snackbar'));
         break;
       case 'info':
-        this.snackBar.open(message, title , snackbarConfig('info-snackbar'));
+        this.snackBar.open(title + ': \n' +message, '', snackbarConfig('info-snackbar'));
         break;
       case 'done':
-        this.snackBar.open(message, title , snackbarConfig('success-snackbar'));
+        this.snackBar.open(title + ': \n' +message, '' , snackbarConfig('success-snackbar'));
         break;
       case 'warning':
-        this.snackBar.open(message, title , snackbarConfig('warning-snackbar'));
+        this.snackBar.open(title + ': \n' +message, '', snackbarConfig('warning-snackbar'));
         break;
       default:
         break;

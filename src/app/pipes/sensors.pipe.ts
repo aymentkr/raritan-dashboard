@@ -34,28 +34,28 @@ export class SensorsPipe implements PipeTransform {
   };
 
   saveDevice(table:string,type: string ) {
-    this.data.sendToGo(`
+    this.data.send('',`
     new_sensor = emu.${type}:create(tfw_core)
     new_sensor:connect(${table})
     `);
   }
   callMethod(table:string, data: any) {
-    this.data.sendToGo(`emu.${data.device.type}:cast(${table}:findDevice("${data.device.serial_number}")):${data.methodName}`);
+    this.data.send('',`emu.${data.device.type}:cast(${table}:findDevice("${data.device.serial_number}")):${data.methodName}`);
   }
 
   setFuseState(i: number, state: boolean) {
-    this.data.sendToGo(`envhubs[1]:setFuseState(${i}, ${state})`);
+    this.data.send('',`envhubs[1]:setFuseState(${i}, ${state})`);
   }
 
-  removeDevice(table : string, serial_number: string) {
-    this.deviceMap.delete(serial_number);
-    console.log(`${table}:findDevice("${serial_number}"):disconnect();`)
-    this.data.sendToGo(`${table}:findDevice("${serial_number}"):disconnect();`);
+  removeDevice(table : string, device: Device) {
+    this.deviceMap.delete(device.serial_number);
+    console.log(`emu.${device.type}:cast(${table}:findDevice("${device.serial_number}")):disconnect();`)
+    this.data.send('',`emu.${device.type}:cast(${table}:findDevice("${device.serial_number}")):disconnect();`);
   }
 
   removeAll(table:string) {
     this.deviceMap.clear();
-    this.data.sendToGo(table+':removeAll()');
+    this.data.send('',table+':removeAll()');
   }
 
   async getLength(table: string): Promise<number> {

@@ -39,10 +39,6 @@ export class DataService {
       }, 0);
     }
   }
-  sendToGo(msgToSend: string) {
-    this.key = '';
-    this.ws.sendMessage(msgToSend);
-  }
   getResult(key: string, msg: string): Promise<string> {
     return new Promise((resolve) => {
       this.send(key, msg);

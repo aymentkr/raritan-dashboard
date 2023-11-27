@@ -103,7 +103,7 @@ export class InletPoleTableComponent  implements OnInit{
 
   async editInlet(inlet: InletP): Promise<void> {
     if (inlet!=null) {
-      this.data.sendToGo(`inlets[${inlet.id}]:setFrequency(${inlet.frequency});`);
+      this.data.send('',`inlets[${inlet.id}]:setFrequency(${inlet.frequency});`);
       this.data.editMap(`inlets[${inlet.id}]:frequency`,inlet.frequency);
     } else {
       throw new Error('inlet is null');
@@ -114,7 +114,7 @@ export class InletPoleTableComponent  implements OnInit{
   async editPole(inlet: InletP,pole: Pole): Promise<void> {
     if (pole!=null && inlet!=null) {
       const { id, voltage, current, act_power, app_power, act_energy, app_energy } = pole;
-      this.data.sendToGo(`
+      this.data.send('',`
         inlets[${inlet.id}]:setVoltage(${id},${voltage});
         inlets[${inlet.id}]:setCurrent(${id},${current});
         inlets[${inlet.id}]:setActivePower(${id},${act_power});

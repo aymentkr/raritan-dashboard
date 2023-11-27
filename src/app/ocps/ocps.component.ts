@@ -75,8 +75,8 @@ export class OcpsComponent implements OnInit {
 
   async editOcp(ocp: Ocp) {
     if (ocp != null) {
-      this.data.sendToGo(`ocps[${ocp.id}]:setCurrent(${ocp.current});`);
-      this.data.sendToGo(`ocps[${ocp.id}]:setPeakCurrent(${ocp.peak_current});`);
+      this.data.send('',`ocps[${ocp.id}]:setCurrent(${ocp.current});`);
+      this.data.send('',`ocps[${ocp.id}]:setPeakCurrent(${ocp.peak_current});`);
       this.data.editMap(`ocps[${ocp.id}]:current`,ocp.current);
       this.data.editMap(`ocps[${ocp.id}]:peak_current`,ocp.peak_current);
     } else {
