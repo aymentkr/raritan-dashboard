@@ -8,9 +8,8 @@ import {Device, DeviceElement, SensorElement} from "../../model/interfaces";
   styleUrls: ['./add-peripheral-device.component.css']
 })
 export class AddPeripheralDeviceComponent {
-  device1!: DeviceElement;
-  device2: DeviceElement | undefined;
-  selectedSensor: SensorElement | undefined;
+  selectedSensor!: SensorElement;
+  selectedDevice: DeviceElement | undefined;
   constructor(
     public dialogRef: MatDialogRef<AddPeripheralDeviceComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: Device[]
@@ -18,8 +17,8 @@ export class AddPeripheralDeviceComponent {
 
   doAction() {
     this.dialogRef.close({ data: {
-        type : this.device1.type,
-        parent : this.device2,
+        type : this.selectedSensor.type,
+        parent : this.selectedDevice,
       }});
   }
 
@@ -27,7 +26,18 @@ export class AddPeripheralDeviceComponent {
     this.dialogRef.close();
   }
 
-  isFormValid1(): boolean {
-    return this.device1 != undefined;
+  isConditionMet(): boolean {
+    return this.selectedSensor && this.data.length !== 0 && this.selectedSensor?.generation !== 1;
   }
+  isFormValid(): boolean {
+    if (this.isConditionMet()) {
+      return this.selectedSensor != undefined && this.selectedDevice != undefined;
+    } else {
+      return this.selectedSensor != undefined;
+    }
+  }
+  filterData() {
+    return this.data = this.data.filter(dev => !dev.type.includes('DPX_'));
+  }
+
 }
