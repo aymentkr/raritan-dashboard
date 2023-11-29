@@ -95,7 +95,7 @@ export class EnvhubComponent implements OnInit{
   async addRowData(type: string, p: number ) {
     if (type != '' ) {
       this.selection[p].clear();
-      this.sp.saveDevice(this.dataSource[p].data,'envhubs[1]:getPort(' + p + ')', type);
+      this.sp.saveDevice('envhubs[1]:getPort(' + p + ')', type);
       this.data.removeMap(`envhubs[1]:getPort(${p}):listDevices`);
       const lines = (await this.data.getResult(`envhubs[1]:getPort(${p}):listDevices`, `print(envhubs[1]:getPort(${p}):listDevices())`)).split('\n');
       this.dataSource[p].data = this.sp.convertLinesToDevices(lines);

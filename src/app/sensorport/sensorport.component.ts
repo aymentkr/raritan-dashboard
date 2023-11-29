@@ -92,20 +92,24 @@ export class SensorportComponent implements OnInit{
     });
   }
 
-  async addRowData(type: string) {
-    if (type != '') {
+  async addRowData(result: any) {
+    if (result.parent) {
+      this.sp.connectDevice(result.parent,'sensorports[1]', result.type);
+    } else {
+      this.sp.saveDevice('sensorports[1]', result.type);
+    }
       this.selection.clear();
-      this.sp.saveDevice(this.dataSource.data,'sensorports[1]', type)
       this.data.removeMap(`sensorports[1]:listDevices`);
       this.dataSource.data = await this.fetchSensorPortData();
-      this.notificationService.openToastr(`New Device with type ${type} saved successfully`, 'Adding Device to Sensorports', 'done');
-    } else {
-      this.notificationService.openToastr('Failed to save data', 'Adding Device to Sensorports', 'error');
+      this.notificationService.openToastr(`New Device with type ${result.type} saved successfully`, 'Adding Device to Sensorports', 'done');
+    /*
+if (this.data source not changing )
+this.notificationService.openToastr('Failed to save data', 'Adding Device to Sensorports', 'error');*/
     }
-  }
 
-  private editRowData(data: any) {
-    this.sp.callMethod('sensorports[1]', data);
+
+  private editRowData(result: any) {
+    this.sp.callMethod('sensorports[1]', result);
     this.notificationService.openToastr('Device has been successfully updated (Sensorports), Virtual sensor operations for QEMU ', 'Device Modification ', 'done')
   }
 

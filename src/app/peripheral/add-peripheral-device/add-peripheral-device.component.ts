@@ -1,6 +1,6 @@
 import { Component, Inject, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import {DeviceElement} from "../../model/interfaces";
+import {Device, DeviceElement, SensorElement} from "../../model/interfaces";
 
 @Component({
   selector: 'app-add-peripheral-device',
@@ -8,22 +8,26 @@ import {DeviceElement} from "../../model/interfaces";
   styleUrls: ['./add-peripheral-device.component.css']
 })
 export class AddPeripheralDeviceComponent {
-  device!: DeviceElement;
-
+  device1!: DeviceElement;
+  device2: DeviceElement | undefined;
+  selectedSensor: SensorElement | undefined;
   constructor(
     public dialogRef: MatDialogRef<AddPeripheralDeviceComponent>,
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: string
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: Device[]
   ) {}
 
   doAction() {
-    this.dialogRef.close({ data: this.device.type });
+    this.dialogRef.close({ data: {
+        type : this.device1.type,
+        parent : this.device2,
+      }});
   }
 
   closeDialog() {
     this.dialogRef.close();
   }
 
-  isFormValid(): boolean {
-    return this.device != undefined;
+  isFormValid1(): boolean {
+    return this.device1 != undefined;
   }
 }

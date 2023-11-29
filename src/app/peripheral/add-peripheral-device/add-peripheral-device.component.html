@@ -1,17 +1,28 @@
 <h1 mat-dialog-title>Creating and connecting a new sensor </h1>
 <div mat-dialog-content>
-  <p>
+
+  <mat-form-field class="dialog-content">
+    <mat-label>Sensor Name</mat-label>
+    <mat-select [(ngModel)]="device1" name="device" >
+      <mat-option *ngFor="let sensor of [] | sensors" [value]="selectedSensor">
+        {{sensor.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <ng-container *ngIf="device1 && data.length !== 0 && selectedSensor?.generation !== 1">
     <mat-form-field class="dialog-content">
-      <mat-label>Sensor Name</mat-label>
-      <mat-select [(ngModel)]="device" name="device">
-        <mat-option *ngFor="let device of [] | sensors" [value]="device">
-          {{device.name}}
+      <mat-label>Sensor you  want to connect with</mat-label>
+      <mat-select [(ngModel)]="device2" name="device2" >
+        <mat-option *ngFor="let sensor of [] | sensors" [value]="device2">
+          {{ sensor.type }}
         </mat-option>
       </mat-select>
     </mat-form-field>
-  </p>
+  </ng-container>
+
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="doAction()" [disabled]="!isFormValid()">Add a Device</button>
+  <button mat-button (click)="doAction()" [disabled]="!isFormValid1()">Add a Device</button>
   <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>
 </div>

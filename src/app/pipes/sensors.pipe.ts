@@ -35,20 +35,14 @@ export class SensorsPipe implements PipeTransform {
     }
   };
 
-  saveDevice(list: Device[], table: string, type: string) {
-    if (list.length > 0) {
-      const lastDevice = list[list.length - 1];
-      this.data.sendToGo(`
-      new_sensor = emu.${type}:create(tfw_core)
-      parent = emu.${lastDevice.type}:cast(${table}:findDevice("${lastDevice.serial_number}"))
-      new_sensor:connect(parent)
-      `);
-    } else {
-      this.data.sendToGo(`
-      new_sensor = emu.${type}:create(tfw_core)
-      new_sensor:connect(${table})
-      `);
-    }
+  saveDevice(table: string, type: string) {
+    this.data.sendToGo(`emu.${type}:create(tfw_core):connect(${table})`);
+  }
+
+  connectDevice(parent:Device,table: string, type: string){
+    this.data.sendToGo(`
+    emu.${type}:create(tfw_core):connect(emu.${parent.type}:cast(${table}:findDevice("${parent.serial_number}")))
+    `);
   }
 
   callMethod(table: string, data: any) {
