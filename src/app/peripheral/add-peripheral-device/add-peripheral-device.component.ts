@@ -30,14 +30,11 @@ export class AddPeripheralDeviceComponent {
     return this.selectedSensor && this.data.length !== 0 && this.selectedSensor?.generation !== 1;
   }
   isFormValid(): boolean {
-    if (this.isConditionMet()) {
-      return this.selectedSensor != undefined && this.selectedDevice != undefined;
-    } else {
-      return this.selectedSensor != undefined;
-    }
+    if (this.isConditionMet()) return  this.selectedDevice != undefined;
+    return this.selectedSensor != undefined;
   }
   filterData() {
-    return this.data = this.data.filter(dev => !dev.type.includes('DPX_'));
+    return this.data = this.data.filter(dev => (!dev.type.includes('DPX_') && !dev.isParent));
   }
 
 }

@@ -88,7 +88,6 @@ export class EditPeripheralDeviceComponent implements AfterViewInit {
       const parametersString = parameters.join(',');
       sensorMethod = `${this.selectedSensorMethod}(${parametersString})`
     }
-    console.log(sensorMethod)
     this.dialogRef.close({
       data: {
         methodName: sensorMethod,

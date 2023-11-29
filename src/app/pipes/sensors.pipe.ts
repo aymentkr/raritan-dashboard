@@ -95,6 +95,7 @@ export class SensorsPipe implements PipeTransform {
             if (item.type === type) {
               const PeripheralDataSource = new MatTableDataSource<Peripheral>(this.getPeripheralByType(this.device_id, type));
               const dev: Device = {
+                isParent: false,
                 device_id: this.device_id,
                 name: item.name,
                 type: item.type,

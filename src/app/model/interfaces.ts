@@ -67,6 +67,7 @@ export interface VPD {
   serial_number : string
 }
 export interface Device {
+  isParent: boolean;
   device_id : number;
   name : string;
   type : string;

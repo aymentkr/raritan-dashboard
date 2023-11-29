@@ -74,7 +74,9 @@ export class EnvhubComponent implements OnInit{
       if (_bool)
         this.notificationService.openToastr("Sorry! You can't add any virtual peripheral device in QEMU currently :(", 'Adding Device to Sensorports', 'info');
       else {
-        const dialogRef = this.dialog.open(AddPeripheralDeviceComponent);
+        const dialogRef = this.dialog.open(AddPeripheralDeviceComponent,{
+          data: this.dataSource[i].data
+        });
         dialogRef.afterClosed().subscribe(result => {
           if (result) this.addRowData(result.data, i);
         });
@@ -92,18 +94,22 @@ export class EnvhubComponent implements OnInit{
   }
 
 
-  async addRowData(type: string, p: number ) {
-    if (type != '' ) {
-      this.selection[p].clear();
-      this.sp.saveDevice('envhubs[1]:getPort(' + p + ')', type);
-      this.data.removeMap(`envhubs[1]:getPort(${p}):listDevices`);
-      const lines = (await this.data.getResult(`envhubs[1]:getPort(${p}):listDevices`, `print(envhubs[1]:getPort(${p}):listDevices())`)).split('\n');
-      this.dataSource[p].data = this.sp.convertLinesToDevices(lines);
+  async addRowData(result: any, p: number ) {
+    if (result.parent)
+      this.sp.connectDevice(result.parent,'envhubs[1]:getPort(' + p + ')', result.type);
+    else
+      this.sp.saveDevice('envhubs[1]:getPort(' + p + ')', result.type);
+
+    this.selection[p].clear();
+    this.data.removeMap(`envhubs[1]:getPort(${p}):listDevices`);
+    const lines = (await this.data.getResult(`envhubs[1]:getPort(${p}):listDevices`, `print(envhubs[1]:getPort(${p}):listDevices())`)).split('\n');
+    const data = this.sp.convertLinesToDevices(lines);
+    if (data.length > this.dataSource[p].data.length) {
+      this.dataSource[p].data = data;
       this.dataSource[p]._updateChangeSubscription();
-      this.notificationService.openToastr(`New Device with type ${type} in Port ${p} saved successfully`, 'Adding Device to Envhubs','done');
-    } else {
+      this.notificationService.openToastr(`New Device with type ${result.type} in Port ${p} saved successfully`, 'Adding Device to Envhubs','done');
+    } else
       this.notificationService.openToastr('Failed to save data','Adding Device to Envhubs','error');
-    }
   }
 
   private editRowData(data: any) {

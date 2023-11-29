@@ -93,88 +93,89 @@ export class SensorportComponent implements OnInit{
   }
 
   async addRowData(result: any) {
-    if (result.parent) {
+    if (result.parent)
       this.sp.connectDevice(result.parent,'sensorports[1]', result.type);
-    } else {
+    else
       this.sp.saveDevice('sensorports[1]', result.type);
-    }
+
       this.selection.clear();
       this.data.removeMap(`sensorports[1]:listDevices`);
-      this.dataSource.data = await this.fetchSensorPortData();
-      this.notificationService.openToastr(`New Device with type ${result.type} saved successfully`, 'Adding Device to Sensorports', 'done');
-    /*
-if (this.data source not changing )
-this.notificationService.openToastr('Failed to save data', 'Adding Device to Sensorports', 'error');*/
-    }
+      const data = await this.fetchSensorPortData();
+      if (data.length > this.dataSource.data.length) {
+        this.dataSource.data = data;
+        this.notificationService.openToastr(`New Device with type ${result.type} saved successfully`, 'Adding Device to Sensorports', 'done');
+      } else
+        this.notificationService.openToastr('Failed to save data', 'Adding Device to Sensorports', 'error');
+}
 
 
-  private editRowData(result: any) {
-    this.sp.callMethod('sensorports[1]', result);
-    this.notificationService.openToastr('Device has been successfully updated (Sensorports), Virtual sensor operations for QEMU ', 'Device Modification ', 'done')
-  }
+private editRowData(result: any) {
+this.sp.callMethod('sensorports[1]', result);
+this.notificationService.openToastr('Device has been successfully updated (Sensorports), Virtual sensor operations for QEMU ', 'Device Modification ', 'done')
+}
 
-  public infoDevice = (obj: Device): void => {
-    this.sp.infoDevice(obj);
-  };
+public infoDevice = (obj: Device): void => {
+this.sp.infoDevice(obj);
+};
 
-  masterToggle() {
-    this.isAllSelected() ?
-      this.selection.clear() :
-      this.dataSource.data.forEach(row => this.selection.select(row));
-  }
+masterToggle() {
+this.isAllSelected() ?
+  this.selection.clear() :
+  this.dataSource.data.forEach(row => this.selection.select(row));
+}
 
-  deleteSelectedItems() {
-    const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
-      width: '600px',
-      maxHeight: '400px',
-      data: {
-        isAllSelected: this.isAllSelected(),
-      },
-    });
+deleteSelectedItems() {
+const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
+  width: '600px',
+  maxHeight: '400px',
+  data: {
+    isAllSelected: this.isAllSelected(),
+  },
+});
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.data.removeMap(`sensorports[1]:listDevices`);
-        if (this.isAllSelected()) {
-          this.sp.removeAll('sensorports[1]');
-          this.dataSource.data = [];
+dialogRef.afterClosed().subscribe(result => {
+  if (result) {
+    this.data.removeMap(`sensorports[1]:listDevices`);
+    if (this.isAllSelected()) {
+      this.sp.removeAll('sensorports[1]');
+      this.dataSource.data = [];
+      this.dataSource._updateChangeSubscription();
+    } else {
+      const selectedItems = this.selection.selected;
+      selectedItems.forEach(item => {
+        const index = this.dataSource.data.indexOf(item);
+        if (index !== -1) {
+          this.sp.removeDevice('sensorports[1]', item);
+          this.dataSource.data.splice(index, 1);
           this.dataSource._updateChangeSubscription();
-        } else {
-          const selectedItems = this.selection.selected;
-          selectedItems.forEach(item => {
-            const index = this.dataSource.data.indexOf(item);
-            if (index !== -1) {
-              this.sp.removeDevice('sensorports[1]', item);
-              this.dataSource.data.splice(index, 1);
-              this.dataSource._updateChangeSubscription();
-            }
-          });
         }
-        this.selection.clear();
-        if (this.isAllSelected()) {
-          this.notificationService.openToastr('All devices deleted successfully from Sensorports in Peripĥerals', 'Deleting Devices', 'warning');
-        } else {
-          this.notificationService.openToastr('Selected device(s) deleted successfully from Sensorports in Peripĥerals', 'Deleting Devices', 'warning');
-        }
-      }
-    });
+      });
+    }
+    this.selection.clear();
+    if (this.isAllSelected()) {
+      this.notificationService.openToastr('All devices deleted successfully from Sensorports in Peripĥerals', 'Deleting Devices', 'warning');
+    } else {
+      this.notificationService.openToastr('Selected device(s) deleted successfully from Sensorports in Peripĥerals', 'Deleting Devices', 'warning');
+    }
   }
+});
+}
 
 
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
+isAllSelected() {
+const numSelected = this.selection.selected.length;
+const numRows = this.dataSource.data.length;
+return numSelected === numRows;
+}
 
-  async isEmpty() {
-    return await this.sp.getLength('sensorports') == 0;
-  }
+async isEmpty() {
+return await this.sp.getLength('sensorports') == 0;
+}
 
-  toggleRow(element: Device) {
-    this.expandedElement = element;
-    this.cdRef.detectChanges();
-    this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<Peripheral>).sort = this.innerSort.toArray()[index]);
-  }
+toggleRow(element: Device) {
+this.expandedElement = element;
+this.cdRef.detectChanges();
+this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<Peripheral>).sort = this.innerSort.toArray()[index]);
+}
 
 }
