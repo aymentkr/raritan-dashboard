@@ -9,17 +9,13 @@ import {Device, DeviceElement, SensorElement} from "../../model/interfaces";
 })
 export class AddPeripheralDeviceComponent {
   selectedSensor!: SensorElement;
-  selectedDevice: DeviceElement | undefined;
   constructor(
     public dialogRef: MatDialogRef<AddPeripheralDeviceComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: Device[]
   ) {}
 
   doAction() {
-    this.dialogRef.close({ data: {
-        type : this.selectedSensor.type,
-        parent : this.selectedDevice,
-      }});
+    this.dialogRef.close({ data: this.selectedSensor.type });
   }
 
   closeDialog() {
@@ -30,11 +26,7 @@ export class AddPeripheralDeviceComponent {
     return this.selectedSensor && this.data.length !== 0 && this.selectedSensor?.generation !== 1;
   }
   isFormValid(): boolean {
-    if (this.isConditionMet()) return  this.selectedDevice != undefined;
     return this.selectedSensor != undefined;
-  }
-  filterData() {
-    return this.data = this.data.filter(dev => (!dev.type.includes('DPX_') && !dev.isParent));
   }
 
 }

@@ -54,6 +54,7 @@ import { SensorportComponent } from './sensorport/sensorport.component';
 import { BottomSheetInfoComponent } from './inlet/transfer-switch/bottom-sheet-info/bottom-sheet-info.component';
 import { BottomSheetDetailsComponent } from './inlet/transfer-switch/bottom-sheet-details/bottom-sheet-details.component';
 import {MatBottomSheet} from "@angular/material/bottom-sheet";
+import {MatTreeModule} from "@angular/material/tree";
 
 @NgModule({
   declarations: [
@@ -113,6 +114,7 @@ import {MatBottomSheet} from "@angular/material/bottom-sheet";
     MatSlideToggleModule,
     MatCardModule,
     MatBadgeModule,
+    MatTreeModule,
   ],
   providers: [WebsocketService,DataService,SensorsPipe,PeripheralClass,MatBottomSheet],
   bootstrap: [AppComponent]

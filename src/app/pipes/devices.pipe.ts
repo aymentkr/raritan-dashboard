@@ -14,6 +14,7 @@ export class DevicesPipe implements PipeTransform {
 
   transform(value: unknown, ...args: unknown[]): MatTableDataSource<VPD> {
     const VPDs: VPD[] = [];
+    /*
     this.myMap.forEach((device, serial_number) => {
       device.peripherals.data.forEach((peripheral) => {
         VPDs.push({
@@ -25,7 +26,7 @@ export class DevicesPipe implements PipeTransform {
           serial_number: serial_number,
         });
       });
-    });
+    });*/
     return new MatTableDataSource<VPD>(VPDs);
   }
 }

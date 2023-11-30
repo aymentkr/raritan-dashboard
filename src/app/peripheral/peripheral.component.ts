@@ -38,7 +38,7 @@ export class PeripheralComponent implements AfterViewInit {
     try {
       const deviceMap = this.sp.getDeviceMap();
       this.chartData = this.deviceTypes.map(() => 0);
-
+/*
       deviceMap.forEach((device) => {
         device.peripherals.data.forEach((peripheral) => {
           const foundIndex = this.deviceTypes.findIndex((type) => peripheral.type === type);
@@ -46,7 +46,7 @@ export class PeripheralComponent implements AfterViewInit {
             this.chartData[foundIndex]++;
           }
         });
-      });
+      });*/
     } catch (error) {
       console.error('Error fetching device map:', error);
     }

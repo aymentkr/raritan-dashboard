@@ -35,6 +35,7 @@ export class SmartlockComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    /*
     this.fetchSmartLockData()
       .then((data: Device[]) => {
         this.dataSource.data = data;
@@ -44,10 +45,11 @@ export class SmartlockComponent implements OnInit {
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);
-      });
+      });*/
   }
 
   async fetchSmartLockData() {
+    /*
     const type = 'DX2_DH2C2';
     const sizeP = parseFloat(await this.data.getResult('#sensorports', 'print(#sensorports)'));
     const sizeE = parseFloat(await this.data.getResult('#envhubs', 'print(#envhubs)'));
@@ -72,7 +74,7 @@ export class SmartlockComponent implements OnInit {
 
     // Concatenate and filter the arrays
     return this.myMap.get('sensorports[1]')?.concat(this.myMap.get('envhubs[1]') || [])?.filter((peripheral) => peripheral.type === type) || [];
-  }
+ */ }
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -87,6 +89,7 @@ export class SmartlockComponent implements OnInit {
   }
 
   onFormSubmit(doorForm: NgForm) {
+    /*
     const selectedDoorNr = doorForm.value.doorNr;
     const selectedDeviceId = doorForm.value.deviceId;
     const selectedHandleState = doorForm.value.handleState;
@@ -134,6 +137,6 @@ export class SmartlockComponent implements OnInit {
       }
     } else {
       this.notificationService.openToastr('You need at least one field in the values are in order to apply a value modification!','Door Selection','error')
-    }
+    }*/
   }
 }

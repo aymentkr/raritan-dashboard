@@ -67,12 +67,19 @@ export interface VPD {
   serial_number : string
 }
 export interface Device {
-  isParent: boolean;
-  device_id : number;
-  name : string;
-  type : string;
-  serial_number : string;
-  peripherals: MatTableDataSource<Peripheral>;
+  type : string,
+}
+export interface DeviceNode {
+  type: string;
+  serial: string;
+  tailports?: DeviceNode[];
+}
+
+export interface FlatNode {
+  expandable: boolean;
+  type: string;
+  serial_number: string;
+  level: number;
 }
 
 export interface Notification {

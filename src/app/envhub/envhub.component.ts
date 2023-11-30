@@ -57,6 +57,7 @@ export class EnvhubComponent implements OnInit{
   }
 
   async fetchEnvhubsData() {
+    /*
     const size = parseFloat(await this.data.getResult('#envhubs', 'print(#envhubs)'));
     if (size === 1) {
       for (let i = 0; i < 4; i++) {
@@ -65,7 +66,7 @@ export class EnvhubComponent implements OnInit{
         this.dataSource[i].sort = this.sort;
         this.selection.push(new SelectionModel<Device>(true, []));
       }
-    }
+    }*/
   }
 
 
@@ -94,22 +95,30 @@ export class EnvhubComponent implements OnInit{
   }
 
 
-  async addRowData(result: any, p: number ) {
-    if (result.parent)
-      this.sp.connectDevice(result.parent,'envhubs[1]:getPort(' + p + ')', result.type);
+  async addRowData(type: string, p: number ) {
+    /*
+    let index = this.dataSource[p].data.length-1;
+
+    while ((this.dataSource[p].data[index].isParent || this.dataSource[p].data[index].type.includes('DPX-')) && index>0) {
+      index --;
+    }
+
+    if (index === 0)
+      this.sp.saveDevice('envhubs[1]:getPort(' + p + ')', type);
     else
-      this.sp.saveDevice('envhubs[1]:getPort(' + p + ')', result.type);
+      this.sp.connectDevice(this.dataSource[p].data[index],'envhubs[1]:getPort(' + p + ')', type);
 
     this.selection[p].clear();
     this.data.removeMap(`envhubs[1]:getPort(${p}):listDevices`);
     const lines = (await this.data.getResult(`envhubs[1]:getPort(${p}):listDevices`, `print(envhubs[1]:getPort(${p}):listDevices())`)).split('\n');
-    const data = this.sp.convertLinesToDevices(lines);
+   /* const data = this.sp.convertLinesToDevices(lines);
     if (data.length > this.dataSource[p].data.length) {
       this.dataSource[p].data = data;
       this.dataSource[p]._updateChangeSubscription();
-      this.notificationService.openToastr(`New Device with type ${result.type} in Port ${p} saved successfully`, 'Adding Device to Envhubs','done');
+      this.notificationService.openToastr(`New Device with type ${type} in Port ${p} saved successfully`, 'Adding Device to Envhubs','done');
     } else
       this.notificationService.openToastr('Failed to save data','Adding Device to Envhubs','error');
+  */
   }
 
   private editRowData(data: any) {
