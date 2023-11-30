@@ -41,6 +41,7 @@ export class SensorportComponent implements OnInit {
 
   isLoading: boolean = true;
   columns: string[] = ['device_id', 'name', 'type', 'serial_number'];
+  displayedColumns : string[] = ['type','serial'];
   selection = new SelectionModel<any>(true, []);
   @ViewChild('outerSort', { static: true }) sort!: MatSort;
   @ViewChildren('innerTables') innerTables!: QueryList<MatTable<Peripheral>>;
