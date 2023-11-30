@@ -31,13 +31,13 @@
                 </mat-icon>
               </button>
 
-              {{data.name}}
+              {{data.type}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="serial">
-            <th mat-header-cell *matHeaderCellDef> serial_number </th>
-            <td mat-cell *matCellDef="let data"> {{data.serial}} </td>
+            <th mat-header-cell *matHeaderCellDef> Serial Number </th>
+            <td mat-cell *matCellDef="let data"> {{data.serial_number}} </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
