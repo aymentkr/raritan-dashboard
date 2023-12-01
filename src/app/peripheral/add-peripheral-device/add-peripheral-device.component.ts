@@ -1,6 +1,6 @@
 import { Component, Inject, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import {Device, DeviceElement, SensorElement} from "../../model/interfaces";
+import {Device, SensorElement} from "../../model/interfaces";
 
 @Component({
   selector: 'app-add-peripheral-device',
@@ -22,9 +22,6 @@ export class AddPeripheralDeviceComponent {
     this.dialogRef.close();
   }
 
-  isConditionMet(): boolean {
-    return this.selectedSensor && this.data.length !== 0 && this.selectedSensor?.generation !== 1;
-  }
   isFormValid(): boolean {
     return this.selectedSensor != undefined;
   }

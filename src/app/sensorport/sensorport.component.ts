@@ -1,8 +1,6 @@
-// sensorport.component.ts
-
 import { ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { MatTable, MatTableDataSource } from "@angular/material/table";
-import {DeviceNode, FlatNode, Peripheral} from "../model/interfaces";
+import {MatTable, MatTableDataSource} from "@angular/material/table";
+import {Device, DeviceFlatNode, DeviceNode, Peripheral} from "../model/interfaces";
 import { SelectionModel } from "@angular/cdk/collections";
 import { MatSort } from "@angular/material/sort";
 import { MatDialog } from "@angular/material/dialog";
@@ -29,32 +27,24 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree"
   ]
 })
 export class SensorportComponent implements OnInit {
-
-  private _transformer = (node: DeviceNode, level: number) => {
-    return {
-      expandable: !!node.tailports && node.tailports.length > 0,
-      type: node.type,
-      serial_number: node.serial,
-      level: level,
-    };
-  };
-
   isLoading: boolean = true;
+  expandedElement!: Device;
+
   columns: string[] = ['device_id', 'name', 'type', 'serial_number'];
-  displayedColumns : string[] = ['type','serial'];
+  innercolumns: string[] = ['peripheral_id', 'name', 'type'];
+  displayedColumns : string[] = ['select',...this.columns,'actions'];
+
   selection = new SelectionModel<any>(true, []);
   @ViewChild('outerSort', { static: true }) sort!: MatSort;
   @ViewChildren('innerTables') innerTables!: QueryList<MatTable<Peripheral>>;
   @ViewChildren('innerSort') innerSort!: QueryList<MatSort>;
-
-  // Initialize treeControl, treeFlattener, and dataSource
-  treeControl = new FlatTreeControl<FlatNode>(
+  // Define treeControl, treeFlattener, and dataSource as class properties
+  treeControl = new FlatTreeControl<DeviceFlatNode>(
     node => node.level,
     node => node.expandable
   );
-
   treeFlattener = new MatTreeFlattener(
-    this._transformer,
+    this.sp._transformer,
     node => node.level,
     node => node.expandable,
     node => node.tailports,
@@ -70,7 +60,7 @@ export class SensorportComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.fetchSensorPortData().then((data) => {
+    this.fetchSensorPortData().then(() => {
       this.cdRef.detectChanges();
       this.isLoading = false;
     }).catch((error) => {
@@ -83,7 +73,6 @@ export class SensorportComponent implements OnInit {
     if (size === 1) {
       const topology = await this.data.getResult('sensorports[1]:getTopology', 'print(sensorports[1]:getTopology())');
       this.dataSource.data = this.convertToDevices(JSON.parse(topology));
-      console.log(this.dataSource.data);
     }
   }
 
@@ -113,21 +102,20 @@ export class SensorportComponent implements OnInit {
     });
   }
 
-  async addRowData(result: any) {
-    /*
-    if (result.parent)
-      this.sp.connectDevice(result.parent, 'sensorports[1]', result.type);
+  async addRowData(type: string) {
+    const size = this.dataSource.data.length;
+    if (size>0)
+      this.sp.connectDevice(this.dataSource.data[length-1], 'sensorports[1]', type);
     else
-      this.sp.saveDevice('sensorports[1]', result.type);
+      this.sp.saveDevice('sensorports[1]', type);
 
     this.selection.clear();
-    this.data.removeMap(`sensorports[1]:listDevices`);
-    const data = await this.fetchSensorPortData();
-    if (data.length > this.dataSource.data.length) {
-      this.dataSource.data = data;
-      this.notificationService.openToastr(`New Device with type ${result.type} saved successfully`, 'Adding Device to Sensorports', 'done');
+    this.data.removeMap('sensorports[1]:getTopology');
+    await this.fetchSensorPortData();
+    if ( this.dataSource.data.length > size) {
+      this.notificationService.openToastr(`New Device with type ${type} saved successfully`, 'Adding Device to Sensorports', 'done');
     } else
-      this.notificationService.openToastr('Failed to save data', 'Adding Device to Sensorports', 'error');*/
+      this.notificationService.openToastr('Failed to save data', 'Adding Device to Sensorports', 'error');
   }
 
 
@@ -191,7 +179,7 @@ export class SensorportComponent implements OnInit {
   async isEmpty() {
     return await this.sp.getLength('sensorports') == 0;
   }
-  hasChild = (_: number, node: FlatNode) => node.expandable;
+  hasChild = (_: number, node: DeviceFlatNode) => node.expandable;
 
   private convertToDevices(data: any): DeviceNode[] {
     if (Array.isArray(data)) {
@@ -205,4 +193,10 @@ export class SensorportComponent implements OnInit {
       }];
     }
   }
+  toggleRow(element: Device) {
+    this.expandedElement = element;
+    this.cdRef.detectChanges();
+    this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<Peripheral>).sort = this.innerSort.toArray()[index]);
+  }
+
 }

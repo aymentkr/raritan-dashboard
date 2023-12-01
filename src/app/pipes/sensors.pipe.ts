@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import {Device, Peripheral, SensorElement} from "../model/interfaces";
+import {Device, DeviceFlatNode, DeviceNode, Peripheral, SensorElement} from "../model/interfaces";
 import {SensorClass} from "../model/SensorClass";
 import {DataService} from "../services/data.service";
 import {MatTableDataSource} from "@angular/material/table";
@@ -39,10 +39,10 @@ export class SensorsPipe implements PipeTransform {
     this.data.sendToGo(`emu.${type}:create(tfw_core):connect(${table})`);
   }
 
-  connectDevice(parent:Device,table: string, type: string){/*
+  connectDevice(parent:DeviceNode,table: string, type: string){
     this.data.sendToGo(`
-    emu.${type}:create(tfw_core):connect(emu.${parent.type}:cast(${table}:findDevice("${parent.serial_number}")))
-    `);*/
+    emu.${type}:create(tfw_core):connect(emu.${parent.type}:cast(${table}:findDevice("${parent.serial}")))
+    `);
   }
 
   callMethod(table: string, data: any) {
@@ -88,51 +88,22 @@ export class SensorsPipe implements PipeTransform {
     return this.deviceMap;
   }
 
-  parseJsonToDevices(jsonString: string): Device[] {
-    return  JSON.parse(jsonString);
-  }
-/*
-  private convertDataToDevices(deviceData: any): Device {
-    console.log(deviceData.type)
-    const matchingSensor = this.sensors.find((item) => item.type === deviceData.type);
-
-    if (matchingSensor) {
-      const device: Device = {
-        isParent: deviceData.tailports !== undefined,
-        device_id: ++this.device_id,
-        name: matchingSensor.name,
-        type: deviceData.type,
-        serial_number: deviceData.serial,
-        peripherals: new MatTableDataSource<Peripheral>(deviceData.peripherals)
-      };
-
-      // If tailports exist, recursively parse them
-      if (device.isParent) {
-        if (Array.isArray(deviceData.tailports)) {
-          device.tailports = deviceData.tailports.map((tailport: any) =>
-            this.convertDataToDevices(tailport)
-          );
-        } else {
-          device.tailports = [this.convertDataToDevices(deviceData.tailports)];
-        }
+  _transformer = (node: DeviceNode, level: number): DeviceFlatNode => {
+    let name = '';
+    this.sensors.forEach((item) => {
+      if (item.type === node.type) {
+        name = item.name;
       }
-
-      return device;
-    } else {
-      console.error(`Sensor type '${deviceData.type}' not found.`);
-      return {
-        isParent: deviceData.tailports !== undefined,
-        device_id: ++this.device_id,
-        name: 'Sensor Not Found',
-        type: deviceData.type,
-        serial_number: deviceData.serial,
-        peripherals: new MatTableDataSource<Peripheral>(this.getPeripheralByType(this.device_id, deviceData.type)),
-      };
-    }
-  }
-
-
-
-*/
+    });
+    return {
+      expandable: !!node.tailports && node.tailports.length > 0,
+      device_id: ++this.device_id,
+      name: name,
+      type: node.type,
+      serial_number: node.serial,
+      peripherals: new MatTableDataSource<Peripheral>(this.getPeripheralByType(this.device_id, node.type)),
+      level: level,
+    };
+  };
 
 }

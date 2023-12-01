@@ -75,10 +75,13 @@ export interface DeviceNode {
   tailports?: DeviceNode[];
 }
 
-export interface FlatNode {
+export interface DeviceFlatNode {
   expandable: boolean;
+  device_id : number;
+  name : string
   type: string;
   serial_number: string;
+  peripherals: MatTableDataSource<Peripheral>;
   level: number;
 }
 
