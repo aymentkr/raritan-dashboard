@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {Device} from "../model/interfaces";
+import {DeviceFlatNode} from "../model/interfaces";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
 import {SensorsPipe} from "../pipes/sensors.pipe";
@@ -15,10 +15,10 @@ import {NotificationService} from "../services/notification.service";
 })
 export class SmartlockComponent implements OnInit {
   isLoading: boolean = true;
-  dataSource = new MatTableDataSource<Device>();
+  dataSource = new MatTableDataSource<DeviceFlatNode>();
   columns: string[] = ['device_id', 'name', 'type', 'serial_number'];
   displayedColumns: string[] = ['select', ...this.columns];
-  myMap = new Map <string, Device[]>;
+  myMap = new Map <string, DeviceFlatNode[]>;
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('doorForm', {static: false}) doorForm!: NgForm;

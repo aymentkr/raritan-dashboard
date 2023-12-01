@@ -10,10 +10,7 @@ export class DeleteDeviceDialogComponent {
   msgContent ='';
 
   constructor(private dialogRef: MatDialogRef<DeleteDeviceDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
-    if (data.isAllSelected)
-      this.msgContent = 'you want to remove all devices?';
-    else
-      this.msgContent = 'You want to remove the selected device(s)?';
+    this.msgContent = data;
   }
 
   onYesClick(): void {

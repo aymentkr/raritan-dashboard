@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {Device, VPD} from "../model/interfaces";
+import {DeviceFlatNode, VPD} from "../model/interfaces";
 import {SensorsPipe} from "./sensors.pipe";
 import {MatTableDataSource} from "@angular/material/table";
 @Pipe({
@@ -7,7 +7,7 @@ import {MatTableDataSource} from "@angular/material/table";
 })
 export class DevicesPipe implements PipeTransform {
 
-  myMap = new Map<string, Device>();
+  myMap = new Map<string, DeviceFlatNode>();
   constructor(sp: SensorsPipe) {
     this.myMap = sp.getDeviceMap();
   }

@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import {Device, DeviceFlatNode, DeviceNode, Peripheral, SensorElement} from "../model/interfaces";
+import { DeviceFlatNode, DeviceNode, Peripheral, SensorElement} from "../model/interfaces";
 import {SensorClass} from "../model/SensorClass";
 import {DataService} from "../services/data.service";
 import {MatTableDataSource} from "@angular/material/table";
@@ -10,7 +10,7 @@ import {NotificationService} from "../services/notification.service";
   name: 'sensors'
 })
 export class SensorsPipe implements PipeTransform {
-  deviceMap = new Map<string, Device>;
+  deviceMap = new Map<string, DeviceFlatNode>;
   device_id = 0;
   sensors = new SensorClass().getSensors();
 
@@ -25,7 +25,7 @@ export class SensorsPipe implements PipeTransform {
     return this.sensors;
   }
 
-  infoDevice = (obj: Device): void => {
+  infoDevice = (obj: DeviceFlatNode): void => {
     let selectedSensor = this.sensors.find(sensor => sensor.type === obj.type);
     if (selectedSensor) {
       const formattedMethods = selectedSensor.methods.join('\n');
@@ -40,9 +40,12 @@ export class SensorsPipe implements PipeTransform {
   }
 
   connectDevice(parent:DeviceNode,table: string, type: string){
+    if (parent.tailports === undefined)
     this.data.sendToGo(`
     emu.${type}:create(tfw_core):connect(emu.${parent.type}:cast(${table}:findDevice("${parent.serial}")))
     `);
+    else
+      this.connectDevice(parent.tailports[0],table,type);
   }
 
   callMethod(table: string, data: any) {
@@ -53,12 +56,12 @@ export class SensorsPipe implements PipeTransform {
     this.data.sendToGo(`envhubs[1]:setFuseState(${i}, ${state})`);
   }
 
-  removeDevice(table: string, device: Device) {
+  removeDevice(table: string, device: DeviceFlatNode) {
     /*
     this.deviceMap.delete(device.serial_number);
     this.data.sendToGo(`emu.${device.type}:cast(${table}:findDevice("${device.serial_number}")):disconnect();`);*/
   }
-  removeDeviceFromParent(table: string, device: Device) {/*
+  removeDeviceFromParent(table: string, device: DeviceFlatNode) {/*
     this.deviceMap.delete(device.serial_number);
     this.data.sendToGo(`emu.${device.type}:cast(${table}:findDevice("${device.serial_number}")):disconnect();`);*/
   }

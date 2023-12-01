@@ -1,6 +1,6 @@
 import { Component, Inject, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import {Device, SensorElement} from "../../model/interfaces";
+import {DeviceFlatNode, SensorElement} from "../../model/interfaces";
 
 @Component({
   selector: 'app-add-peripheral-device',
@@ -11,7 +11,7 @@ export class AddPeripheralDeviceComponent {
   selectedSensor!: SensorElement;
   constructor(
     public dialogRef: MatDialogRef<AddPeripheralDeviceComponent>,
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: Device[]
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: DeviceFlatNode[]
   ) {}
 
   doAction() {

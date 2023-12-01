@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import {MatTable, MatTableDataSource} from "@angular/material/table";
-import {Device, DeviceFlatNode, DeviceNode, Peripheral} from "../model/interfaces";
-import { SelectionModel } from "@angular/cdk/collections";
+import { DeviceFlatNode, DeviceNode, Peripheral} from "../model/interfaces";
 import { MatSort } from "@angular/material/sort";
 import { MatDialog } from "@angular/material/dialog";
 import { SensorsPipe } from "../pipes/sensors.pipe";
@@ -28,12 +27,11 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree"
 })
 export class SensorportComponent implements OnInit {
   isLoading: boolean = true;
-  selectedDevice: Device | null = null;
+  selectedDevice: DeviceFlatNode | null = null;
 
   innercolumns: string[] = ['peripheral_id', 'name', 'type'];
-  displayedColumns : string[] = ['select','device_id', 'name', 'type', 'serial_number','actions'];
+  displayedColumns : string[] = ['device_id', 'name', 'type', 'serial_number','actions'];
 
-  selection = new SelectionModel<any>(true, []);
   @ViewChild('outerSort', { static: true }) sort!: MatSort;
   @ViewChildren('innerTables') innerTables!: QueryList<MatTable<Peripheral>>;
   @ViewChildren('innerSort') innerSort!: QueryList<MatSort>;
@@ -95,7 +93,7 @@ export class SensorportComponent implements OnInit {
     })
   }
 
-  editDevice(obj: DeviceNode) {
+  editDevice(obj: DeviceFlatNode) {
     const dialogRef = this.dialog.open(EditPeripheralDeviceComponent, {
       data: obj
     });
@@ -105,18 +103,18 @@ export class SensorportComponent implements OnInit {
   }
 
   async addRowData(type: string) {
-    const size = this.dataSource.data.length;
-    if (size>0)
-      this.sp.connectDevice(this.dataSource.data[length-1], 'sensorports[1]', type);
-    else
-      this.sp.saveDevice('sensorports[1]', type);
+    if (type) {
+      const lastDevice = this.dataSource.data[this.dataSource.data.length-1]
+      if (lastDevice && !lastDevice.type.includes('DPX_') && !type.includes('DPX_'))
+        this.sp.connectDevice(lastDevice, 'sensorports[1]', type);
+      else
+        this.sp.saveDevice('sensorports[1]', type);
 
-    this.selection.clear();
-    this.data.removeMap('sensorports[1]:getTopology');
-    await this.fetchSensorPortData();
-    if ( this.dataSource.data.length > size) {
+      this.data.removeMap('sensorports[1]:getTopology');
+      await this.fetchSensorPortData();
       this.notificationService.openToastr(`New Device with type ${type} saved successfully`, 'Adding Device to Sensorports', 'done');
-    } else
+    }
+    else
       this.notificationService.openToastr('Failed to save data', 'Adding Device to Sensorports', 'error');
   }
 
@@ -126,49 +124,13 @@ export class SensorportComponent implements OnInit {
     this.notificationService.openToastr('Device has been successfully updated (Sensorports), Virtual sensor operations for QEMU ', 'Device Modification ', 'done')
   }
 
-  public infoDevice = (obj: DeviceNode): void => {
+  public infoDevice = (obj: DeviceFlatNode): void => {
     this.sp.infoDevice(obj);
   };
-
-  deleteSelectedItems() {
-    const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
-      width: '600px',
-      maxHeight: '400px',
-      data: {
-        isAllSelected: this.isAllSelected(),
-      },
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.data.removeMap(`sensorports[1]:listDevices`);
-        if (this.isAllSelected()) {
-          this.sp.removeAll('sensorports[1]');
-          this.dataSource.data = [];
-        } else {
-          const selectedItems = this.selection.selected;
-          selectedItems.forEach(item => {
-            const index = this.dataSource.data.indexOf(item);
-            if (index !== -1) {
-              this.sp.removeDevice('sensorports[1]', item);
-              this.dataSource.data.splice(index, 1);
-            }
-          });
-        }
-        this.selection.clear();
-        if (this.isAllSelected()) {
-          this.notificationService.openToastr('All devices deleted successfully from Sensorports in Peripĥerals', 'Deleting Devices', 'warning');
-        } else {
-          this.notificationService.openToastr('Selected device(s) deleted successfully from Sensorports in Peripĥerals', 'Deleting Devices', 'warning');
-        }
-      }
-    });
-  }
 
   async isEmpty() {
     return await this.sp.getLength('sensorports') == 0;
   }
-  hasChild = (_: number, node: DeviceFlatNode) => node.expandable;
 
   private convertToDevices(data: any): DeviceNode[] {
     if (Array.isArray(data)) {
@@ -182,21 +144,43 @@ export class SensorportComponent implements OnInit {
       }];
     }
   }
-
-  masterToggle(): void {
-    this.isAllSelected() ?
-      this.selection.clear() :
-      this.dataSource.data.forEach(row => this.selection.select(row));
-  }
-
-  isAllSelected(): boolean {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-  toggleDeviceDetails(device: Device): void {
+  toggleDeviceDetails(device: DeviceFlatNode): void {
     this.selectedDevice = this.selectedDevice === device ? null : device;
     this.cdRef.detectChanges();
   }
 
+  deleteDevice(device: DeviceFlatNode) {
+    const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
+      width: '600px',
+      maxHeight: '400px',
+      data: `You want to remove the selected Device ${device.device_id}?` ,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.data.removeMap('sensorports[1]:getTopology');
+        this.sp.removeDevice('sensorports[1]', device);
+        this.fetchSensorPortData().then(r => {
+          this.notificationService.openToastr(`Selected Device ${device.device_id}deleted successfully from Sensorports`, 'Deleting Devices', 'warning');
+        });
+      }
+    });
+  }
+
+  removeAll() {
+    const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
+      width: '600px',
+      maxHeight: '400px',
+      data: 'you want to remove all devices?',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.data.removeMap(`sensorports[1]:listDevices`);
+        this.sp.removeAll('sensorports[1]');
+        this.dataSource.data = [];
+        this.notificationService.openToastr('All devices deleted successfully from Sensorports in Peripĥerals', 'Deleting Devices', 'warning');
+      }
+    });
+  }
 }

@@ -66,9 +66,6 @@ export interface VPD {
   sensor_type : string,
   serial_number : string
 }
-export interface Device {
-  type : string,
-}
 export interface DeviceNode {
   type: string;
   serial: string;

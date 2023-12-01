@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {MatTable, MatTableDataSource} from "@angular/material/table";
-import {Peripheral, Device} from "../model/interfaces";
+import {Peripheral, DeviceFlatNode} from "../model/interfaces";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
 import {MatDialog} from "@angular/material/dialog";
@@ -26,13 +26,13 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 })
 export class EnvhubComponent implements OnInit{
   isLoading: boolean = true;
-  dataSource: MatTableDataSource<Device>[] = [];
+  dataSource: MatTableDataSource<DeviceFlatNode>[] = [];
   columns: string[] = ['device_id', 'name', 'type', 'serial_number'];
   innercolumns: string[] = ['peripheral_id', 'name', 'type'];
   displayedColumns: string[] = ['select' ,...this.columns,'actions']
   state!: boolean;
-  expandedElement!: Device;
-  selection: SelectionModel<Device>[] = [];
+  expandedElement!: DeviceFlatNode;
+  selection: SelectionModel<DeviceFlatNode>[] = [];
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChildren('innerTables') innerTables!: QueryList<MatTable<Peripheral>>;
   @ViewChildren('innerSort') innerSort!: QueryList<MatSort>;
@@ -126,7 +126,7 @@ export class EnvhubComponent implements OnInit{
     this.notificationService.openToastr('Device has been successfully updated (Envhubs), Virtual sensor operations for QEMU ','Device Modification ','done')
   }
 
-  public infoDevice = (obj: Device): void => {
+  public infoDevice = (obj: DeviceFlatNode): void => {
     this.sp.infoDevice(obj);
   };
   setFuseState(i: number) {
@@ -166,7 +166,7 @@ export class EnvhubComponent implements OnInit{
           this.dataSource[i]._updateChangeSubscription();
         } else {
           const selectedItems = this.selection[i].selected;
-          selectedItems.forEach((item: Device) => {
+          selectedItems.forEach((item: DeviceFlatNode) => {
             const index = this.dataSource[i].data.indexOf(item);
             if (index !== -1) {
               this.sp.removeDevice('envhubs[1]', item);
@@ -188,7 +188,7 @@ export class EnvhubComponent implements OnInit{
     return await this.sp.getLength('envhubs') == 0;
   }
 
-  toggleRow(element: Device) {
+  toggleRow(element: DeviceFlatNode) {
     this.expandedElement = element;
     this.cdRef.detectChanges();
     this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<Peripheral>).sort = this.innerSort.toArray()[index]);
