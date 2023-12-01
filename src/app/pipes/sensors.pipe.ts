@@ -25,14 +25,14 @@ export class SensorsPipe implements PipeTransform {
     return this.sensors;
   }
 
-  infoDevice = (obj: Device): void => {/*
+  infoDevice = (obj: Device): void => {
     let selectedSensor = this.sensors.find(sensor => sensor.type === obj.type);
     if (selectedSensor) {
       const formattedMethods = selectedSensor.methods.join('\n');
-      this.notificationService.openToastr(formattedMethods, `Device ID: ${obj.device_id} (Methods)`, 'info');
+    //  this.notificationService.openToastr(formattedMethods, `Device ID: ${obj.device_id} (Methods)`, 'info');
     } else {
-      this.notificationService.openToastr('Peripheral Device ID: ' + obj.device_id, 'Sensor not found', 'error');
-    }*/
+   //   this.notificationService.openToastr('Peripheral Device ID: ' + obj.device_id, 'Sensor not found', 'error');
+    }
   };
 
   saveDevice(table: string, type: string) {
@@ -89,7 +89,7 @@ export class SensorsPipe implements PipeTransform {
   }
 
   _transformer = (node: DeviceNode, level: number): DeviceFlatNode => {
-    let name = '';
+    let name = 'Invalid Device';
     this.sensors.forEach((item) => {
       if (item.type === node.type) {
         name = item.name;
@@ -97,7 +97,7 @@ export class SensorsPipe implements PipeTransform {
     });
     return {
       expandable: !!node.tailports && node.tailports.length > 0,
-      device_id: ++this.device_id,
+      device_id: ++this.device_id ,
       name: name,
       type: node.type,
       serial_number: node.serial,

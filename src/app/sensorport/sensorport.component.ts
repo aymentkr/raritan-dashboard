@@ -28,11 +28,10 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree"
 })
 export class SensorportComponent implements OnInit {
   isLoading: boolean = true;
-  expandedElement!: Device;
+  selectedDevice: Device | null = null;
 
-  columns: string[] = ['device_id', 'name', 'type', 'serial_number'];
   innercolumns: string[] = ['peripheral_id', 'name', 'type'];
-  displayedColumns : string[] = ['select',...this.columns,'actions'];
+  displayedColumns : string[] = ['select','device_id', 'name', 'type', 'serial_number','actions'];
 
   selection = new SelectionModel<any>(true, []);
   @ViewChild('outerSort', { static: true }) sort!: MatSort;
@@ -61,12 +60,15 @@ export class SensorportComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchSensorPortData().then(() => {
+      // Expand all nodes
+      this.treeControl.expandAll();
       this.cdRef.detectChanges();
       this.isLoading = false;
     }).catch((error) => {
       console.error('Data fetching failed:', error);
     });
   }
+
 
   async fetchSensorPortData() {
     const size = parseFloat(await this.data.getResult('#sensorports', 'print(#sensorports)'));
@@ -128,12 +130,6 @@ export class SensorportComponent implements OnInit {
     this.sp.infoDevice(obj);
   };
 
-  masterToggle() {
-    this.isAllSelected() ?
-      this.selection.clear() :
-      this.dataSource.data.forEach(row => this.selection.select(row));
-  }
-
   deleteSelectedItems() {
     const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
       width: '600px',
@@ -169,13 +165,6 @@ export class SensorportComponent implements OnInit {
     });
   }
 
-
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-
   async isEmpty() {
     return await this.sp.getLength('sensorports') == 0;
   }
@@ -193,10 +182,21 @@ export class SensorportComponent implements OnInit {
       }];
     }
   }
-  toggleRow(element: Device) {
-    this.expandedElement = element;
+
+  masterToggle(): void {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+
+  isAllSelected(): boolean {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+  toggleDeviceDetails(device: Device): void {
+    this.selectedDevice = this.selectedDevice === device ? null : device;
     this.cdRef.detectChanges();
-    this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<Peripheral>).sort = this.innerSort.toArray()[index]);
   }
 
 }
