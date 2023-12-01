@@ -39,13 +39,14 @@ export class SensorsPipe implements PipeTransform {
     this.data.sendToGo(`emu.${type}:create(tfw_core):connect(${table})`);
   }
 
-  connectDevice(parent:DeviceNode,table: string, type: string){
-    if (parent.tailports === undefined)
-    this.data.sendToGo(`
-    emu.${type}:create(tfw_core):connect(emu.${parent.type}:cast(${table}:findDevice("${parent.serial}")))
+  connectDevice(parent: DeviceNode, table: string, type: string) {
+    if (parent.tailports && parent.tailports?.length>0) {
+      this.connectDevice(parent.tailports[0], table, type);
+    } else {
+      this.data.sendToGo(`
+      emu.${type}:create(tfw_core):connect(emu.${parent.type}:cast(${table}:findDevice("${parent.serial}")))
     `);
-    else
-      this.connectDevice(parent.tailports[0],table,type);
+    }
   }
 
   callMethod(table: string, data: any) {

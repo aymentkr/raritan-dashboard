@@ -58,8 +58,6 @@ export class SensorportComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchSensorPortData().then(() => {
-      // Expand all nodes
-      this.treeControl.expandAll();
       this.cdRef.detectChanges();
       this.isLoading = false;
     }).catch((error) => {
@@ -73,6 +71,7 @@ export class SensorportComponent implements OnInit {
     if (size === 1) {
       const topology = await this.data.getResult('sensorports[1]:getTopology', 'print(sensorports[1]:getTopology())');
       this.dataSource.data = this.convertToDevices(JSON.parse(topology));
+      this.treeControl.expandAll();
     }
   }
 
