@@ -1,17 +1,17 @@
-import { ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import {MatTable, MatTableDataSource} from "@angular/material/table";
-import { DeviceFlatNode, DeviceNode, Peripheral} from "../model/interfaces";
-import { MatSort } from "@angular/material/sort";
-import { MatDialog } from "@angular/material/dialog";
-import { SensorsPipe } from "../pipes/sensors.pipe";
-import { NotificationService } from "../services/notification.service";
-import { DataService } from "../services/data.service";
-import { AddPeripheralDeviceComponent } from "../peripheral/add-peripheral-device/add-peripheral-device.component";
-import { EditPeripheralDeviceComponent } from "../peripheral/edit-peripheral-device/edit-peripheral-device.component";
-import { DeleteDeviceDialogComponent } from "../peripheral/delete-device-dialog/delete-device-dialog.component";
-import { animate, state, style, transition, trigger } from "@angular/animations";
-import { FlatTreeControl } from "@angular/cdk/tree";
-import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
+import {ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {MatTable} from "@angular/material/table";
+import {DeviceFlatNode, DeviceNode, Peripheral} from "../model/interfaces";
+import {MatSort} from "@angular/material/sort";
+import {MatDialog} from "@angular/material/dialog";
+import {SensorsPipe} from "../pipes/sensors.pipe";
+import {NotificationService} from "../services/notification.service";
+import {DataService} from "../services/data.service";
+import {AddPeripheralDeviceComponent} from "../peripheral/add-peripheral-device/add-peripheral-device.component";
+import {EditPeripheralDeviceComponent} from "../peripheral/edit-peripheral-device/edit-peripheral-device.component";
+import {DeleteDeviceDialogComponent} from "../peripheral/delete-device-dialog/delete-device-dialog.component";
+import {animate, state, style, transition, trigger} from "@angular/animations";
+import {FlatTreeControl} from "@angular/cdk/tree";
+import {MatTreeFlatDataSource, MatTreeFlattener} from "@angular/material/tree";
 
 @Component({
   selector: 'app-sensorport',

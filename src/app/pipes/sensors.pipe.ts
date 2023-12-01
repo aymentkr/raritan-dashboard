@@ -93,21 +93,22 @@ export class SensorsPipe implements PipeTransform {
   }
 
   _transformer = (node: DeviceNode, level: number): DeviceFlatNode => {
-    let name = 'Invalid Device';
-    this.sensors.forEach((item) => {
-      if (item.type === node.type) {
-        name = item.name;
-      }
-    });
-    return {
-      expandable: !!node.tailports && node.tailports.length > 0,
-      device_id: ++this.device_id ,
-      name: name,
-      type: node.type,
-      serial_number: node.serial,
-      peripherals: new MatTableDataSource<Peripheral>(this.getPeripheralByType(this.device_id, node.type)),
-      level: level,
-    };
-  };
+    let myDevice = this.deviceMap.get(node.serial);
+    if (myDevice) return myDevice;
+    else {
+      const name = this.sensors.find(item => item.type === node.type)?.name || 'Invalid Device';
+      myDevice = {
+        expandable: !!node.tailports && node.tailports.length > 0,
+        device_id: ++this.device_id,
+        name: name,
+        type: node.type,
+        serial_number: node.serial,
+        peripherals: new MatTableDataSource<Peripheral>(this.getPeripheralByType(this.device_id, node.type)),
+        level: level,
+      };
+      this.deviceMap.set(node.serial, myDevice);
+      return myDevice;
+    }
+  }
 
 }
