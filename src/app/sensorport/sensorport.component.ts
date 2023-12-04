@@ -1,4 +1,12 @@
-import {ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import {MatTable} from "@angular/material/table";
 import {DeviceFlatNode, DeviceNode, Peripheral} from "../model/interfaces";
 import {MatSort} from "@angular/material/sort";
@@ -23,7 +31,8 @@ import {MatTreeFlatDataSource, MatTreeFlattener} from "@angular/material/tree";
       state('expanded', style({ height: '*' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class SensorportComponent implements OnInit {
   isLoading: boolean = true;
@@ -85,19 +94,47 @@ export class SensorportComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe(result => {
           if (result) {
-            this.addRowData(result.data);
+            this.addRowData(result.data).then(() => {
+              this.cdRef.detectChanges();
+
+            });
           }
         });
       }
     })
   }
 
-  editDevice(obj: DeviceFlatNode) {
+  editDevice(obj: DeviceFlatNode, event: Event) {
+    event.stopPropagation();
     const dialogRef = this.dialog.open(EditPeripheralDeviceComponent, {
       data: obj
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) this.editRowData(result.data);
+    });
+  }
+
+  infoDevice(obj: DeviceFlatNode, event: Event): void {
+    event.stopPropagation();
+    this.sp.infoDevice(obj);
+  };
+
+  deleteDevice(device: DeviceFlatNode, event: Event) {
+    event.stopPropagation();
+    const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
+      width: '600px',
+      maxHeight: '400px',
+      data: `You want to remove the selected Device ${device.device_id}?` ,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.data.removeMap('sensorports[1]:getTopology');
+        this.sp.removeDevice('sensorports[1]', device);
+        this.fetchSensorPortData().then(() => {
+          this.notificationService.openToastr(`Selected Device ${device.device_id}deleted successfully from Sensorports`, 'Deleting Devices', 'warning');
+        });
+      }
     });
   }
 
@@ -123,10 +160,6 @@ export class SensorportComponent implements OnInit {
     this.notificationService.openToastr('Device has been successfully updated (Sensorports), Virtual sensor operations for QEMU ', 'Device Modification ', 'done')
   }
 
-  public infoDevice = (obj: DeviceFlatNode): void => {
-    this.sp.infoDevice(obj);
-  };
-
   async isEmpty() {
     return await this.sp.getLength('sensorports') == 0;
   }
@@ -143,29 +176,6 @@ export class SensorportComponent implements OnInit {
       }];
     }
   }
-  toggleDeviceDetails(device: DeviceFlatNode): void {
-    this.selectedDevice = this.selectedDevice === device ? null : device;
-    this.cdRef.detectChanges();
-  }
-
-  deleteDevice(device: DeviceFlatNode) {
-    const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
-      width: '600px',
-      maxHeight: '400px',
-      data: `You want to remove the selected Device ${device.device_id}?` ,
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.data.removeMap('sensorports[1]:getTopology');
-        this.sp.removeDevice('sensorports[1]', device);
-        this.fetchSensorPortData().then(r => {
-          this.notificationService.openToastr(`Selected Device ${device.device_id}deleted successfully from Sensorports`, 'Deleting Devices', 'warning');
-        });
-      }
-    });
-  }
-
   removeAll() {
     const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
       width: '600px',
@@ -182,4 +192,10 @@ export class SensorportComponent implements OnInit {
       }
     });
   }
+  toggleDeviceDetails(device: DeviceFlatNode, event: Event): void {
+    event.stopPropagation();
+    this.selectedDevice = this.selectedDevice === device ? null : device;
+    this.cdRef.detectChanges();
+  }
+
 }

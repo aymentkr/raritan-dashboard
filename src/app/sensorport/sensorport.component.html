@@ -14,7 +14,6 @@
       <ng-template #datatable>
         <mat-divider></mat-divider>
         <table mat-table #outerSort="matSort" [dataSource]="dataSource" class="my-table mat-elevation-z8" matSort multiTemplateDataRows>
-
           <ng-container matColumnDef="device_id">
             <th mat-header-cell *matHeaderCellDef>
               <span [style.paddingLeft.px]="40"> Device ID  </span>
@@ -78,19 +77,19 @@
               </button>
             </th>
             <td mat-cell *matCellDef="let element" class="action-link">
-              <button mat-icon-button color="primary" (click)="editDevice(element)">
+              <button mat-icon-button color="primary" (click)="editDevice(element,$event)">
                 <mat-icon>edit</mat-icon>
               </button>
 
-              <button mat-icon-button color="primary" (click)="deleteDevice(element)" >
+              <button mat-icon-button color="primary" (click)="deleteDevice(element,$event)" >
                 <mat-icon>delete</mat-icon>
               </button>
 
-              <button mat-icon-button color="primary" (click)="infoDevice(element)">
+              <button mat-icon-button color="primary" (click)="infoDevice(element,$event)">
                 <mat-icon>info</mat-icon>
               </button>
 
-              <button mat-icon-button color="primary" (click)="toggleDeviceDetails(element)">
+              <button mat-icon-button color="primary" (click)="toggleDeviceDetails(element,$event)">
                 <mat-icon>{{ selectedDevice === element ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
             </td>
@@ -99,7 +98,8 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
               [class.example-expanded-row]="selectedDevice === row"
-              [class.selected-row]="selectedDevice === row">
+              [class.selected-row]="selectedDevice === row"
+              (click)="toggleDeviceDetails(row,$event)">
           </tr>
           <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
         </table>

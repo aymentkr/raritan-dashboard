@@ -29,9 +29,9 @@ export class SensorsPipe implements PipeTransform {
     let selectedSensor = this.sensors.find(sensor => sensor.type === obj.type);
     if (selectedSensor) {
       const formattedMethods = selectedSensor.methods.join('\n');
-    //  this.notificationService.openToastr(formattedMethods, `Device ID: ${obj.device_id} (Methods)`, 'info');
+      this.notificationService.openToastr(formattedMethods, `Device ID: ${obj.device_id} (Methods)`, 'info');
     } else {
-   //   this.notificationService.openToastr('Peripheral Device ID: ' + obj.device_id, 'Sensor not found', 'error');
+      this.notificationService.openToastr('Peripheral Device ID: ' + obj.device_id, 'Sensor not found', 'error');
     }
   };
 
@@ -40,6 +40,8 @@ export class SensorsPipe implements PipeTransform {
   }
 
   connectDevice(parent: DeviceNode, table: string, type: string) {
+    this.deviceMap.delete(parent.serial);
+    this.device_id --;
     if (parent.tailports && parent.tailports?.length>0) {
       this.connectDevice(parent.tailports[0], table, type);
     } else {
@@ -58,13 +60,8 @@ export class SensorsPipe implements PipeTransform {
   }
 
   removeDevice(table: string, device: DeviceFlatNode) {
-    /*
     this.deviceMap.delete(device.serial_number);
-    this.data.sendToGo(`emu.${device.type}:cast(${table}:findDevice("${device.serial_number}")):disconnect();`);*/
-  }
-  removeDeviceFromParent(table: string, device: DeviceFlatNode) {/*
-    this.deviceMap.delete(device.serial_number);
-    this.data.sendToGo(`emu.${device.type}:cast(${table}:findDevice("${device.serial_number}")):disconnect();`);*/
+    this.data.sendToGo(`emu.${device.type}:cast(${table}:findDevice("${device.serial_number}")):disconnect();`);
   }
 
   removeAll(table: string) {
