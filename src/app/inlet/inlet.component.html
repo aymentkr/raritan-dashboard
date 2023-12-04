@@ -12,7 +12,7 @@
         <mat-divider></mat-divider>
         <ng-container *ngIf="hasPoles; else noPoles">
           <!-- Inlet pole table component -->
-          <app-inlet-pole-table [inputFromParent]="sizeI"></app-inlet-pole-table>
+          <app-inlet-pole-table [inputFromParent]="sizeI" ></app-inlet-pole-table>
         </ng-container>
         <ng-template #noPoles>
           <!-- Inlet table component -->

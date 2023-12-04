@@ -12,16 +12,24 @@ export class DataService {
   private isSending = false;
 
   constructor(private ws: WebsocketService) {}
-  open(){
+  open() {
     this.ws.connect();
-    this.messageSubscription = this.ws.onMessage().subscribe((message) => {
-      if (message.includes('>')) message = message.slice(0, -3);
-      if (message != '') {
-        this.myMap.set(this.key, message);
-        this.isSending = false;
+
+    this.messageSubscription = this.ws.onMessage().subscribe(
+      (message) => {
+        if (message.includes('>')) message = message.slice(0, -3);
+        if (message !== '') {
+          this.myMap.set(this.key, message);
+          this.isSending = false;
+        }
+      },
+      (error) => {
+        console.error('WebSocket error:', error);
+        // You might want to handle the error here (e.g., show a notification)
       }
-    });
+    );
   }
+
   close() {
     if (this.messageSubscription) {
       this.messageSubscription.unsubscribe();
@@ -44,22 +52,30 @@ export class DataService {
     this.key = '';
     this.ws.sendMessage(msgToSend);
   }
-  getResult(key: string, msg: string): Promise<string> {
-    return new Promise((resolve) => {
-      this.send(key, msg);
-      const checkValue = () => {
-        const value = <string>this.myMap.get(key);
-        if (value) {
-          resolve(value);
-        } else {
-          setTimeout(() => {
-            checkValue();
-          },0);
-        }
-      };
-      checkValue();
-    });
+  async getResult(key: string, msg: string): Promise<string> {
+    try {
+      return await new Promise((resolve) => {
+        this.send(key, msg);
+
+        const checkValue = () => {
+          const value = this.myMap.get(key);
+          if (value !== undefined) {
+            resolve(value);
+          } else {
+            setTimeout(() => {
+              checkValue();
+            }, 0);
+          }
+        };
+
+        checkValue();
+      });
+    } catch (error) {
+      console.error('Error in getResult:', error);
+      return '';
+    }
   }
+
 
   editMap(key: string, value: number | boolean) {
     this.myMap.set(key, String(value));

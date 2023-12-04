@@ -16,8 +16,8 @@ export class InletComponent implements OnInit{
   ) {}
   ngOnInit(): void {
     this.fetchData().then(() => {
-      this.cdRef.detectChanges();
       this.isLoading = false;
+      this.cdRef.detectChanges();
     }).catch((error) => {
       console.error('Data fetching failed:', error);
     });

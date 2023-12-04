@@ -37,7 +37,6 @@ import {MatTreeFlatDataSource, MatTreeFlattener} from "@angular/material/tree";
 export class SensorportComponent implements OnInit {
   isLoading: boolean = true;
   selectedDevice: DeviceFlatNode | null = null;
-
   innercolumns: string[] = ['peripheral_id', 'name', 'type'];
   displayedColumns : string[] = ['device_id', 'name', 'type', 'serial_number','actions'];
 
@@ -140,12 +139,7 @@ export class SensorportComponent implements OnInit {
 
   async addRowData(type: string) {
     if (type) {
-      const lastDevice = this.dataSource.data[this.dataSource.data.length-1]
-      if (lastDevice && !lastDevice.type.includes('DPX_') && !type.includes('DPX_'))
-        this.sp.connectDevice(lastDevice, 'sensorports[1]', type);
-      else
-        this.sp.saveDevice('sensorports[1]', type);
-
+      this.sp.saveDevice('sensorports[1]', type);
       this.data.removeMap('sensorports[1]:getTopology');
       await this.fetchSensorPortData();
       this.notificationService.openToastr(`New Device with type ${type} saved successfully`, 'Adding Device to Sensorports', 'done');
