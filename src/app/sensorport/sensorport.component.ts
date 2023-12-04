@@ -8,7 +8,7 @@ import {
   ViewChildren
 } from '@angular/core';
 import {MatTable} from "@angular/material/table";
-import {DeviceFlatNode, DeviceNode, Peripheral} from "../model/interfaces";
+import {DeviceFlatNode, Peripheral} from "../model/interfaces";
 import {MatSort} from "@angular/material/sort";
 import {MatDialog} from "@angular/material/dialog";
 import {SensorsPipe} from "../pipes/sensors.pipe";
@@ -78,7 +78,7 @@ export class SensorportComponent implements OnInit {
     const size = parseFloat(await this.data.getResult('#sensorports', 'print(#sensorports)'));
     if (size === 1) {
       const topology = await this.data.getResult('sensorports[1]:getTopology', 'print(sensorports[1]:getTopology())');
-      this.dataSource.data = this.convertToDevices(JSON.parse(topology));
+      this.dataSource.data = this.sp.convertToDevices(JSON.parse(topology));
       this.treeControl.expandAll();
     }
   }
@@ -95,7 +95,6 @@ export class SensorportComponent implements OnInit {
           if (result) {
             this.addRowData(result.data).then(() => {
               this.cdRef.detectChanges();
-
             });
           }
         });
@@ -158,18 +157,6 @@ export class SensorportComponent implements OnInit {
     return await this.sp.getLength('sensorports') == 0;
   }
 
-  private convertToDevices(data: any): DeviceNode[] {
-    if (Array.isArray(data)) {
-      return data.flatMap(item => this.convertToDevices(item));
-    } else {
-      const { type, serial, tailports } = data;
-      return [{
-        type,
-        serial,
-        tailports: tailports ? this.convertToDevices(tailports) : undefined
-      }];
-    }
-  }
   removeAll() {
     const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
       width: '600px',
@@ -179,7 +166,7 @@ export class SensorportComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.data.removeMap(`sensorports[1]:listDevices`);
+        this.data.removeMap('sensorports[1]:getTopology');
         this.sp.removeAll('sensorports[1]');
         this.dataSource.data = [];
         this.notificationService.openToastr('All devices deleted successfully from Sensorports in Peripĥerals', 'Deleting Devices', 'warning');

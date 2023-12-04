@@ -118,4 +118,16 @@ export class SensorsPipe implements PipeTransform {
     }
   }
 
+  convertToDevices(data: any): DeviceNode[] {
+    if (Array.isArray(data)) {
+      return data.flatMap(item => this.convertToDevices(item));
+    } else {
+      const { type, serial, tailports } = data;
+      return [{
+        type,
+        serial,
+        tailports: tailports ? this.convertToDevices(tailports) : undefined
+      }];
+    }
+  }
 }
