@@ -31,6 +31,8 @@ export class SmartlockComponent implements OnInit {
     private notificationService: NotificationService,
     private cdr: ChangeDetectorRef,
   ) {
+    this.myMap.set(`sensorports`, []);
+    this.myMap.set(`envhubs`, []);
     this.sensor = sp.filterSensorsByType('DX2_DH2C2');
   }
 
@@ -49,28 +51,12 @@ export class SmartlockComponent implements OnInit {
 
   async fetchSmartLockData(): Promise<DeviceFlatNode[]> {
     const type = 'DX2_DH2C2';
-    const sizeP = parseFloat(await this.data.getResult('#sensorports', 'print(#sensorports)'));
-    const sizeE = parseFloat(await this.data.getResult('#envhubs', 'print(#envhubs)'));
-
-    // Initialize the map once outside the conditions and loop
-    this.myMap.set('sensorports[1]', []);
-    this.myMap.set('envhubs[1]', []);
-
-    if (sizeP !== 0) {
-      const lines = (await this.data.getResult('sensorports[1]:listDevices', 'print(sensorports[1]:listDevices())')).split('\n');
-      this.myMap.get('sensorports[1]')?.push(...this.sp.convertLinesToDevices(lines));
-    }
-
-    if (sizeE !== 0) {
-      for (let i = 0; i < 4; i++) {
-        const lines = (await this.data.getResult(`envhubs[1]:getPort(${i}):listDevices`, `print(envhubs[1]:getPort(${i}):listDevices())`)).split('\n');
-        this.myMap.get('envhubs[1]')?.push(...this.sp.convertLinesToDevices(lines));
-      }
-    }
+    await this.initializeMap('sensorports');
+    await this.initializeMap('envhubs');
 
     // Concatenate and filter the arrays
-    const sensorPortDevices = this.myMap.get('sensorports[1]') || [];
-    const envHubDevices = this.myMap.get('envhubs[1]') || [];
+    const sensorPortDevices = this.myMap.get('sensorports') || [];
+    const envHubDevices = this.myMap.get('envhubs') || [];
     return sensorPortDevices.concat(envHubDevices).filter((peripheral) => peripheral.type === type);
   }
 
@@ -132,4 +118,11 @@ export class SmartlockComponent implements OnInit {
     }
   }
 
+  private async initializeMap(table: string) {
+    const size = parseFloat(await this.data.getResult('#' + table, `print(#${table})`));
+    if (size === 1) {
+      const lines = (await this.data.getResult(`${table}[1]:listDevices`, `print(${table}[1]:listDevices())`)).split('\n');
+      this.myMap.get(table)?.push(...this.sp.convertLinesToDevices(lines));
+    }
+  }
 }
