@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {DeviceFlatNode} from "../model/interfaces";
+import { DeviceFlatNode} from "../model/interfaces";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
 import {SensorsPipe} from "../pipes/sensors.pipe";
@@ -35,9 +35,8 @@ export class SmartlockComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    /*
     this.fetchSmartLockData()
-      .then((data: Device[]) => {
+      .then((data: DeviceFlatNode[]) => {
         this.dataSource.data = data;
         this.dataSource.sort = this.sort;
         this.cdr.detectChanges()
@@ -45,11 +44,10 @@ export class SmartlockComponent implements OnInit {
       })
       .catch((error) => {
         console.error('Data fetching failed:', error);
-      });*/
+      });
   }
 
   async fetchSmartLockData() {
-    /*
     const type = 'DX2_DH2C2';
     const sizeP = parseFloat(await this.data.getResult('#sensorports', 'print(#sensorports)'));
     const sizeE = parseFloat(await this.data.getResult('#envhubs', 'print(#envhubs)'));
@@ -74,7 +72,7 @@ export class SmartlockComponent implements OnInit {
 
     // Concatenate and filter the arrays
     return this.myMap.get('sensorports[1]')?.concat(this.myMap.get('envhubs[1]') || [])?.filter((peripheral) => peripheral.type === type) || [];
- */ }
+  }
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -89,7 +87,6 @@ export class SmartlockComponent implements OnInit {
   }
 
   onFormSubmit(doorForm: NgForm) {
-    /*
     const selectedDoorNr = doorForm.value.doorNr;
     const selectedDeviceId = doorForm.value.deviceId;
     const selectedHandleState = doorForm.value.handleState;
@@ -108,10 +105,8 @@ export class SmartlockComponent implements OnInit {
               methodName: `setPIN(${selectedDoorNr},${enteredPin})`,
               device: foundDevice,
             });
-            console.log('hi');
           }
           if (selectedDoorState) {
-            console.log('hi');
             this.sp.callMethod(key, {
               methodName: `setDoorState(${selectedDoorNr},${selectedDoorState})`,
               device: foundDevice,
@@ -122,10 +117,8 @@ export class SmartlockComponent implements OnInit {
               methodName: `setHandleState(${selectedDoorNr},${selectedHandleState})`,
               device: foundDevice,
             });
-            console.log('hi');
           }
           if (enteredId) {
-            console.log('hi');
             this.sp.callMethod(key, {
               methodName: `setCardId(${selectedDoorNr},${enteredId})`,
               device: foundDevice,
@@ -137,6 +130,6 @@ export class SmartlockComponent implements OnInit {
       }
     } else {
       this.notificationService.openToastr('You need at least one field in the values are in order to apply a value modification!','Door Selection','error')
-    }*/
+    }
   }
 }

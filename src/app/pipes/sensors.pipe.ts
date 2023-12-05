@@ -129,4 +129,18 @@ export class SensorsPipe implements PipeTransform {
       }];
     }
   }
+  convertLinesToDevices(lines: string[]): DeviceFlatNode[] {
+    const devices: DeviceFlatNode[] = [];
+    for (const line of lines) {
+      const match = line.match(/([A-Z0-9_]+): ([A-Z0-9]+)/);
+      if (match) {
+        const serialNumber = match[2];
+        const myDevice = this.deviceMap.get(serialNumber);
+        if (myDevice) {
+          devices.push(myDevice);
+        }
+      }
+    }
+    return devices;
+  }
 }
