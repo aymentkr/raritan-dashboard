@@ -21,8 +21,8 @@
             <td mat-cell *matCellDef="let data">
               <button mat-icon-button
                       [style.visibility]="!data.expandable ? 'hidden' : ''"
-                      [style.marginLeft.px]="data.level"
                       (click)="treeControl.toggle(data)">
+                <!--  [style.marginLeft.px]="data.level" -->
                 <mat-icon class="mat-icon-rtl-mirror">
                   {{treeControl.isExpanded(data) ? 'expand_more' : 'chevron_right'}}
                 </mat-icon>

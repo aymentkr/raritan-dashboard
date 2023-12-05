@@ -47,21 +47,19 @@ export class SmartlockComponent implements OnInit {
       });
   }
 
-  async fetchSmartLockData() {
+  async fetchSmartLockData(): Promise<DeviceFlatNode[]> {
     const type = 'DX2_DH2C2';
     const sizeP = parseFloat(await this.data.getResult('#sensorports', 'print(#sensorports)'));
     const sizeE = parseFloat(await this.data.getResult('#envhubs', 'print(#envhubs)'));
 
-    // Initialize the map once outside the condition
+    // Initialize the map once outside the conditions and loop
     this.myMap.set('sensorports[1]', []);
+    this.myMap.set('envhubs[1]', []);
 
     if (sizeP !== 0) {
       const lines = (await this.data.getResult('sensorports[1]:listDevices', 'print(sensorports[1]:listDevices())')).split('\n');
       this.myMap.get('sensorports[1]')?.push(...this.sp.convertLinesToDevices(lines));
     }
-
-    // Initialize the map once outside the loop
-    this.myMap.set('envhubs[1]', []);
 
     if (sizeE !== 0) {
       for (let i = 0; i < 4; i++) {
@@ -71,8 +69,11 @@ export class SmartlockComponent implements OnInit {
     }
 
     // Concatenate and filter the arrays
-    return this.myMap.get('sensorports[1]')?.concat(this.myMap.get('envhubs[1]') || [])?.filter((peripheral) => peripheral.type === type) || [];
+    const sensorPortDevices = this.myMap.get('sensorports[1]') || [];
+    const envHubDevices = this.myMap.get('envhubs[1]') || [];
+    return sensorPortDevices.concat(envHubDevices).filter((peripheral) => peripheral.type === type);
   }
+
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -93,43 +94,42 @@ export class SmartlockComponent implements OnInit {
     const selectedDoorState = doorForm.value.doorState;
     const enteredId = doorForm.value.id;
     const enteredPin = doorForm.value.pin;
+
     if (selectedHandleState || selectedDoorState || enteredId || enteredPin) {
-      // Iterate over the keys in myMap
-      for (const key of this.myMap.keys()) {
-        const deviceArray = this.myMap.get(key);
-        // Find the device based on deviceId
+      for (const [key, deviceArray] of this.myMap.entries()) {
         const foundDevice = deviceArray?.find(device => device.device_id === selectedDeviceId);
+
         if (foundDevice) {
           if (enteredPin) {
-            this.sp.callMethod(key, {
-              methodName: `setPIN(${selectedDoorNr},${enteredPin})`,
-              device: foundDevice,
-            });
+            this.updateDevice(key, selectedDeviceId, selectedDoorNr, 'setPIN', enteredPin);
           }
           if (selectedDoorState) {
-            this.sp.callMethod(key, {
-              methodName: `setDoorState(${selectedDoorNr},${selectedDoorState})`,
-              device: foundDevice,
-            });
+            this.updateDevice(key, selectedDeviceId, selectedDoorNr, 'setDoorState', selectedDoorState);
           }
           if (selectedHandleState) {
-            this.sp.callMethod(key, {
-              methodName: `setHandleState(${selectedDoorNr},${selectedHandleState})`,
-              device: foundDevice,
-            });
+            this.updateDevice(key, selectedDeviceId, selectedDoorNr, 'setHandleState', selectedHandleState);
           }
           if (enteredId) {
-            this.sp.callMethod(key, {
-              methodName: `setCardId(${selectedDoorNr},${enteredId})`,
-              device: foundDevice,
-            });
+            this.updateDevice(key, selectedDeviceId, selectedDoorNr, 'setCardId', enteredId);
           }
-          this.notificationService.openToastr(`Device has been successfully updated (${key}), Virtual sensor operations for QEMU `,'Device Modification ','done')
+          this.notificationService.openToastr(`Device has been successfully updated (${key}), Virtual sensor operations for QEMU `, 'Device Modification ', 'done');
           break;
         }
       }
     } else {
-      this.notificationService.openToastr('You need at least one field in the values are in order to apply a value modification!','Door Selection','error')
+      this.notificationService.openToastr('You need at least one field in the values are in order to apply a value modification!', 'Door Selection', 'error');
     }
   }
+
+// New method for updating a device
+  private updateDevice(key: string, selectedDeviceId: number, selectedDoorNr: number, operation: string, value: any) {
+    const foundDevice = this.myMap.get(key)?.find(device => device.device_id === selectedDeviceId);
+    if (foundDevice) {
+      this.sp.callMethod(key, {
+        methodName: `${operation}(${selectedDoorNr},${value})`,
+        device: foundDevice,
+      });
+    }
+  }
+
 }
