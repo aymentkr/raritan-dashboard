@@ -25,8 +25,7 @@ export class InletComponent implements OnInit{
   async fetchData(){
     this.sizeI = parseFloat(await this.data.getResult('#inlets', 'print(#inlets)'));
     this.sizeS = parseFloat(await this.data.getResult('#switches', 'print(#switches)'));
-    const test = parseFloat(await this.data.getResult(`inlets[1]:voltage(0)`,`print(inlets[1]:getVoltage(0))`));
-    this.hasPoles = !isNaN(test);
+    this.hasPoles = this.sizeS === 0;
   }
 
 }
