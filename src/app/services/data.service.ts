@@ -56,7 +56,6 @@ export class DataService {
     try {
       return await new Promise((resolve) => {
         this.send(key, msg);
-
         const checkValue = () => {
           const value = this.myMap.get(key);
           if (value !== undefined) {
@@ -67,7 +66,6 @@ export class DataService {
             }, 0);
           }
         };
-
         checkValue();
       });
     } catch (error) {

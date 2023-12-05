@@ -11,7 +11,6 @@ import {NotificationService} from "../services/notification.service";
 })
 export class SensorsPipe implements PipeTransform {
   deviceMap = new Map<string, DeviceFlatNode>;
-  lastConnectedDevice: DeviceFlatNode | undefined ;
   device_id = 0;
   sensors = new SensorClass().getSensors();
 
@@ -36,26 +35,29 @@ export class SensorsPipe implements PipeTransform {
     }
   };
 
-  saveDevice(table: string, type: string) {
-    if (this.lastConnectedDevice && !type.includes('DPX_')) {
-      this.device_id = this.lastConnectedDevice.device_id;
-      this.device_id -- ;
-      // Create an array of keys
-      const keysToDelete = Array.from(this.deviceMap.keys()).reverse();
+  saveDevice(table: string, data: any) {
+    if (data.lastChild && !data.type.includes('DPX_')) {
+      const lastConnectedDevice = this.deviceMap.get(data.lastChild.serial);
+      if (lastConnectedDevice) {
+        this.device_id = lastConnectedDevice.device_id;
+        this.device_id -- ;
+        // Create an array of keys
+        const keysToDelete = Array.from(this.deviceMap.keys()).reverse();
 
-      // Delete items from the end of the map until reaching the specified key
-      for (const key of keysToDelete) {
-        this.deviceMap.delete(key);
-        if (key === this.lastConnectedDevice.serial_number) {
-          break;
+        // Delete items from the end of the map until reaching the specified key
+        for (const key of keysToDelete) {
+          this.deviceMap.delete(key);
+          if (key === lastConnectedDevice.serial_number) {
+            break;
+          }
         }
       }
       this.data.sendToGo(`
-      emu.${type}:create(tfw_core):connect(emu.${this.lastConnectedDevice.type}:cast(${table}:findDevice("${this.lastConnectedDevice.serial_number}")))
+      emu.${data.type}:create(tfw_core):connect(emu.${data.lastChild.type}:cast(${table}:findDevice("${data.lastChild.serial}")))
     `);
     }
     else
-      this.data.sendToGo(`emu.${type}:create(tfw_core):connect(${table})`);
+      this.data.sendToGo(`emu.${data.type}:create(tfw_core):connect(${table})`);
   }
 
   callMethod(table: string, data: any) {
@@ -67,13 +69,11 @@ export class SensorsPipe implements PipeTransform {
   }
 
   removeDevice(table: string, device: DeviceFlatNode) {
-    if (device.level === 0 && !device.type.includes('DPX_')) this.lastConnectedDevice = undefined;
     this.deviceMap.delete(device.serial_number);
     this.data.sendToGo(`emu.${device.type}:cast(${table}:findDevice("${device.serial_number}")):disconnect();`);
   }
 
   removeAll(table: string) {
-    this.lastConnectedDevice = undefined;
     this.deviceMap.clear();
     this.data.sendToGo(table + ':removeAll()');
   }
@@ -113,7 +113,6 @@ export class SensorsPipe implements PipeTransform {
         level: level,
       };
       this.deviceMap.set(node.serial, myDevice);
-      if (!myDevice.expandable && sensor?.generation !== 1) this.lastConnectedDevice = myDevice;
       return myDevice;
     }
   }

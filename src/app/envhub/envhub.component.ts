@@ -122,12 +122,12 @@ export class EnvhubComponent implements OnInit{
   }
 
 
-  async addRowData(i:number,type: string ) {
-    if (type) {
-      this.sp.saveDevice(`envhubs[1]:getPort(${i})`, type);
+  async addRowData(i:number,data:any ) {
+    if (data.type) {
+      this.sp.saveDevice(`envhubs[1]:getPort(${i})`, data);
       this.data.removeMap(`envhubs[1]:getPort(${i}):getTopology`);
       await this.fetchEnvhubsData(i);
-      this.notificationService.openToastr(`New Device with type ${type} in Port ${i} saved successfully`, 'Adding Device to Envhubs', 'done');
+      this.notificationService.openToastr(`New Device with type ${data.type} in Port ${i} saved successfully`, 'Adding Device to Envhubs', 'done');
     }
     else
       this.notificationService.openToastr('Failed to save data','Adding Device to Envhubs','error');
