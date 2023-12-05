@@ -45,8 +45,8 @@ export class EnvhubComponent implements OnInit{
   @ViewChildren('innerTables') innerTables!: QueryList<MatTable<Peripheral>>;
   @ViewChildren('innerSort') innerSort!: QueryList<MatSort>;
   // Define treeControl, treeFlattener, and dataSource as class properties
-  treeControl !: FlatTreeControl<DeviceFlatNode>
-  treeFlattener !: MatTreeFlattener<any, any>
+  treeControl : FlatTreeControl<DeviceFlatNode>[] = [];
+  treeFlattener : MatTreeFlattener<any, any>[] = [];
   dataSource: MatTreeFlatDataSource<any, any>[] = [];
 
   constructor(
@@ -57,37 +57,38 @@ export class EnvhubComponent implements OnInit{
     private data: DataService
   ) {}
 
-  ngOnInit(): void {
-    this.fetchEnvhubsData()
-      .then(() => {
-        this.cdRef.detectChanges();
-        this.isLoading = false;
-      })
-      .catch((error) => {
-        console.error('Data fetching failed:', error);
-      });
-  }
-
-  async fetchEnvhubsData() {
+  async ngOnInit(): Promise<void> {
     const size = parseFloat(await this.data.getResult('#envhubs', 'print(#envhubs)'));
     if (size === 1) {
       for (let i = 0; i < 4; i++) {
-        const topology = await this.data.getResult(`envhubs[1]:getPort(${i}):getTopology`, `print(envhubs[1]:getPort(${i}):getTopology())`);
         // Define treeControl, treeFlattener, and dataSource as class properties
-        this.treeControl = new FlatTreeControl<DeviceFlatNode>(
+        this.treeControl[i] = new FlatTreeControl<DeviceFlatNode>(
           node => node.level,
           node => node.expandable
         );
-        this.treeFlattener = new MatTreeFlattener(
+        this.treeFlattener[i] = new MatTreeFlattener(
           this.sp._transformer,
           node => node.level,
           node => node.expandable,
           node => node.tailports,
         );
-        this.dataSource[i] = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-        this.dataSource[i].data =  this.sp.convertToDevices(JSON.parse(topology));
+        this.dataSource[i] = new MatTreeFlatDataSource(this.treeControl[i], this.treeFlattener[i]);
+        this.fetchEnvhubsData(i)
+          .then(() => {
+            this.cdRef.detectChanges();
+            this.isLoading = false;
+          })
+          .catch((error) => {
+            console.error('Data fetching failed:', error);
+          });
       }
     }
+  }
+
+  async fetchEnvhubsData(i:number) {
+    const topology = await this.data.getResult(`envhubs[1]:getPort(${i}):getTopology`, `print(envhubs[1]:getPort(${i}):getTopology())`);
+    this.dataSource[i].data =  this.sp.convertToDevices(JSON.parse(topology));
+    this.treeControl[i].expandAll();
   }
 
 
@@ -125,7 +126,7 @@ export class EnvhubComponent implements OnInit{
     if (type) {
       this.sp.saveDevice(`envhubs[1]:getPort(${i})`, type);
       this.data.removeMap(`envhubs[1]:getPort(${i}):getTopology`);
-      await this.fetchEnvhubsData();
+      await this.fetchEnvhubsData(i);
       this.notificationService.openToastr(`New Device with type ${type} in Port ${i} saved successfully`, 'Adding Device to Envhubs', 'done');
     }
     else
@@ -179,7 +180,7 @@ export class EnvhubComponent implements OnInit{
       if (result) {
         this.data.removeMap(`envhubs[1]:getPort(${i}):getTopology`);
         this.sp.removeDevice(`envhubs[1]:getPort(${i})`, device);
-        this.fetchEnvhubsData().then(() => {
+        this.fetchEnvhubsData(i).then(() => {
           this.notificationService.openToastr(`Selected Device ${device.device_id}deleted successfully from Envhubs`, `Deleting Devices in Port ${i}`, 'warning');
         });
       }

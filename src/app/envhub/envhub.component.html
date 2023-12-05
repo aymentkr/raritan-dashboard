@@ -25,9 +25,9 @@
                       <button mat-icon-button
                               [style.visibility]="!data.expandable ? 'hidden' : ''"
                               [style.marginLeft.px]="data.level"
-                              (click)="treeControl.toggle(data)">
+                              (click)="treeControl[i].toggle(data)">
                         <mat-icon class="mat-icon-rtl-mirror">
-                          {{treeControl.isExpanded(data) ? 'expand_more' : 'chevron_right'}}
+                          {{treeControl[i].isExpanded(data) ? 'expand_more' : 'chevron_right'}}
                         </mat-icon>
                       </button>
                       Device {{data.device_id}}
