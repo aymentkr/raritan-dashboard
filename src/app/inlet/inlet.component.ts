@@ -27,5 +27,4 @@ export class InletComponent implements OnInit{
     this.sizeS = parseFloat(await this.data.getResult('#switches', 'print(#switches)'));
     this.hasPoles = this.sizeS === 0;
   }
-
 }

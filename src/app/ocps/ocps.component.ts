@@ -47,13 +47,12 @@ export class OcpsComponent implements OnInit {
     const ocps: Ocp[] = [];
     const size = parseFloat(await this.data.getResult('#ocps', 'print(#ocps)'));
     for (let i = 1; i <= size; i++) {
-      const ocpData = {
+      ocps.push({
         id: i,
         status: (await this.data.getResult(`ocps[${i}]:status`, `print(ocps[${i}]:isClosed())`)).includes('true'),
         current: parseFloat(await this.data.getResult(`ocps[${i}]:current`, `print(ocps[${i}]:getCurrent())`)),
         peak_current: parseFloat(await this.data.getResult(`ocps[${i}]:peak_current`, `print(ocps[${i}]:getPeakCurrent())`)),
-      };
-      ocps.push(ocpData);
+      });
     }
     return ocps;
   }

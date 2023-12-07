@@ -55,34 +55,34 @@ export class EnvhubComponent implements OnInit{
     private cdRef: ChangeDetectorRef,
     private notificationService: NotificationService,
     private data: DataService
-  ) {}
+  ) {
+    for (let i = 0; i < 4; i++) {
+      // Define treeControl, treeFlattener, and dataSource as class properties
+      this.treeControl[i] = new FlatTreeControl<DeviceFlatNode>(
+        node => node.level,
+        node => node.expandable
+      );
+      this.treeFlattener[i] = new MatTreeFlattener(
+        this.sp._transformer,
+        node => node.level,
+        node => node.expandable,
+        node => node.tailports,
+      );
+      this.dataSource[i] = new MatTreeFlatDataSource(this.treeControl[i], this.treeFlattener[i]);
+    }
+  }
 
   async ngOnInit(): Promise<void> {
     const size = parseFloat(await this.data.getResult('#envhubs', 'print(#envhubs)'));
-    if (size === 1) {
+    if ( size === 1) {
       for (let i = 0; i < 4; i++) {
-        // Define treeControl, treeFlattener, and dataSource as class properties
-        this.treeControl[i] = new FlatTreeControl<DeviceFlatNode>(
-          node => node.level,
-          node => node.expandable
-        );
-        this.treeFlattener[i] = new MatTreeFlattener(
-          this.sp._transformer,
-          node => node.level,
-          node => node.expandable,
-          node => node.tailports,
-        );
-        this.dataSource[i] = new MatTreeFlatDataSource(this.treeControl[i], this.treeFlattener[i]);
-        this.fetchEnvhubsData(i)
-          .then(() => {
-            this.cdRef.detectChanges();
-            this.isLoading = false;
-          })
-          .catch((error) => {
-            console.error('Data fetching failed:', error);
-          });
+        this.fetchEnvhubsData(i).catch((error) => {
+          console.error('Data fetching failed:', error);
+        });
       }
     }
+    this.cdRef.detectChanges();
+    this.isLoading = false;
   }
 
   async fetchEnvhubsData(i:number) {
