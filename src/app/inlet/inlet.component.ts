@@ -7,8 +7,8 @@ import {DataService} from "../services/data.service";
   styleUrls: ['./inlet.component.css'],
 })
 export class InletComponent implements OnInit{
-  hasPoles : boolean= true;
   isLoading: boolean = true;
+  hasPoles : boolean= true;
   sizeI = 0;sizeS=0;
   constructor(
     private data: DataService,

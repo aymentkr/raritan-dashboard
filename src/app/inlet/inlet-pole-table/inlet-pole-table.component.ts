@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {InletP, Pole} from "../../model/interfaces";
 import {MatSort, Sort} from "@angular/material/sort";
@@ -13,6 +13,7 @@ import {NotificationService} from "../../services/notification.service";
 })
 export class InletPoleTableComponent  implements OnInit{
   @Input() inputFromParent = 0 ;
+  @Output() changeState= new EventEmitter<void>();
   dataSource = new MatTableDataSource<InletP>();
   polesColumns: string[] = ['name','voltage', 'current', 'act_power', 'app_power','act_energy','app_energy','editPole'];
   inletsColumns: string[] = ['select', 'frequency', 'poles', 'edit'];
@@ -30,8 +31,9 @@ export class InletPoleTableComponent  implements OnInit{
     this.fetchInletData().then((data) => {
       this.dataSource.data = data
       this.dataSource.sort = this.sort;
+      this.changeState.emit();
     }).catch((error) => {
-      console.error('Data fetching failed:', error);
+      console.error('Failed to fetch data:', error);
     });
   }
 

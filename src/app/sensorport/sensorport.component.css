@@ -97,3 +97,12 @@ button {
   font-size: 14px;
   margin-top: 5px;
 }
+.mat-column-device_id {
+  width: 10%;
+  border-right: 1px solid currentColor;
+  padding-right: 16px;
+  text-align: center;
+}
+.mat-column-type {
+  font-weight: bold;
+}

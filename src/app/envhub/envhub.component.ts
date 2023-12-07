@@ -112,7 +112,7 @@ export class EnvhubComponent implements OnInit{
   }
 
   editDevice(obj: Peripheral, event: Event) {
-    event.stopPropagation();
+    this.stopEventPropagation(event);
     const dialogRef = this.dialog.open(EditPeripheralDeviceComponent, {
       data: obj
     });
@@ -139,7 +139,7 @@ export class EnvhubComponent implements OnInit{
   }
 
   infoDevice(obj: DeviceFlatNode, event: Event): void {
-    event.stopPropagation();
+    this.stopEventPropagation(event);
     this.sp.infoDevice(obj);
   };
   setFuseState(i: number) {
@@ -169,7 +169,7 @@ export class EnvhubComponent implements OnInit{
   }
 
   deleteDevice(i:number, device: DeviceFlatNode, event: Event) {
-    event.stopPropagation();
+    this.stopEventPropagation(event);
     const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
       width: '600px',
       maxHeight: '400px',
@@ -192,9 +192,13 @@ export class EnvhubComponent implements OnInit{
   }
 
   toggleDeviceDetails(device: DeviceFlatNode, event: Event): void {
-    event.stopPropagation();
+    this.stopEventPropagation(event);
     this.selectedDevice = this.selectedDevice === device ? null : device;
     this.cdRef.detectChanges();
+  }
+
+  stopEventPropagation(event: Event): void {
+    event.stopPropagation();
   }
 
 }

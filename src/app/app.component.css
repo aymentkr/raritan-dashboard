@@ -3,10 +3,6 @@
   padding: 20px;
 }
 
-.menu-button, .favorite-button, .share-button {
-  color: white;
-}
-
 .app-title {
   font-size: 24px;
   font-weight: bold;
@@ -16,4 +12,9 @@
 .mat-toolbar {
   position: relative;
   z-index: 5;
+}
+.logo {
+  width: 85px !important;
+  height: auto;
+  margin-left: 16px;
 }

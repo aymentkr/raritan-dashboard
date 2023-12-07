@@ -21,7 +21,7 @@
             <td mat-cell *matCellDef="let data">
               <button mat-icon-button
                       [style.visibility]="!data.expandable ? 'hidden' : ''"
-                      (click)="treeControl.toggle(data)">
+                      (click)="treeControl.toggle(data); stopEventPropagation($event);">
                 <!--  [style.marginLeft.px]="data.level" -->
                 <mat-icon class="mat-icon-rtl-mirror">
                   {{treeControl.isExpanded(data) ? 'expand_more' : 'chevron_right'}}
@@ -98,7 +98,8 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
               [class.example-expanded-row]="selectedDevice === row"
-              [class.selected-row]="selectedDevice === row">
+              [class.selected-row]="selectedDevice === row"
+              (click)="toggleDeviceDetails(row, $event)">
           </tr>
           <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
         </table>

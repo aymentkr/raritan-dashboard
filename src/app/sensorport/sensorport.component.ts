@@ -103,7 +103,7 @@ export class SensorportComponent implements OnInit {
   }
 
   editDevice(obj: DeviceFlatNode, event: Event) {
-    event.stopPropagation();
+    this.stopEventPropagation(event);
     const dialogRef = this.dialog.open(EditPeripheralDeviceComponent, {
       data: obj
     });
@@ -113,12 +113,12 @@ export class SensorportComponent implements OnInit {
   }
 
   infoDevice(obj: DeviceFlatNode, event: Event): void {
-    event.stopPropagation();
+    this.stopEventPropagation(event);
     this.sp.infoDevice(obj);
   };
 
   deleteDevice(device: DeviceFlatNode, event: Event) {
-    event.stopPropagation();
+    this.stopEventPropagation(event);
     const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
       width: '600px',
       maxHeight: '400px',
@@ -174,9 +174,13 @@ export class SensorportComponent implements OnInit {
     });
   }
   toggleDeviceDetails(device: DeviceFlatNode, event: Event): void {
-    event.stopPropagation();
+    this.stopEventPropagation(event);
     this.selectedDevice = this.selectedDevice === device ? null : device;
     this.cdRef.detectChanges();
+  }
+
+  stopEventPropagation(event: Event): void {
+    event.stopPropagation();
   }
 
 }
