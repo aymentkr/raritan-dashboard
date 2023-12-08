@@ -108,3 +108,26 @@ export interface Switch {
   RelayOpenTime: number | null,
   TotalTransferTime: number | null,
 }
+
+export interface AssetInput {
+  isEnabled: boolean,
+  rackunit?: number,
+  slot?: number,
+  id1?: number,
+  id2?: number,
+  custom?: boolean,
+  version?: number,
+  topconnector?: number,
+  main_count?: number,
+  ext_count?: number,
+  max_ext_count?: number,
+}
+
+export interface AssetOutput {
+  r:number;
+  g:number;
+  b:number;
+  on:boolean;
+  slow:boolean;
+  fast:boolean;
+}

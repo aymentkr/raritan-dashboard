@@ -39,7 +39,56 @@
 
   </mat-grid-tile>
   <mat-grid-tile>
-    3
-  </mat-grid-tile>
+    <mat-grid-tile-header>Asset Strips</mat-grid-tile-header>
+    <ng-container *ngIf="!isAvailable; else Assetstrips">
+      <h2>No Asset available</h2>
+    </ng-container>
+    <ng-template #Assetstrips>
+      <div class="card-container">
+        <div class="card">
+          <div class="form-group">
+            <mat-slide-toggle [(ngModel)]="AssetIn.isEnabled" (ngModelChange)="changeAssetState()">
+              Asset strips is {{ AssetIn.isEnabled ? 'enabled' : 'disabled' }}
+            </mat-slide-toggle>
+            <mat-slide-toggle [(ngModel)]="AssetIn.isEnabled" (ngModelChange)="changeAssetState()">
+              Asset strips is {{ AssetIn.isEnabled ? 'enabled' : 'disabled' }}
+            </mat-slide-toggle>
+            <mat-slide-toggle [(ngModel)]="AssetIn.isEnabled" (ngModelChange)="changeAssetState()">
+              Asset strips is {{ AssetIn.isEnabled ? 'enabled' : 'disabled' }}
+            </mat-slide-toggle>
+          </div>
+        </div>
+        <div class="card">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title> Asset Operation </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-divider></mat-divider>
+              <div class="form-group">
+                <form (ngSubmit)="onFormSubmit(doorForm)" #doorForm="ngForm">
+                  <div class="form-fields">
+                    <mat-form-field>
+                      <mat-label>Door State</mat-label>
+                      <mat-select ngModel name="doorState">
+                        <mat-option>None</mat-option>
+                        <mat-option value="true">True</mat-option>
+                        <mat-option value="false">False</mat-option>
+                      </mat-select>
+                    </mat-form-field>
 
+                    <mat-form-field>
+                      <mat-label>Enter ID</mat-label>
+                      <input matInput type="text" ngModel name="id" pattern="[0-9]+">
+                    </mat-form-field>
+                    <button mat-raised-button color="accent" type="submit" [disabled]="!doorForm.valid">Submit</button>
+                  </div>
+                </form>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </ng-template>
+  </mat-grid-tile>
 </mat-grid-list>

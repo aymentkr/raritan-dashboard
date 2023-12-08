@@ -56,6 +56,7 @@ import { BottomSheetDetailsComponent } from './inlet/transfer-switch/bottom-shee
 import {MatBottomSheet} from "@angular/material/bottom-sheet";
 import {MatTreeModule} from "@angular/material/tree";
 import {CdkColumnDef} from "@angular/cdk/table";
+import { AssetsPipe } from './pipes/assets.pipe';
 
 @NgModule({
   declarations: [
@@ -79,6 +80,7 @@ import {CdkColumnDef} from "@angular/cdk/table";
     SensorportComponent,
     BottomSheetInfoComponent,
     BottomSheetDetailsComponent,
+    AssetsPipe,
   ],
   imports: [
     AppRoutingModule,
@@ -117,7 +119,7 @@ import {CdkColumnDef} from "@angular/cdk/table";
     MatBadgeModule,
     MatTreeModule,
   ],
-  providers: [WebsocketService,DataService,SensorsPipe,PeripheralClass,MatBottomSheet,CdkColumnDef],
+  providers: [WebsocketService,DataService,SensorsPipe,AssetsPipe,PeripheralClass,MatBottomSheet,CdkColumnDef],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
