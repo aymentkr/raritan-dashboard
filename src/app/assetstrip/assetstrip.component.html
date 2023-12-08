@@ -1,0 +1,31 @@
+<ng-container *ngIf="!isAvailable; else datatable">
+  <h2>No Asset Strip available</h2>
+</ng-container>
+
+<ng-template #datatable>
+  <div class="card">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Virtual Asset Tags</mat-card-title>
+        <mat-card-subtitle>[]</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-divider></mat-divider>
+
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="card">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Virtual Blade Extensions</mat-card-title>
+        <mat-card-subtitle>[]</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-divider></mat-divider>
+
+      </mat-card-content>
+    </mat-card>
+  </div>
+</ng-template>

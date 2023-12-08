@@ -10,6 +10,7 @@ import {SmartlockComponent} from "./smartlock/smartlock.component";
 import {DeactivateGuard} from "./deactivate.guard";
 import {EnvhubComponent} from "./envhub/envhub.component";
 import {SensorportComponent} from "./sensorport/sensorport.component";
+import {AssetstripComponent} from "./assetstrip/assetstrip.component";
 
 
 const routes: Routes= [
@@ -21,6 +22,7 @@ const routes: Routes= [
   {path: 'sensorport', component:SensorportComponent,canDeactivate: [DeactivateGuard]},
   {path: 'envhub', component:EnvhubComponent,canDeactivate: [DeactivateGuard]},
   {path: 'smartlock', component:SmartlockComponent,canDeactivate: [DeactivateGuard]},
+  {path: 'assetstrip', component:AssetstripComponent},
   {path: 'settings', component:SettingsComponent},
   {path: 'help', component:InfoComponent},
 ];

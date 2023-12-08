@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {DataService} from "../services/data.service";
 import {NotificationService} from "../services/notification.service";
-import {AssetInput, Notification} from "../model/interfaces";
+import {AssetInput, Notification, SlideToggle} from "../model/interfaces";
 import {AssetsPipe} from "../pipes/assets.pipe";
-import {NgForm} from "@angular/forms";
 
 @Component({
   selector: 'app-settings',
@@ -14,27 +13,26 @@ export class SettingsComponent  implements OnInit {
   isAvailable = false;
   notifications!: Notification[] ;
   displayedColumns : string[] = ['title', 'time', 'message','alert'];
-  AssetIn: AssetInput;
-  options: any;
+  AssetIn?: AssetInput;
+  controls: SlideToggle[];
+  connections: SlideToggle[];
   constructor(
     private data: DataService,
-    private ap: AssetsPipe,
+    ap: AssetsPipe,
     private notificationService: NotificationService,
   ) {
     this.AssetIn = ap.AssetIn;
-    this.options = ap.controls;
+    this.controls = ap.controls;
+    this.connections = ap.connections;
   }
   ngOnInit(): void {
     this.notificationService.getNotifications().subscribe(notifications =>
       this.notifications = notifications
     );
-    this.fetchData();
   }
-  async onToggleChange(option: { name: number; isEnabled: boolean }) {
-    if (option.isEnabled)
-      this.data.sendToGo(`ctrls[${option.name}]:enable()`);
-    else
-      this.data.sendToGo(`ctrls[${option.name}]:disable()`);
+  async onToggleChangeCtrl(option: SlideToggle) {
+    const command = `${option.table}[${option.name}]:${option.isEnabled ? 'enable()' : 'disable()'}`;
+    this.data.sendToGo(command);
   }
 
 
@@ -42,22 +40,14 @@ export class SettingsComponent  implements OnInit {
     this.notificationService.clearAllHistory();
   }
 
-  changeAssetState() {
-    if (this.AssetIn.isEnabled)
-      this.data.sendToGo('assetstrips[1]:enable()');
-    else
-      this.data.sendToGo('assetstrips[1]:disable()');
-  }
-
-  private async fetchData() {
-    const size = parseFloat(await this.data.getResult('#assetstrips', 'print(#assetstrips)'));
-    if (size === 1) {
-      this.isAvailable = true;
-      this.changeAssetState();
-    }
-  }
-
-  onFormSubmit(doorForm: NgForm) {
-
+  onToggleChangeCnx(selectedConnection: SlideToggle) {
+    this.connections.forEach(connection => {
+      if (connection !== selectedConnection) {
+        connection.isEnabled = false;
+        this.data.sendToGo(`${selectedConnection.table}:disable()`);
+      } else {
+        this.data.sendToGo(`${selectedConnection.table}:enable()`);
+      }
+    });
   }
 }

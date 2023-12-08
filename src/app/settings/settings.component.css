@@ -3,25 +3,4 @@
   width: 90%!important;
   overflow: auto;
 }
-.form-group {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.form-fields {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 10px;
-}
 
-mat-form-field {
-  margin-right: 10px;
-  width: 250px;
-}
-
-.card {
-  margin-right: 10px;
-}

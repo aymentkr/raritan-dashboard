@@ -57,6 +57,7 @@ import {MatBottomSheet} from "@angular/material/bottom-sheet";
 import {MatTreeModule} from "@angular/material/tree";
 import {CdkColumnDef} from "@angular/cdk/table";
 import { AssetsPipe } from './pipes/assets.pipe';
+import { AssetstripComponent } from './assetstrip/assetstrip.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { AssetsPipe } from './pipes/assets.pipe';
     BottomSheetInfoComponent,
     BottomSheetDetailsComponent,
     AssetsPipe,
+    AssetstripComponent,
   ],
   imports: [
     AppRoutingModule,

@@ -110,7 +110,6 @@ export interface Switch {
 }
 
 export interface AssetInput {
-  isEnabled: boolean,
   rackunit?: number,
   slot?: number,
   id1?: number,
@@ -130,4 +129,10 @@ export interface AssetOutput {
   on:boolean;
   slow:boolean;
   fast:boolean;
+}
+
+export interface SlideToggle {
+  name: string;
+  table: string;
+  isEnabled: boolean
 }
