@@ -8,7 +8,7 @@ import {
   ViewChildren
 } from '@angular/core';
 import {MatTable} from "@angular/material/table";
-import {DeviceFlatNode, Peripheral} from "../model/interfaces";
+import {DeviceFlatNode, DeviceNode, Peripheral} from "../model/interfaces";
 import {MatSort} from "@angular/material/sort";
 import {MatDialog} from "@angular/material/dialog";
 import {SensorsPipe} from "../pipes/sensors.pipe";
@@ -49,11 +49,12 @@ export class SensorportComponent implements OnInit {
     node => node.expandable
   );
   treeFlattener = new MatTreeFlattener(
-    this.sp._transformer,
+    (node: DeviceNode, level: number) => this.sp._transformer(node, level, 'sensorports[1]'),
     node => node.level,
     node => node.expandable,
     node => node.tailports,
   );
+
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
   constructor(
@@ -128,7 +129,7 @@ export class SensorportComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.data.removeMap('sensorports[1]:getTopology');
-        this.sp.removeDevice('sensorports[1]', device);
+        this.sp.removeDevice(device);
         this.fetchSensorPortData().then(() => {
           this.notificationService.openToastr(`Selected Device ${device.device_id}deleted successfully from Sensorports`, 'Deleting Devices', 'warning');
         });
@@ -149,7 +150,7 @@ export class SensorportComponent implements OnInit {
 
 
   private editRowData(result: any) {
-    this.sp.callMethod('sensorports[1]', result);
+    this.sp.callMethod( result);
     this.notificationService.openToastr('Device has been successfully updated (Sensorports), Virtual sensor operations for QEMU ', 'Device Modification ', 'done')
   }
 

@@ -18,7 +18,6 @@ export class SmartlockComponent implements OnInit {
   dataSource = new MatTableDataSource<DeviceFlatNode>();
   columns: string[] = ['device_id', 'name', 'type', 'serial_number'];
   displayedColumns: string[] = ['select', ...this.columns];
-  myMap = new Map <string, DeviceFlatNode[]>;
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('doorForm', {static: false}) doorForm!: NgForm;
@@ -31,8 +30,6 @@ export class SmartlockComponent implements OnInit {
     private notificationService: NotificationService,
     private cdr: ChangeDetectorRef,
   ) {
-    this.myMap.set(`sensorports`, []);
-    this.myMap.set(`envhubs`, []);
     this.sensor = sp.filterSensorsByType('DX2_DH2C2');
   }
 
@@ -50,14 +47,14 @@ export class SmartlockComponent implements OnInit {
   }
 
   async fetchSmartLockData(): Promise<DeviceFlatNode[]> {
+    const list:DeviceFlatNode[] = [];
     const type = 'DX2_DH2C2';
-    await this.initializeMap('sensorports');
-    await this.initializeMap('envhubs');
-
-    // Concatenate and filter the arrays
-    const sensorPortDevices = this.myMap.get('sensorports') || [];
-    const envHubDevices = this.myMap.get('envhubs') || [];
-    return sensorPortDevices.concat(envHubDevices).filter((peripheral) => peripheral.type === type);
+    this.sp.deviceMap.forEach(value => {
+      if (value.type === type) {
+        list.push(value)
+      }
+    })
+    return list;
   }
 
 
@@ -82,47 +79,37 @@ export class SmartlockComponent implements OnInit {
     const enteredPin = doorForm.value.pin;
 
     if (selectedHandleState || selectedDoorState || enteredId || enteredPin) {
-      for (const [key, deviceArray] of this.myMap.entries()) {
-        const foundDevice = deviceArray?.find(device => device.device_id === selectedDeviceId);
-
-        if (foundDevice) {
-          if (enteredPin) {
-            this.updateDevice(key, selectedDeviceId, selectedDoorNr, 'setPIN', enteredPin);
-          }
-          if (selectedDoorState) {
-            this.updateDevice(key, selectedDeviceId, selectedDoorNr, 'setDoorState', selectedDoorState);
-          }
-          if (selectedHandleState) {
-            this.updateDevice(key, selectedDeviceId, selectedDoorNr, 'setHandleState', selectedHandleState);
-          }
-          if (enteredId) {
-            this.updateDevice(key, selectedDeviceId, selectedDoorNr, 'setCardId', enteredId);
-          }
-          this.notificationService.openToastr(`Device has been successfully updated (${key}), Virtual sensor operations for QEMU `, 'Device Modification ', 'done');
-          break;
+      const foundDevice = this.dataSource.data.find(device => device.device_id === selectedDeviceId);
+      if (foundDevice) {
+        if (enteredPin) {
+          this.sp.callMethod({
+            methodName: `setPIN(${selectedDoorNr},${enteredPin})`,
+            device: foundDevice,
+          });
+        }
+        if (selectedDoorState) {
+          this.sp.callMethod({
+            methodName: `setDoorState(${selectedDoorNr},${selectedDoorState})`,
+            device: foundDevice,
+          });
         }
       }
+      if (selectedHandleState) {
+        this.sp.callMethod({
+          methodName: `setHandleState(${selectedDoorNr},${selectedHandleState})`,
+          device: foundDevice,
+        });
+      }
+      if (enteredId) {
+        this.sp.callMethod({
+          methodName: `setCardId(${selectedDoorNr},${enteredId})`,
+          device: foundDevice,
+        });
+      }
+      this.notificationService.openToastr(`Device has been successfully updated (${selectedDeviceId}), Virtual sensor operations for QEMU `, 'Device Modification ', 'done');
     } else {
       this.notificationService.openToastr('You need at least one field in the values are in order to apply a value modification!', 'Door Selection', 'error');
     }
   }
 
-// New method for updating a device
-  private updateDevice(key: string, selectedDeviceId: number, selectedDoorNr: number, operation: string, value: any) {
-    const foundDevice = this.myMap.get(key)?.find(device => device.device_id === selectedDeviceId);
-    if (foundDevice) {
-      this.sp.callMethod(key, {
-        methodName: `${operation}(${selectedDoorNr},${value})`,
-        device: foundDevice,
-      });
-    }
-  }
-
-  private async initializeMap(table: string) {
-    const size = parseFloat(await this.data.getResult('#' + table, `print(#${table})`));
-    if (size === 1) {
-      const lines = (await this.data.getResult(`${table}[1]:listDevices`, `print(${table}[1]:listDevices())`)).split('\n');
-      this.myMap.get(table)?.push(...this.sp.convertLinesToDevices(lines));
-    }
-  }
 }

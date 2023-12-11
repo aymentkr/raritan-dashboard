@@ -60,17 +60,17 @@ export class SensorsPipe implements PipeTransform {
       this.data.sendToGo(`emu.${data.type}:create(tfw_core):connect(${table})`);
   }
 
-  callMethod(table: string, data: any) {
-    this.data.sendToGo(`emu.${data.device.type}:cast(${table}:findDevice("${data.device.serial_number}")):${data.methodName}`);
+  callMethod( data: any) {
+    this.data.sendToGo(`emu.${data.device.type}:cast(${data.device.table}:findDevice("${data.device.serial_number}")):${data.methodName}`);
   }
 
   setFuseState(i: number, state: boolean) {
     this.data.sendToGo(`envhubs[1]:setFuseState(${i}, ${state})`);
   }
 
-  removeDevice(table: string, device: DeviceFlatNode) {
+  removeDevice(device: DeviceFlatNode) {
     this.deviceMap.delete(device.serial_number);
-    this.data.sendToGo(`emu.${device.type}:cast(${table}:findDevice("${device.serial_number}")):disconnect();`);
+    this.data.sendToGo(`emu.${device.type}:cast(${device.table}:findDevice("${device.serial_number}")):disconnect();`);
   }
 
   removeAll(table: string) {
@@ -98,7 +98,7 @@ export class SensorsPipe implements PipeTransform {
     return this.deviceMap;
   }
 
-  _transformer = (node: DeviceNode, level: number): DeviceFlatNode => {
+  _transformer = (node: DeviceNode, level: number, table:string): DeviceFlatNode => {
     let myDevice = this.deviceMap.get(node.serial);
     if (myDevice) return myDevice;
     else {
@@ -109,6 +109,7 @@ export class SensorsPipe implements PipeTransform {
         name: sensor?.name || 'Invalid Device',
         type: node.type,
         serial_number: node.serial,
+        table: table,
         peripherals: new MatTableDataSource<Peripheral>(this.getPeripheralByType(this.device_id, node.type)),
         level: level,
       };
@@ -128,19 +129,5 @@ export class SensorsPipe implements PipeTransform {
         tailports: tailports ? this.convertToDevices(tailports) : undefined
       }];
     }
-  }
-  convertLinesToDevices(lines: string[]): DeviceFlatNode[] {
-    const devices: DeviceFlatNode[] = [];
-    for (const line of lines) {
-      const match = line.match(/([A-Z0-9_]+): ([A-Z0-9]+)/);
-      if (match) {
-        const serialNumber = match[2];
-        const myDevice = this.deviceMap.get(serialNumber);
-        if (myDevice) {
-          devices.push(myDevice);
-        }
-      }
-    }
-    return devices;
   }
 }

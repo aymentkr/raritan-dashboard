@@ -78,6 +78,7 @@ export interface DeviceFlatNode {
   name : string
   type: string;
   serial_number: string;
+  table:string;
   peripherals: MatTableDataSource<Peripheral>;
   level: number;
 }

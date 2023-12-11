@@ -76,7 +76,7 @@
                 <mat-label>Select Device ID</mat-label>
                 <mat-select ngModel name="deviceId" required>
                   <mat-option *ngFor="let row of dataSource.data" [value]="row.device_id">
-                    {{ row.device_id }}
+                    Device {{ row.device_id }}
                   </mat-option>
                 </mat-select>
               </mat-form-field>

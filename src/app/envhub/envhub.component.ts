@@ -8,7 +8,7 @@ import {
   ViewChildren
 } from '@angular/core';
 import {MatTable} from "@angular/material/table";
-import {Peripheral, DeviceFlatNode} from "../model/interfaces";
+import {Peripheral, DeviceFlatNode, DeviceNode} from "../model/interfaces";
 import {MatSort} from "@angular/material/sort";
 import {MatDialog} from "@angular/material/dialog";
 import {SensorsPipe} from "../pipes/sensors.pipe";
@@ -63,11 +63,12 @@ export class EnvhubComponent implements OnInit{
         node => node.expandable
       );
       this.treeFlattener[i] = new MatTreeFlattener(
-        this.sp._transformer,
+        (node: DeviceNode, level: number) => this.sp._transformer(node, level, `envhubs[1]:getPort(${i})`),
         node => node.level,
         node => node.expandable,
         node => node.tailports,
       );
+
       this.dataSource[i] = new MatTreeFlatDataSource(this.treeControl[i], this.treeFlattener[i]);
     }
   }
@@ -111,10 +112,10 @@ export class EnvhubComponent implements OnInit{
     })
   }
 
-  editDevice(obj: Peripheral, event: Event) {
+  editDevice(device: DeviceFlatNode, event: Event) {
     this.stopEventPropagation(event);
     const dialogRef = this.dialog.open(EditPeripheralDeviceComponent, {
-      data: obj
+      data: device
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) this.editRowData(result.data);
@@ -134,7 +135,7 @@ export class EnvhubComponent implements OnInit{
   }
 
   private editRowData(data: any) {
-    this.sp.callMethod('envhubs[1]',data);
+    this.sp.callMethod(data);
     this.notificationService.openToastr('Device has been successfully updated (Envhubs), Virtual sensor operations for QEMU ','Device Modification ','done')
   }
 
@@ -179,7 +180,7 @@ export class EnvhubComponent implements OnInit{
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.data.removeMap(`envhubs[1]:getPort(${i}):getTopology`);
-        this.sp.removeDevice(`envhubs[1]:getPort(${i})`, device);
+        this.sp.removeDevice(device);
         this.fetchEnvhubsData(i).then(() => {
           this.notificationService.openToastr(`Selected Device ${device.device_id}deleted successfully from Envhubs`, `Deleting Devices in Port ${i}`, 'warning');
         });
