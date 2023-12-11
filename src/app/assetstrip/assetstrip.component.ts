@@ -1,7 +1,6 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AssetsPipe} from "../pipes/assets.pipe";
-import {AssetInput} from "../model/interfaces";
-import {MatSort} from "@angular/material/sort";
+import {Asset} from "../model/interfaces";
 
 @Component({
   selector: 'app-assetstrip',
@@ -10,31 +9,40 @@ import {MatSort} from "@angular/material/sort";
 })
 
 export class AssetstripComponent implements OnInit{
-  tags: AssetInput[] = [];
-  extensions: AssetInput[] = [];
+  assets: Asset[] = [
+    {
+      type : 'Tags',
+      params : [],
+    },
+    {
+      type : 'Blade Extensions',
+      params : [],
+    }
+  ];
   isAvailable: boolean = false;
   columns = ['rackunit', 'slot', 'id1', 'id2', 'custom'];
-  displayedColumns= [...this.columns,'actions'];
-  @ViewChild('sort') sort!: MatSort;
+  displayedColumns= ['type','params','actions'];
 
   constructor(private ap:AssetsPipe) {
+
   }
   ngOnInit(): void {
     this.ap.init().then(() => {
       this.isAvailable = this.ap.isAvailable;
     });
   }
+  addItem() {
 
+  }
 
   clearData() {
 
   }
 
-  addItem() {
+
+  deleteItem() {
 
   }
 
-  deleteItem(element:AssetInput) {
 
-  }
 }

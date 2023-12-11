@@ -110,15 +110,19 @@ export interface Switch {
   TotalTransferTime: number | null,
 }
 
-export interface AssetInput {
+export interface Asset {
+  type: string,
+  params : AssetInfo[]
+}
+
+export interface AssetInfo {
   rackunit: number,
   slot: number,
   id1: number,
   id2: number,
   custom: boolean,
 }
-
-export interface AssetInput2 {
+export interface AssetInput {
   version?: number,
   topconnector?: number,
   main_count?: number,
