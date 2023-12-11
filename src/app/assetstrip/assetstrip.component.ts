@@ -1,7 +1,6 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {AssetsPipe} from "../pipes/assets.pipe";
 import {AssetInput} from "../model/interfaces";
-import {MatTableDataSource} from "@angular/material/table";
 import {MatSort} from "@angular/material/sort";
 
 @Component({
@@ -23,14 +22,6 @@ export class AssetstripComponent implements OnInit{
   ngOnInit(): void {
     this.ap.init().then(() => {
       this.isAvailable = this.ap.isAvailable;
-      /*
-      this.tags.push({
-        rackunit:1,
-        slot:1,
-        id1:1,
-        id2:1,
-        custom:true
-      })*/
     });
   }
 
