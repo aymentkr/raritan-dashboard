@@ -3,7 +3,6 @@
 </ng-container>
 
 <ng-template #datatable>
-  <div class="container">
   <div class="card">
     <mat-card>
       <mat-card-header>
@@ -38,7 +37,7 @@
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let element" class="action-link">
-              <button mat-icon-button color="warn" (click)="addItem()">
+              <button mat-icon-button color="warn" (click)="addAsset(element)">
                 <mat-icon>add</mat-icon>
               </button>
               <button mat-icon-button color="warn" (click)="clearData()">
@@ -52,10 +51,5 @@
         </table>
       </mat-card-content>
     </mat-card>
-  </div>
-
-  <div class="card">
-
-  </div>
   </div>
 </ng-template>

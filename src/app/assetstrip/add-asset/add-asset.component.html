@@ -1,0 +1,41 @@
+<h1 mat-dialog-title>{{ title }}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form" (ngSubmit)="doAction()">
+    <!-- Rack Unit Input -->
+    <mat-form-field class="dialog-content">
+      <mat-label>Rack Unit</mat-label>
+      <input matInput placeholder="Rack Unit" formControlName="rackunit" type="number">
+    </mat-form-field>
+
+    <!-- Slot Input -->
+    <mat-form-field class="dialog-content">
+      <mat-label>Slot</mat-label>
+      <input matInput placeholder="Slot" formControlName="slot" type="number">
+    </mat-form-field>
+
+    <!-- ID1 Input -->
+    <mat-form-field class="dialog-content">
+      <mat-label>ID1</mat-label>
+      <input matInput placeholder="ID1" formControlName="id1" type="number">
+    </mat-form-field>
+
+    <!-- ID2 Input -->
+    <mat-form-field class="dialog-content">
+      <mat-label>ID2</mat-label>
+      <input matInput placeholder="ID2" formControlName="id2" type="number">
+    </mat-form-field>
+
+    <!-- Custom Checkbox -->
+    <div class="dialog-content">
+      <mat-checkbox formControlName="custom">Custom</mat-checkbox>
+    </div>
+
+    <!-- Dialog Actions -->
+    <div mat-dialog-actions>
+      <!-- Submit Button -->
+      <button mat-raised-button [color]="form.valid ? 'primary' : ''" type="submit" [disabled]="!form.valid">Add an Asset</button>
+      <!-- Cancel Button -->
+      <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>
+    </div>
+  </form>
+</div>

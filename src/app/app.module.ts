@@ -58,6 +58,7 @@ import {MatTreeModule} from "@angular/material/tree";
 import {CdkColumnDef} from "@angular/cdk/table";
 import { AssetsPipe } from './pipes/assets.pipe';
 import { AssetstripComponent } from './assetstrip/assetstrip.component';
+import { AddAssetComponent } from './assetstrip/add-asset/add-asset.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +84,7 @@ import { AssetstripComponent } from './assetstrip/assetstrip.component';
     BottomSheetDetailsComponent,
     AssetsPipe,
     AssetstripComponent,
+    AddAssetComponent,
   ],
   imports: [
     AppRoutingModule,

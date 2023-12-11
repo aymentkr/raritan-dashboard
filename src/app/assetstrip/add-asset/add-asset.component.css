@@ -1,0 +1,9 @@
+/* Your CSS file or the styles section of your component */
+
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%; /* Ensures the dialog content takes full height */
+}

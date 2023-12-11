@@ -74,7 +74,6 @@ export class SensorportComponent implements OnInit {
     });
   }
 
-
   async fetchSensorPortData() {
     const size = parseFloat(await this.data.getResult('#sensorports', 'print(#sensorports)'));
     if (size === 1) {
