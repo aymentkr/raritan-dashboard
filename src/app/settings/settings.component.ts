@@ -10,20 +10,19 @@ import {AssetsPipe} from "../pipes/assets.pipe";
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent  implements OnInit {
-  isAvailable = false;
   notifications!: Notification[] ;
   displayedColumns : string[] = ['title', 'time', 'message','alert'];
-  AssetIn?: AssetInput;
-  controls: SlideToggle[];
-  connections: SlideToggle[];
+  controls: SlideToggle[] = [];
+  connections: SlideToggle[] = [];
   constructor(
     private data: DataService,
     ap: AssetsPipe,
     private notificationService: NotificationService,
   ) {
-    this.AssetIn = ap.AssetIn;
-    this.controls = ap.controls;
-    this.connections = ap.connections;
+    ap.init().then(()=> {
+      this.controls = ap.controls;
+      this.connections = ap.connections;
+    })
   }
   ngOnInit(): void {
     this.notificationService.getNotifications().subscribe(notifications =>
@@ -34,7 +33,6 @@ export class SettingsComponent  implements OnInit {
     const command = `${option.table}[${option.name}]:${option.isEnabled ? 'enable()' : 'disable()'}`;
     this.data.sendToGo(command);
   }
-
 
   clearNotifications() {
     this.notificationService.clearAllHistory();

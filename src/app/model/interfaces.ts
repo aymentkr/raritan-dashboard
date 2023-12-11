@@ -110,11 +110,14 @@ export interface Switch {
 }
 
 export interface AssetInput {
-  rackunit?: number,
-  slot?: number,
-  id1?: number,
-  id2?: number,
-  custom?: boolean,
+  rackunit: number,
+  slot: number,
+  id1: number,
+  id2: number,
+  custom: boolean,
+}
+
+export interface AssetInput2 {
   version?: number,
   topconnector?: number,
   main_count?: number,

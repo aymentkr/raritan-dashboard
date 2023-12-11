@@ -85,7 +85,7 @@ export class OutletComponent implements OnInit {
   async editOutlet(outlet: Outlet) {
     if (outlet != null) {
       const { id, voltage, frequency, current, act_power, app_power } = outlet;
-      this.data.send('',`
+      this.data.sendToGo(`
         outlets[${id}]:setVoltage(${voltage});
         outlets[${id}]:setFrequency(${frequency});
         outlets[${id}]:setCurrent(${current});
