@@ -22,7 +22,7 @@ export class AssetstripComponent implements OnInit{
     }
   ];
   isAvailable: boolean = false;
-  columns = ['rackunit', 'slot', 'id1', 'id2', 'custom'];
+  columns = ['rackunit', 'slot','size', 'id1', 'id2', 'custom'];
   displayedColumns= ['type','params','actions'];
 
   constructor(

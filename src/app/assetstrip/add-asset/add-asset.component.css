@@ -1,9 +1,16 @@
-/* Your CSS file or the styles section of your component */
-
 .dialog-content {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
-  height: 100%; /* Ensures the dialog content takes full height */
+  height: 100%;
+}
+
+.info-message {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #d3f2e2;
+  border: 1px solid cadetblue;
+  color: cadetblue;
+  border-radius: 4px;
 }

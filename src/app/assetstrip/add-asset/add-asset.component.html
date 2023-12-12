@@ -5,35 +5,60 @@
     <mat-form-field class="dialog-content">
       <mat-label>Rack Unit</mat-label>
       <input matInput placeholder="Rack Unit" formControlName="rackunit" type="number">
+      <mat-hint align="end">Numeric indexof asset strip slot to connect to</mat-hint>
     </mat-form-field>
 
     <!-- Slot Input -->
-    <mat-form-field class="dialog-content">
+    <mat-form-field class="dialog-content" *ngIf="tags">
       <mat-label>Slot</mat-label>
       <input matInput placeholder="Slot" formControlName="slot" type="number">
+      <mat-hint align="end">
+        Blade extension must already be present at slot rackunit of this asset strip.
+      </mat-hint>
+    </mat-form-field>
+
+    <!-- Size Input (conditionally displayed based on 'tags' value) -->
+    <mat-form-field class="dialog-content" *ngIf="!tags">
+      <mat-label>Size</mat-label>
+      <input matInput placeholder="Size" formControlName="size" type="number">
+      <mat-hint align="end">{{ desc1 }}</mat-hint>
     </mat-form-field>
 
     <!-- ID1 Input -->
     <mat-form-field class="dialog-content">
       <mat-label>ID1</mat-label>
       <input matInput placeholder="ID1" formControlName="id1" type="number">
+      <mat-hint align="end">{{desc2}}</mat-hint>
     </mat-form-field>
 
     <!-- ID2 Input -->
     <mat-form-field class="dialog-content">
       <mat-label>ID2</mat-label>
       <input matInput placeholder="ID2" formControlName="id2" type="number">
+      <mat-hint align="end">{{desc2}}</mat-hint>
     </mat-form-field>
 
     <!-- Custom Checkbox -->
     <div class="dialog-content">
       <mat-checkbox formControlName="custom">Custom</mat-checkbox>
+      <mat-hint align="start">{{desc3}}</mat-hint>
+    </div>
+
+    <!-- Info Message -->
+    <div class="info-message" *ngIf="tags">
+      If slot = 0, tag will appear at rackunit (numeric slot index) of this asset strip <br>
+      If slot > 0, tag will appear at slot (numeric index, 1~16) of a blade extension. <br>
     </div>
 
     <!-- Dialog Actions -->
     <div mat-dialog-actions>
       <!-- Submit Button -->
-      <button mat-raised-button [color]="form.valid ? 'primary' : ''" type="submit" [disabled]="!form.valid">Add an Asset</button>
+      <button mat-raised-button
+              [color]="form.valid ? 'primary' : ''"
+              type="submit"
+              [disabled]="!form.valid">
+        Add an Asset
+      </button>
       <!-- Cancel Button -->
       <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>
     </div>

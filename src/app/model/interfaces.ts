@@ -117,7 +117,8 @@ export interface Asset {
 
 export interface AssetInfo {
   rackunit: number,
-  slot: number,
+  slot?: number,
+  size?: number,
   id1: number,
   id2: number,
   custom: boolean,
