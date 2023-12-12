@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 })
 export class AddAssetComponent {
   isExt :boolean;
-  title='';desc1='';desc2='';desc3='';desc4='';
+  title='';desc1='';desc2='';desc3='';
   form: FormGroup;
 
   constructor(
