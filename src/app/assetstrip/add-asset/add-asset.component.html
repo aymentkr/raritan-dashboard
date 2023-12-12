@@ -8,14 +8,16 @@
       <mat-hint align="end">Numeric indexof asset strip slot to connect to</mat-hint>
     </mat-form-field>
 
-    <!-- Slot Input -->
+    <!-- Slot Input (changed to mat-select) -->
     <mat-form-field class="dialog-content" *ngIf="!isExt">
       <mat-label>Slot</mat-label>
-      <input matInput placeholder="Slot" formControlName="slot" type="number">
-      <mat-hint align="end">
-        Blade extension must already be present at slot rackunit of this asset strip.
-      </mat-hint>
+      <mat-select placeholder="Slot" formControlName="slot">
+        <mat-option value="0">0 (main tag)</mat-option>
+        <mat-option *ngFor="let slot of extensionSlots" [value]="slot">{{ slot }}</mat-option>
+      </mat-select>
+      <mat-hint align="end">Slot 0 = main tag, slots 1..16 = extension tags</mat-hint>
     </mat-form-field>
+
 
     <!-- Size Input (conditionally displayed based on 'tags' value) -->
     <mat-form-field class="dialog-content" *ngIf="isExt">
@@ -48,6 +50,7 @@
     <div class="info-message" *ngIf="!isExt">
       If slot = 0, tag will appear at rackunit (numeric slot index) of this asset strip <br>
       If slot > 0, tag will appear at slot (numeric index, 1~16) of a blade extension. <br>
+      Blade extension must already be present at slot rackunit of this asset strip.
     </div>
 
     <!-- Dialog Actions -->

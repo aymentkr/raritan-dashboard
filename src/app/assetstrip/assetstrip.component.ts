@@ -3,6 +3,7 @@ import {AssetsPipe} from "../pipes/assets.pipe";
 import {Asset} from "../model/interfaces";
 import {MatDialog} from "@angular/material/dialog";
 import {AddAssetComponent} from "./add-asset/add-asset.component";
+import {DataService} from "../services/data.service";
 
 @Component({
   selector: 'app-assetstrip',
@@ -18,13 +19,14 @@ export class AssetstripComponent implements OnInit{
   displayedColumns2= [...this.columns2,'actions'];
 
   constructor(
+    private data: DataService,
     private dialog: MatDialog,
     private cdRef: ChangeDetectorRef,
     public ap:AssetsPipe
   ) {}
   ngOnInit(): void {
     this.ap.init().then(() => {
-      this.isAvailable = this.ap.isAvailable;
+      this.isAvailable = this.ap.connections[0].isEnabled;
       this.cdRef.detectChanges();
     });
   }
@@ -41,11 +43,13 @@ export class AssetstripComponent implements OnInit{
     });
   }
 
-  private async addRowData(data: Asset,isExt:boolean) {
+  private async addRowData(asset: Asset,isExt:boolean) {
     if ( isExt ) {
-      this.ap.extensions = [...this.ap.extensions, data];
+      this.data.sendToGo(`assetstrips[1]:setExt(${asset.rackunit}, ${asset.size}, ${asset.id1}, ${asset.id2}, ${asset.custom})`);
+      this.ap.extensions = [...this.ap.extensions, asset];
     } else {
-      this.ap.tags = [...this.ap.tags, data];
+      this.data.sendToGo(`assetstrips[1]:setTag(${asset.rackunit}, ${asset.slot}, ${asset.id1}, ${asset.id2}, ${asset.custom})`);
+      this.ap.tags = [...this.ap.tags, asset];
     }
   }
 

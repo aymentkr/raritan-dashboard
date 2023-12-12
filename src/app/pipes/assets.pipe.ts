@@ -6,10 +6,6 @@ import {DataService} from "../services/data.service";
   name: 'assets'
 })
 export class AssetsPipe implements PipeTransform {
-  tags:Asset[] = [];
-  extensions:Asset[] = [];
-  isAvailable: boolean = false;
-  AssetOut!: AssetOutput;
   controls: SlideToggle[] = [
     {name: '1', isEnabled: true, table: 'ctrls'},
     {name: '2', isEnabled: true, table: 'ctrls'},
@@ -20,7 +16,9 @@ export class AssetsPipe implements PipeTransform {
     {name: 'External Beeper', table: 'extbeeper', isEnabled: false},
     {name: 'Power CIM', table: 'powercim', isEnabled: false}
   ];
-
+  tags:Asset[] = [];
+  extensions:Asset[] = [];
+  AssetOut!: AssetOutput;
   constructor(private data: DataService) {
   }
 
@@ -33,8 +31,6 @@ export class AssetsPipe implements PipeTransform {
     for (let i = this.connections.length - 1; i >= 0; i--) {
       if (await this.data.getResult(this.connections[i].table, `print(${this.connections[i].table})`) === 'nil') {
         this.connections.splice(i, 1);
-      } else if (i === 0) {
-        this.isAvailable = true;
       }
     }
   }
