@@ -9,7 +9,7 @@
     </mat-form-field>
 
     <!-- Slot Input -->
-    <mat-form-field class="dialog-content" *ngIf="tags">
+    <mat-form-field class="dialog-content" *ngIf="!isExt">
       <mat-label>Slot</mat-label>
       <input matInput placeholder="Slot" formControlName="slot" type="number">
       <mat-hint align="end">
@@ -18,7 +18,7 @@
     </mat-form-field>
 
     <!-- Size Input (conditionally displayed based on 'tags' value) -->
-    <mat-form-field class="dialog-content" *ngIf="!tags">
+    <mat-form-field class="dialog-content" *ngIf="isExt">
       <mat-label>Size</mat-label>
       <input matInput placeholder="Size" formControlName="size" type="number">
       <mat-hint align="end">{{ desc1 }}</mat-hint>
@@ -45,7 +45,7 @@
     </div>
 
     <!-- Info Message -->
-    <div class="info-message" *ngIf="tags">
+    <div class="info-message" *ngIf="!isExt">
       If slot = 0, tag will appear at rackunit (numeric slot index) of this asset strip <br>
       If slot > 0, tag will appear at slot (numeric index, 1~16) of a blade extension. <br>
     </div>

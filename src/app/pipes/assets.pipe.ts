@@ -1,11 +1,13 @@
-import {OnInit, Pipe, PipeTransform} from '@angular/core';
-import {AssetInput, AssetOutput, SlideToggle} from "../model/interfaces";
+import {Pipe, PipeTransform} from '@angular/core';
+import {Asset, AssetOutput, SlideToggle} from "../model/interfaces";
 import {DataService} from "../services/data.service";
 
 @Pipe({
   name: 'assets'
 })
 export class AssetsPipe implements PipeTransform {
+  tags:Asset[] = [];
+  extensions:Asset[] = [];
   isAvailable: boolean = false;
   AssetOut!: AssetOutput;
   controls: SlideToggle[] = [
@@ -22,7 +24,8 @@ export class AssetsPipe implements PipeTransform {
   constructor(private data: DataService) {
   }
 
-  transform(value: unknown, ...args: unknown[]): AssetOutput {
+
+  transform(value: unknown, ...args: unknown[]):  AssetOutput {
     return this.AssetOut;
   }
 

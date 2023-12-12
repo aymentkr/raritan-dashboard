@@ -1,5 +1,5 @@
 import { Component, Inject, Optional } from '@angular/core';
-import {Asset, AssetInfo} from "../../model/interfaces";
+import {Asset} from "../../model/interfaces";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
@@ -9,17 +9,17 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
   styleUrls: ['./add-asset.component.css']
 })
 export class AddAssetComponent {
-  tags :boolean;
+  isExt :boolean;
   title='';desc1='';desc2='';desc3='';desc4='';
   form: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddAssetComponent>,
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: Asset
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: boolean
   ) {
-    this.tags = data.type === 'Tags';
-    if  (this.tags) {
+    this.isExt = data;
+    if  (!this.isExt) {
       this.title = 'Connects a Virtual Asset Tag to this Asset Strip';
       this.desc2 = 'Tag ID will consist of bytes id1 (MSB) and id2 (LSB)';
       this.desc3 = 'If custom=true, tag will be programmable';
@@ -32,8 +32,8 @@ export class AddAssetComponent {
 
     this.form = this.fb.group({
       rackunit: [null, [Validators.required, Validators.min(1)]],
-      slot: [null, [Validators.required, Validators.min(0)]],
-      size: [null, [Validators.required, Validators.min(1)]],
+      slot: [null, [Validators.min(0)]],
+      size: [null, [Validators.min(1)]],
       id1: [null, [Validators.required, Validators.min(1)]],
       id2: [null, [Validators.required, Validators.min(1)]],
       custom: [false]
@@ -53,7 +53,7 @@ export class AddAssetComponent {
       const custom = formData.custom;
 
       // Create the info object based on the presence of 'slot' or 'size'
-      const info: AssetInfo = formData.slot
+      const info: Asset = formData.slot
         ? { rackunit, slot: formData.slot, id1, id2, custom }
         : { rackunit, size: formData.size, id1, id2, custom };
 

@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+.card {
+  width: 48%;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+.my-table {
+  width: 100%;
+}

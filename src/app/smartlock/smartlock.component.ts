@@ -4,7 +4,6 @@ import { DeviceFlatNode} from "../model/interfaces";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
 import {SensorsPipe} from "../pipes/sensors.pipe";
-import {DataService} from "../services/data.service";
 import {NgForm} from "@angular/forms";
 import {NotificationService} from "../services/notification.service";
 
@@ -25,7 +24,6 @@ export class SmartlockComponent implements OnInit {
   sensor: any;
 
   constructor(
-    private data: DataService,
     private sp: SensorsPipe,
     private notificationService: NotificationService,
     private cdr: ChangeDetectorRef,

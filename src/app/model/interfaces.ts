@@ -111,11 +111,6 @@ export interface Switch {
 }
 
 export interface Asset {
-  type: string,
-  params : AssetInfo[]
-}
-
-export interface AssetInfo {
   rackunit: number,
   slot?: number,
   size?: number,
@@ -123,6 +118,7 @@ export interface AssetInfo {
   id2: number,
   custom: boolean,
 }
+
 export interface AssetInput {
   version?: number,
   topconnector?: number,
