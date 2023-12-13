@@ -11,7 +11,7 @@
       <ng-template #datatable>
         <mat-divider></mat-divider>
         <div class="container text-center">
-          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" color="accent" >
+          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" color="warn" >
             <mat-tab *ngFor="let port of dataSource; let i = index" [label]="'Port ' + i + ': ' + port.data.length " >
               <ng-container *ngIf="port && port.data">
                 <table mat-table #outerSort="matSort" [dataSource]="port" class="my-table mat-elevation-z8" matSort multiTemplateDataRows>
@@ -116,7 +116,7 @@
                     <mat-option value="false">False</mat-option>
                   </mat-select>
                 </mat-form-field>
-                <button mat-raised-button color="accent" (click)="setFuseState(i)">Set Fuse State</button>
+                <button mat-raised-button color="warn" (click)="setFuseState(i)">Set Fuse State</button>
               </div>
             </mat-tab>
           </mat-tab-group>

@@ -32,38 +32,60 @@ export class AddAssetComponent {
     }
 
     this.form = this.fb.group({
-      rackunit: [null, [Validators.required, Validators.min(1)]],
       slot: [null, this.isExt ? [] : Validators.required],
       size: [null, this.isExt ? [Validators.required, Validators.min(1)] : []],
-      id1: [null, [Validators.required, Validators.min(1)]],
-      id2: [null, [Validators.required, Validators.min(1)]],
+      id1: [this.generateRandomAssetId(), [Validators.required, Validators.min(1)]],
+      id2: [this.generateRandomAssetId(), [Validators.required, Validators.min(1)]],
       custom: [false]
     });
-  }
 
-  doAction() {
-    // Check if the form is valid
-    if (this.form.valid) {
-      // Extract form data
-      const formData = this.form.value;
-
-      // Extract common fields
-      const rackunit = formData.rackunit;
-      const id1 = formData.id1;
-      const id2 = formData.id2;
-      const custom = formData.custom;
-
-      // Create the info object based on the presence of 'slot' or 'size'
-      const asset: Asset = this.isExt
-        ? { rackunit, size: formData.size, id1, id2, custom }
-        : { rackunit, slot: formData.slot, id1, id2, custom }
-
-      // Close the dialog with the info data
-      this.dialogRef.close({ data: asset });
+    if (this.form.get('custom')) {
+      // Subscribe to changes in custom
+      this.form.get('custom').valueChanges.subscribe((customValue: boolean) => {
+        if (!customValue) {
+          // If custom is false, disable id1 and id2
+          this.form.get('id1').disable({ emitEvent: false });
+          this.form.get('id2').disable({ emitEvent: false });
+        } else {
+          // If custom is true, enable id1 and id2
+          this.form.get('id1').enable({ emitEvent: false });
+          this.form.get('id2').enable({ emitEvent: false });
+        }
+      });
     }
   }
 
 
+
+  doAction() {
+    // No need to Check if the form is valid (disableà button)
+    // Extract form data
+    const formData = this.form.value;
+
+    // Extract common fields
+    const id1 = formData.id1;
+    const id2 = formData.id2;
+    const custom = formData.custom;
+
+    // Create the info object based on the presence of 'slot' or 'size'
+    const asset: Asset = this.isExt
+      ? {  size: formData.size, id1, id2, custom }
+      : {  slot: formData.slot, id1, id2, custom }
+
+    // Close the dialog with the info data
+    this.dialogRef.close({ data: asset });
+  }
+
+  generateRandomAssetId(): string {
+    const length = 12; //  Number of characters >= 1 and <= 12
+    const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let randomId = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      randomId += characters.charAt(randomIndex);
+    }
+    return randomId;
+  }
 
   closeDialog() {
     this.dialogRef.close();

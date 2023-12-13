@@ -6,6 +6,7 @@ import {DataService} from "../services/data.service";
   name: 'assets'
 })
 export class AssetsPipe implements PipeTransform {
+  rackunit= 0 ;
   controls: SlideToggle[] = [
     {name: '1', isEnabled: true, table: 'ctrls'},
     {name: '2', isEnabled: true, table: 'ctrls'},
@@ -19,8 +20,7 @@ export class AssetsPipe implements PipeTransform {
   tags:Asset[] = [];
   extensions:Asset[] = [];
   AssetOut!: AssetOutput;
-  constructor(private data: DataService) {
-  }
+  constructor(private data: DataService) {}
 
 
   transform(value: unknown, ...args: unknown[]):  AssetOutput {
@@ -35,4 +35,7 @@ export class AssetsPipe implements PipeTransform {
     }
   }
 
+  IncRackunit() {
+    return ++this.rackunit;
+  }
 }

@@ -1,13 +1,6 @@
 <h1 mat-dialog-title>{{ title }}</h1>
 <div mat-dialog-content>
-  <form [formGroup]="form" (ngSubmit)="doAction()">
-    <!-- Rack Unit Input -->
-    <mat-form-field class="dialog-content">
-      <mat-label>Rack Unit</mat-label>
-      <input matInput placeholder="Rack Unit" formControlName="rackunit" type="number">
-      <mat-hint align="end">Numeric indexof asset strip slot to connect to</mat-hint>
-    </mat-form-field>
-
+  <form [formGroup]="form">
     <!-- Slot Input (changed to mat-select) -->
     <mat-form-field class="dialog-content" *ngIf="!isExt">
       <mat-label>Slot</mat-label>
@@ -57,8 +50,8 @@
     <div mat-dialog-actions>
       <!-- Submit Button -->
       <button mat-raised-button
-              [color]="form.valid ? 'primary' : ''"
               type="submit"
+              (click)="doAction()"
               [disabled]="!form.valid">
         Add an Asset
       </button>

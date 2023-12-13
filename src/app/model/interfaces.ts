@@ -111,7 +111,7 @@ export interface Switch {
 }
 
 export interface Asset {
-  rackunit: number,
+  rackunit?: number,
   slot?: number,
   size?: number,
   id1: number,

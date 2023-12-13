@@ -44,6 +44,7 @@ export class AssetstripComponent implements OnInit{
   }
 
   private async addRowData(asset: Asset,isExt:boolean) {
+    asset.rackunit = this.ap.IncRackunit();
     if ( isExt ) {
       this.data.sendToGo(`assetstrips[1]:setExt(${asset.rackunit}, ${asset.size}, ${asset.id1}, ${asset.id2}, ${asset.custom})`);
       this.ap.extensions = [...this.ap.extensions, asset];
