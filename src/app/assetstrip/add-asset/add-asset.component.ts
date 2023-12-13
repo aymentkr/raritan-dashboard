@@ -78,10 +78,8 @@ export class AddAssetComponent {
 
   generateRandomAssetId(): string {
     const maxLength = 12;
-
     // Choose a random length between 1 and 12
     const length = Math.floor(Math.random() * maxLength) + 1;
-
     const characters = '0123456789ABCDEF';
     let randomId = '';
 
@@ -94,10 +92,16 @@ export class AddAssetComponent {
     // Fill the rest with '0' until the length reaches 12
     randomId = '0'.repeat(maxLength - randomId.length) + randomId;
 
+    // Check if the generated ID is already present in ap.tags or ap.extensions
+    const isDuplicate = this.ap.tags.some(tag => tag.id1 === randomId || tag.id2 === randomId) ||
+      this.ap.extensions.some(ext => ext.id1 === randomId || ext.id2 === randomId);
+
+    // If duplicate, recursively call the function to generate a new ID
+    if (isDuplicate) {
+      return this.generateRandomAssetId();
+    }
     return randomId;
   }
-
-
 
   closeDialog() {
     this.dialogRef.close();
