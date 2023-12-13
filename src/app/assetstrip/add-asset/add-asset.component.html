@@ -1,6 +1,8 @@
 <h1 mat-dialog-title>{{ title }}</h1>
 <div mat-dialog-content>
   <form [formGroup]="form">
+    <h2>AssetID: <mark>{{AssetID}}</mark></h2>
+
     <!-- Slot Input (changed to mat-select) -->
     <mat-form-field class="dialog-content" *ngIf="!isExt">
       <mat-label>Slot</mat-label>
@@ -10,8 +12,6 @@
       </mat-select>
       <mat-hint align="end">Slot 0 = main tag, slots 1..16 = extension tags</mat-hint>
     </mat-form-field>
-
-
     <!-- Size Input (conditionally displayed based on 'tags' value) -->
     <mat-form-field class="dialog-content" *ngIf="isExt">
       <mat-label>Size</mat-label>
@@ -20,19 +20,18 @@
     </mat-form-field>
 
     <!-- ID1 Input -->
-    <mat-form-field class="dialog-content">
+    <mat-form-field class="dialog-content" *ngIf="form.get('custom')?.value">
       <mat-label>ID1</mat-label>
-      <input matInput placeholder="ID1" formControlName="id1">
+      <input matInput placeholder="ID1" formControlName="id1" type="number">
       <mat-hint align="end">{{desc2}}</mat-hint>
     </mat-form-field>
 
     <!-- ID2 Input -->
-    <mat-form-field class="dialog-content">
+    <mat-form-field class="dialog-content" *ngIf="form.get('custom')?.value">
       <mat-label>ID2</mat-label>
-      <input matInput placeholder="ID2" formControlName="id2">
+      <input matInput placeholder="ID2" formControlName="id2" type="number">
       <mat-hint align="end">{{desc2}}</mat-hint>
     </mat-form-field>
-
 
     <!-- Custom Checkbox -->
     <div class="dialog-content">
@@ -52,9 +51,16 @@
       <!-- Submit Button -->
       <button mat-raised-button
               type="submit"
+              color="primary"
               (click)="doAction()"
               [disabled]="!form.valid">
         Add an Asset
+      </button>
+      <!-- Submit Button -->
+      <button mat-raised-button
+              [disabled]="form.get('custom')?.value"
+              (click)="generateID()">
+        Generate AssetID again
       </button>
       <!-- Cancel Button -->
       <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>

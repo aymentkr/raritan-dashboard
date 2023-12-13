@@ -13,8 +13,8 @@ import {DataService} from "../services/data.service";
 
 export class AssetstripComponent implements OnInit{
   isAvailable: boolean = false;
-  columns1 = ['rackunit', 'slot', 'id1', 'id2', 'custom'];
-  columns2 = ['rackunit','size', 'id1', 'id2', 'custom'];
+  columns1 = ['rackunit', 'AssetID', 'slot', 'id1', 'id2', 'custom'];
+  columns2 = ['rackunit', 'AssetID','size', 'id1', 'id2', 'custom'];
   displayedColumns1= [...this.columns1,'actions'];
   displayedColumns2= [...this.columns2,'actions'];
 
