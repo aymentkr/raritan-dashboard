@@ -1,4 +1,4 @@
-import {Component, Inject, Optional} from '@angular/core';
+import {Component, computed, Inject, Optional, signal} from '@angular/core';
 import {Asset} from "../../model/interfaces";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -18,9 +18,9 @@ export class AddAssetComponent {
   desc3 = '';
   form: FormGroup;
   extensionSlots: number[] = Array.from({length: 16}, (_, i) => i + 1);
-  id1 = 0;
-  id2 = 0;
-  AssetID='';
+  id1 = signal(this.generateRandomBytes());
+  id2 = signal(this.generateRandomBytes());
+  AssetID = computed(() => convertToAssetId(this.id1(),this.id2()));
 
   constructor(
     private notificationService: NotificationService,
@@ -40,7 +40,7 @@ export class AddAssetComponent {
       this.desc2 = `id1 and id2 - blade extension is itself a "tag" and has its own ID`;
       this.desc3 = `If custom=true, blade extension's ID will be user-programmable`;
     }
-    this.generateID();
+
     this.form = this.fb.group({
       slot: [null, this.isExt ? [] : Validators.required],
       size: [null, this.isExt ? [Validators.required, Validators.min(1)] : []],
@@ -49,40 +49,38 @@ export class AddAssetComponent {
       custom: [false]
     });
 // Subscribe to changes in custom
-    this.form.get('custom')!.valueChanges.subscribe((customValue: boolean) => {
+    this.form.get('custom')?.valueChanges.subscribe((customValue: boolean) => {
       if (customValue) {
-        this.AssetID='';
-        this.id1 = this.form.get('id1')?.value ?? 0;
-        this.id2 = this.form.get('id2')?.value ?? 0;
+        this.form.get('id1')?.valueChanges.subscribe((value: number) => {
+          this.id1.set(value ?? 0);
+        });
+
+        this.form.get('id2')?.valueChanges.subscribe((value:number)=> {
+          this.id1.set(value ?? 0);
+        });
       }
     });
 
-    this.form.get('id1')!.valueChanges.subscribe(() => {
-      this.AssetID = convertToAssetId(this.id1, this.id2);
-    });
-    this.form.get('id2')!.valueChanges.subscribe(() => {
-      this.AssetID = convertToAssetId(this.id1, this.id2);
-    });
   }
 
   doAction() {
-    if (this.AssetID !== '' && !this.isDuplicate(this.id1) && !this.isDuplicate(this.id2)) {
+    if ( !this.isDuplicate(this.id1()) && !this.isDuplicate(this.id2())) {
       // Create the info object based on the presence of 'slot' or 'size'
       const asset: Asset = this.isExt
         ? {
           rackunit: this.ap.IncRackunit(),
-          AssetID: this.AssetID,
+          AssetID: `CUSTOM${this.AssetID()}  (programmable)`,
           size: this.form.get('size')?.value,
-          id1: this.id1,
-          id2: this.id2,
+          id1: this.id1(),
+          id2: this.id2(),
           custom: this.form.get('custom')?.value
         }
         : {
           rackunit: this.ap.IncRackunit(),
-          AssetID: this.AssetID,
+          AssetID: 'DEADBEEF'+this.AssetID(),
           slot: this.form.get('slot')?.value,
-          id1: this.id1,
-          id2: this.id2,
+          id1: this.id1(),
+          id2: this.id2(),
           custom: this.form.get('custom')?.value
         };
       // Close the dialog with the info data
@@ -92,17 +90,15 @@ export class AddAssetComponent {
     }
   }
 
-  generateRandomBytes(): [number, number] {
+  generateRandomBytes(): number{
     const generateRandomByte = (): number => Math.floor(Math.random() * 256);
-    let msb: number;
-    let lsb: number;
+    let x:number;
 
     do {
-      msb = generateRandomByte();
-      lsb = generateRandomByte();
-    } while (this.isDuplicate(msb) || this.isDuplicate(lsb));
+      x = generateRandomByte();
+    } while (this.isDuplicate(x));
 
-    return [msb, lsb];
+    return x;
   }
 
 
@@ -111,8 +107,8 @@ export class AddAssetComponent {
   }
 
   generateID() {
-    [this.id1, this.id2] = this.generateRandomBytes();
-    this.AssetID = convertToAssetId(this.id1, this.id2);
+    this.id1.set(this.generateRandomBytes());
+    this.id2.set( this.generateRandomBytes());
   }
 
   isDuplicate (value: number): boolean {
@@ -123,8 +119,7 @@ export class AddAssetComponent {
 function convertToAssetId(msb: number, lsb: number): string {
   // Convert to hexadecimal string and create the asset ID
   const assetId: string = `${msb.toString(16).padStart(2, '0')}${lsb.toString(16).padStart(2, '0')}`;
-  return 'DEADBEEF'+assetId.toUpperCase();
+  return assetId.toUpperCase();
 }
-
 
 
