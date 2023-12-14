@@ -49,15 +49,14 @@ export class AddAssetComponent {
       custom: [false]
     });
 
-    // Subscribe to changes
+    // Subscribe to changes in id1
     this.form.get('id1')?.valueChanges.subscribe((value: number) => {
       this.id1.set(value ?? 0);
     });
-
+    // Subscribe to changes in id2
     this.form.get('id2')?.valueChanges.subscribe((value:number)=> {
       this.id1.set(value ?? 0);
     });
-
   }
 
   doAction() {
