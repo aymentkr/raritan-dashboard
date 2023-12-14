@@ -20,7 +20,7 @@ export class AddAssetComponent {
   extensionSlots: number[] = Array.from({length: 16}, (_, i) => i + 1);
   id1 = signal(this.generateRandomBytes());
   id2 = signal(this.generateRandomBytes());
-  AssetID = computed(() => convertToAssetId(this.id1(),this.id2()));
+  AssetID = computed(() => this.convertToAssetId(this.id1(),this.id2()));
 
   constructor(
     private notificationService: NotificationService,
@@ -48,17 +48,14 @@ export class AddAssetComponent {
       id2: [null, [Validators.min(0)]],
       custom: [false]
     });
-// Subscribe to changes in custom
-    this.form.get('custom')?.valueChanges.subscribe((customValue: boolean) => {
-      if (customValue) {
-        this.form.get('id1')?.valueChanges.subscribe((value: number) => {
-          this.id1.set(value ?? 0);
-        });
 
-        this.form.get('id2')?.valueChanges.subscribe((value:number)=> {
-          this.id1.set(value ?? 0);
-        });
-      }
+    // Subscribe to changes
+    this.form.get('id1')?.valueChanges.subscribe((value: number) => {
+      this.id1.set(value ?? 0);
+    });
+
+    this.form.get('id2')?.valueChanges.subscribe((value:number)=> {
+      this.id1.set(value ?? 0);
     });
 
   }
@@ -69,7 +66,7 @@ export class AddAssetComponent {
       const asset: Asset = this.isExt
         ? {
           rackunit: this.ap.IncRackunit(),
-          AssetID: `CUSTOM${this.AssetID()}  (programmable)`,
+          AssetID: this.AssetID(),
           size: this.form.get('size')?.value,
           id1: this.id1(),
           id2: this.id2(),
@@ -77,7 +74,7 @@ export class AddAssetComponent {
         }
         : {
           rackunit: this.ap.IncRackunit(),
-          AssetID: 'DEADBEEF'+this.AssetID(),
+          AssetID: this.AssetID(),
           slot: this.form.get('slot')?.value,
           id1: this.id1(),
           id2: this.id2(),
@@ -101,6 +98,12 @@ export class AddAssetComponent {
     return x;
   }
 
+  convertToAssetId(msb: number, lsb: number): string {
+    // Convert to hexadecimal string and create the asset ID
+    const assetId: string = `${msb.toString(16).padStart(2, '0')}${lsb.toString(16).padStart(2, '0')}`.toUpperCase();
+    return this.form.get('custom')?.value ? `CUSTOM${assetId}  (programmable)`:  'DEADBEEF'+assetId;
+  }
+
 
   closeDialog() {
     this.dialogRef.close();
@@ -116,10 +119,4 @@ export class AddAssetComponent {
       this.ap.extensions.some(ext => ext.id1 === value || ext.id2 === value);
   }
 }
-function convertToAssetId(msb: number, lsb: number): string {
-  // Convert to hexadecimal string and create the asset ID
-  const assetId: string = `${msb.toString(16).padStart(2, '0')}${lsb.toString(16).padStart(2, '0')}`;
-  return assetId.toUpperCase();
-}
-
 
