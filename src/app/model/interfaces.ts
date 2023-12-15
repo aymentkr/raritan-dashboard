@@ -114,10 +114,10 @@ export interface Asset {
   rackunit: number,
   AssetID: string
   slot?: number,
-  size?: number,
   id1: number,
   id2: number,
   custom: boolean,
+  extentions?: Asset[]
 }
 
 export interface AssetInput {

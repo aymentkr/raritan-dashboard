@@ -1,8 +1,9 @@
 .dialog-content {
+  margin-top:10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 100%;
+  width: 50%;
   height: 100%;
 }
 

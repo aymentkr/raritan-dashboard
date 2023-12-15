@@ -6,7 +6,8 @@ import {DataService} from "../services/data.service";
   name: 'assets'
 })
 export class AssetsPipe implements PipeTransform {
-  rackunit= 0 ;
+  tags:Asset[] = [];
+  rackunit= -1 ;
   controls: SlideToggle[] = [
     {name: '1', isEnabled: true, table: 'ctrls'},
     {name: '2', isEnabled: true, table: 'ctrls'},
@@ -17,8 +18,6 @@ export class AssetsPipe implements PipeTransform {
     {name: 'External Beeper', table: 'extbeeper', isEnabled: false},
     {name: 'Power CIM', table: 'powercim', isEnabled: false}
   ];
-  tags:Asset[] = [];
-  extensions:Asset[] = [];
   AssetOut!: AssetOutput;
   constructor(private data: DataService) {}
 
@@ -34,7 +33,6 @@ export class AssetsPipe implements PipeTransform {
       }
     }
   }
-
   IncRackunit() {
     return ++this.rackunit;
   }
