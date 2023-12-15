@@ -23,10 +23,7 @@ import {MAT_RADIO_DEFAULT_OPTIONS} from "@angular/material/radio";
   ],
 })
 export class AddAssetComponent {
-  isTag: boolean;
-  formGroup1 = this._formBuilder.group({
-    type: ['', Validators.required],
-  });
+  formGroup1= this._formBuilder.group({type: ['', Validators.required],});
   formGroup2: FormGroup;
   formGroup3: FormGroup;
   extensionSlots: number[] = Array.from({length: 16}, (_, i) => i + 1);
@@ -45,16 +42,22 @@ export class AddAssetComponent {
     public dialogRef: MatDialogRef<AddAssetComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: boolean
   ) {
-    this.isTag = this.formGroup1.controls['type'].value === '1';
-
-    this.formGroup2 = this._formBuilder.group({
-      slot: [null, this.isTag ? [] : Validators.required],
-      index: [null],
+    // Update 'index' control based on the value of 'slot'
+    this.formGroup1.get('type')?.valueChanges.subscribe((typeValue) => {
+      const slotControl = this.formGroup2.get('slot');
+      if (typeValue && typeValue === '1') {
+        slotControl?.setValidators([Validators.required]);
+      } else {
+        slotControl?.clearValidators();
+      }
+      // Trigger validation update
+      slotControl?.updateValueAndValidity();
     });
+    this.formGroup2 = _formBuilder.group({slot: [null], index: [null],});
     // Update 'index' control based on the value of 'slot'
     this.formGroup2.get('slot')?.valueChanges.subscribe((slotValue) => {
       const indexControl = this.formGroup2.get('index');
-      if (slotValue > 0) {
+      if (slotValue && slotValue > 0) {
         indexControl?.setValidators([Validators.required]);
       } else {
         indexControl?.clearValidators();
@@ -62,8 +65,7 @@ export class AddAssetComponent {
       // Trigger validation update
       indexControl?.updateValueAndValidity();
     });
-
-    this.formGroup3 = this._formBuilder.group({
+    this.formGroup3 = _formBuilder.group({
       id1: [null, [Validators.min(0)]],
       id2: [null, [Validators.min(0)]],
       custom: [false]
@@ -78,11 +80,10 @@ export class AddAssetComponent {
       this.id1.set(value ?? 0);
     });
 
-
   }
 
 
-  doAction() {
+  doAction() {/*
     if (this.checkSize()) {
       if ( !this.isDuplicate(this.id1()) && !this.isDuplicate(this.id2())) {
         // Create the info object based on the presence of 'slot' or 'size'
@@ -101,7 +102,7 @@ export class AddAssetComponent {
       }
     } else {
       this.notificationService.openToastr('You are restricted from exceeding the maximum number of Rack Units (Channels)', 'Adding AssertID', 'error');
-    }
+    }*/
   }
 
   generateRandomBytes(): number{
@@ -118,7 +119,7 @@ export class AddAssetComponent {
   convertToAssetId(msb: number, lsb: number): string {
     // Convert to hexadecimal string and create the asset ID
     const assetId: string = `${msb.toString(16).padStart(2, '0')}${lsb.toString(16).padStart(2, '0')}`.toUpperCase();
-    return this.formGroup2.get('custom')?.value ? `CUSTOM${assetId}  (programmable)`:  'DEADBEEF'+assetId;
+    return this.formGroup2.get('custom')?.value ? `CUSTOMID${assetId}  (programmable)`:  'DEADBEEF'+assetId;
   }
 
 

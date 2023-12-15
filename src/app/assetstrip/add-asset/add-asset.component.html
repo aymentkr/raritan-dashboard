@@ -43,26 +43,54 @@
   </mat-step>
 
   <mat-step [stepControl]="formGroup3" errorMessage="AssetID is required.">
-    <form [formGroup]="formGroup2">
+    <form [formGroup]="formGroup3">
       <ng-template matStepLabel>Program Asset IDs</ng-template>
+      <div class="dialog-content">
+        <h2>AssetID: <mark>{{AssetID()}}</mark></h2>
 
+      </div>
+      <!-- ID1 Input -->
+      <mat-form-field class="dialog-content" *ngIf="formGroup3.get('custom')?.value">
+        <mat-label>ID1</mat-label>
+        <input matInput placeholder="ID1" formControlName="id1" type="number">
+        <mat-hint align="end">Asset's ID will consist of bytes id1 (MSB) and id2 (LSB)</mat-hint>
+      </mat-form-field>
 
+      <!-- ID2 Input -->
+      <mat-form-field class="dialog-content" *ngIf="formGroup3.get('custom')?.value">
+        <mat-label>ID2</mat-label>
+        <input matInput placeholder="ID2" formControlName="id2" type="number">
+        <mat-hint align="end">Asset's ID will consist of bytes id1 (MSB) and id2 (LSB)</mat-hint>
+      </mat-form-field>
+
+      <!-- Custom Checkbox -->
+      <div class="dialog-content">
+        <mat-checkbox formControlName="custom">Custom</mat-checkbox>
+        <mat-hint align="start">If custom=true, Asset's ID will be user-programmabl</mat-hint>
+      </div>
     </form>
-  </mat-step>
-
-
-  <mat-step>
-    <ng-template matStepLabel>Done</ng-template>
-    <p>You are now done.</p>
-    <div>
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button (click)="stepper.reset()">Reset</button>
-    </div>
   </mat-step>
 </mat-stepper>
 <!-- Cancel and Next Buttons -->
 <div class="button-container">
   <p>Go to the next step or cancel</p>
-  <button mat-button (click)="closeDialog()">Cancel</button>
-  <button mat-button color="warn" (click)="stepper.next()">Next</button>
+  <button mat-button color="warn" (click)="closeDialog()">Cancel</button>
+  <button mat-button (click)="stepper.reset()">Reset</button>
+  <button mat-button *ngIf="stepper.selectedIndex>0" (click)="stepper.previous()">Back</button>
+  <button mat-button *ngIf="stepper.selectedIndex<2" color="primary" (click)="stepper.next()" >Next</button>
+  <button mat-button
+          *ngIf="stepper.selectedIndex === 2"
+          [disabled]="formGroup3.get('custom')?.value"
+          (click)="generateID()">
+    Generate AssetID again
+  </button>
+  <!-- Submit Button -->
+  <button mat-button
+          *ngIf="stepper.selectedIndex === 2"
+          type="submit"
+          color="accent"
+          (click)="doAction()"
+          [disabled]="!formGroup3.valid">
+    Done
+  </button>
 </div>
