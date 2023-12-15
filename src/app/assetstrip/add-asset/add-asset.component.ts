@@ -23,15 +23,17 @@ import {MAT_RADIO_DEFAULT_OPTIONS} from "@angular/material/radio";
   ],
 })
 export class AddAssetComponent {
-  isExt: boolean;
-  title = '';
-  desc1 = '';
-  desc2 = '';
-  firstFormGroup = this._formBuilder.group({
+  isTag: boolean;
+  formGroup1 = this._formBuilder.group({
     type: ['', Validators.required],
   });
-  secondFormGroup: FormGroup;
+  formGroup2: FormGroup;
+  formGroup3: FormGroup;
   extensionSlots: number[] = Array.from({length: 16}, (_, i) => i + 1);
+  extensionrackunit: number[] = this.ap.tags
+    .filter(value => value.extensions && value.extensions.length > 0)
+    .map(value => value.rackunit);
+
   id1 = signal(this.generateRandomBytes());
   id2 = signal(this.generateRandomBytes());
   AssetID = computed(() => this.convertToAssetId(this.id1(),this.id2()));
@@ -43,33 +45,42 @@ export class AddAssetComponent {
     public dialogRef: MatDialogRef<AddAssetComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: boolean
   ) {
-    this.isExt = data;
-    if (!this.isExt) {
-      this.title = 'Connects a Virtual Asset Tag to this Asset Strip';
-      this.desc1 = 'Tag ID will consist of bytes id1 (MSB) and id2 (LSB)';
-      this.desc2 = 'If custom=true, tag will be programmable';
-    } else {
-      this.title = 'Connects a Virtual Blade Extension to this Asset Strip';
-      this.desc1 = `id1 and id2 - blade extension is itself a "tag" and has its own ID`;
-      this.desc2 = `If custom=true, blade extension's ID will be user-programmable`;
-    }
+    this.isTag = this.formGroup1.controls['type'].value === '1';
 
-    this.secondFormGroup = this._formBuilder.group({
-      slot: [null, this.isExt ? [] : Validators.required],
+    this.formGroup2 = this._formBuilder.group({
+      slot: [null, this.isTag ? [] : Validators.required],
+      index: [null],
+    });
+    // Update 'index' control based on the value of 'slot'
+    this.formGroup2.get('slot')?.valueChanges.subscribe((slotValue) => {
+      const indexControl = this.formGroup2.get('index');
+      if (slotValue > 0) {
+        indexControl?.setValidators([Validators.required]);
+      } else {
+        indexControl?.clearValidators();
+      }
+      // Trigger validation update
+      indexControl?.updateValueAndValidity();
+    });
+
+    this.formGroup3 = this._formBuilder.group({
       id1: [null, [Validators.min(0)]],
       id2: [null, [Validators.min(0)]],
       custom: [false]
-    });
+    })
 
     // Subscribe to changes in id1
-    this.secondFormGroup.get('id1')?.valueChanges.subscribe((value: number) => {
+    this.formGroup3.get('id1')?.valueChanges.subscribe((value: number) => {
       this.id1.set(value ?? 0);
     });
     // Subscribe to changes in id2
-    this.secondFormGroup.get('id2')?.valueChanges.subscribe((value:number)=> {
+    this.formGroup3.get('id2')?.valueChanges.subscribe((value:number)=> {
       this.id1.set(value ?? 0);
     });
+
+
   }
+
 
   doAction() {
     if (this.checkSize()) {
@@ -78,10 +89,10 @@ export class AddAssetComponent {
         const asset: Asset = {
           rackunit: this.ap.IncRackunit(),
           AssetID: this.AssetID(),
-          slot: this.secondFormGroup.get('slot')?.value,
+          slot: this.formGroup2.get('slot')?.value,
           id1: this.id1(),
           id2: this.id2(),
-          custom: this.secondFormGroup.get('custom')?.value
+          custom: this.formGroup2.get('custom')?.value
         };
         // Close the dialog with the info data
         this.dialogRef.close({data: asset});
@@ -107,7 +118,7 @@ export class AddAssetComponent {
   convertToAssetId(msb: number, lsb: number): string {
     // Convert to hexadecimal string and create the asset ID
     const assetId: string = `${msb.toString(16).padStart(2, '0')}${lsb.toString(16).padStart(2, '0')}`.toUpperCase();
-    return this.secondFormGroup.get('custom')?.value ? `CUSTOM${assetId}  (programmable)`:  'DEADBEEF'+assetId;
+    return this.formGroup2.get('custom')?.value ? `CUSTOM${assetId}  (programmable)`:  'DEADBEEF'+assetId;
   }
 
 

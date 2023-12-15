@@ -117,7 +117,7 @@ export interface Asset {
   id1: number,
   id2: number,
   custom: boolean,
-  extentions?: Asset[]
+  extensions?: Asset[]
 }
 
 export interface AssetInput {

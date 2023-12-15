@@ -1,36 +1,56 @@
 <mat-stepper [linear]="true" #stepper>
-  <mat-step [stepControl]="firstFormGroup" errorMessage="Type is required.">
-    <form [formGroup]="firstFormGroup">
-      <ng-template matStepLabel>Fill out the type</ng-template>
+  <mat-step [stepControl]="formGroup1" errorMessage="Type is required.">
+    <form [formGroup]="formGroup1">
+      <ng-template matStepLabel>Choose the Asset Strip</ng-template>
       <mat-radio-group class="dialog-content" formControlName="type" aria-label="Select an option">
         <mat-radio-button value="1">Virtual Asset Tag</mat-radio-button>
         <mat-radio-button value="2">Virtual Blade Extension</mat-radio-button>
       </mat-radio-group>
     </form>
   </mat-step>
-  <mat-step [stepControl]="secondFormGroup" errorMessage="Slot is required.">
-    <form [formGroup]="secondFormGroup">
-      <ng-template matStepLabel>Fill out the slot</ng-template>
-      <!-- Slot Input (changed to mat-select) -->
-      <mat-form-field class="dialog-content"  *ngIf="firstFormGroup.controls['type']?.value === '1'">
-        <mat-label>Slot</mat-label>
-        <mat-select placeholder="Slot" formControlName="slot">
-          <mat-option value="0">0 (main tag)</mat-option>
-          <mat-option *ngFor="let slot of extensionSlots" [value]="slot">{{ slot }}</mat-option>
-        </mat-select>
-        <mat-hint align="end">Slot 0 = main tag, slots 1..16 = extension tags</mat-hint>
-      </mat-form-field>
-      <div style="margin-top: 10px">
-        <ng-container  *ngIf="firstFormGroup.controls['type']?.value === '1'">
+  <mat-step [stepControl]="formGroup2" errorMessage="Slot is required.">
+    <form [formGroup]="formGroup2">
+      <ng-template matStepLabel>Select the Slot</ng-template>
+      <ng-container  *ngIf="formGroup1.controls['type']?.value === '1' else Ext">
+        <!-- Slot Input (changed to mat-select) -->
+        <mat-form-field class="dialog-content">
+          <mat-label>Slot</mat-label>
+          <mat-select placeholder="Slot" formControlName="slot">
+            <mat-option value="0">0 (main tag)</mat-option>
+            <mat-option *ngFor="let slot of extensionSlots" [value]="slot">{{ slot }}</mat-option>
+          </mat-select>
+          <mat-hint align="end">Slot 0 = main tag, slots 1..16 = extension tags</mat-hint>
+        </mat-form-field>
+        <!-- Additional mat-select for slots 1 to 16 -->
+        <mat-form-field class="dialog-content" *ngIf="formGroup2.controls['slot'].value>0">
+          <mat-label>Indexof asset strip slot to connect to</mat-label>
+          <mat-select placeholder="Index" formControlName="index">
+            <mat-option *ngFor="let rackunit of extensionrackunit" [value]="rackunit">{{ rackunit }}</mat-option>
+          </mat-select>
+          <mat-hint align="end">rackunit - numeric indexof asset strip slot to connect to</mat-hint>
+        </mat-form-field>
+        <div style="margin-top: 10px">
           <p> If slot = 0, tag will appear at rackunit (numeric slot index) of this asset strip </p>
           <p> If slot > 0, tag will appear at slot (numeric index, 1~16) of a blade extension. </p>
-        </ng-container>
-        <ng-container  *ngIf="firstFormGroup.controls['type']?.value === '2'">
+        </div>
+      </ng-container>
+      <ng-template #Ext>
+        <div style="margin-top: 10px">
           <p> Blade extension must already be present at slot rackunit of this asset strip.</p>
-        </ng-container>
-      </div>
+        </div>
+      </ng-template>
     </form>
   </mat-step>
+
+  <mat-step [stepControl]="formGroup3" errorMessage="AssetID is required.">
+    <form [formGroup]="formGroup2">
+      <ng-template matStepLabel>Program Asset IDs</ng-template>
+
+
+    </form>
+  </mat-step>
+
+
   <mat-step>
     <ng-template matStepLabel>Done</ng-template>
     <p>You are now done.</p>
