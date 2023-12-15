@@ -45,6 +45,7 @@ export class AssetstripComponent implements OnInit{
   }
   addAsset() {
     const dialogRef = this.dialog.open(AddAssetComponent, {
+
       width: '800px',
       height: '400px',
     });

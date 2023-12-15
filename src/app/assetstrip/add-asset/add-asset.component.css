@@ -6,12 +6,12 @@
   width: 50%;
   height: 100%;
 }
-
-.info-message {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #d3f2e2;
-  border: 1px solid cadetblue;
-  color: cadetblue;
-  border-radius: 4px;
+.button-container {
+  position: absolute;
+  bottom:   0;
+  margin-left: 20px;
+  margin-bottom: 10px;
+  flex-direction: row;
+  justify-content: space-between;
 }
+

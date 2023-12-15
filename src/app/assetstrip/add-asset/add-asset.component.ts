@@ -5,6 +5,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AssetsPipe} from "../../pipes/assets.pipe";
 import {NotificationService} from "../../services/notification.service";
 import {STEPPER_GLOBAL_OPTIONS} from "@angular/cdk/stepper";
+import {MAT_RADIO_DEFAULT_OPTIONS} from "@angular/material/radio";
 
 @Component({
   selector: 'app-add-asset',
@@ -13,8 +14,12 @@ import {STEPPER_GLOBAL_OPTIONS} from "@angular/cdk/stepper";
   providers: [
     {
       provide: STEPPER_GLOBAL_OPTIONS,
-      useValue: {showError: true},
+      useValue: { showError: true},
     },
+    {
+      provide: MAT_RADIO_DEFAULT_OPTIONS,
+      useValue: { color: 'warn' },
+    }
   ],
 })
 export class AddAssetComponent {
@@ -23,7 +28,7 @@ export class AddAssetComponent {
   desc1 = '';
   desc2 = '';
   firstFormGroup = this._formBuilder.group({
-    firstCtrl: ['', Validators.required],
+    type: ['', Validators.required],
   });
   secondFormGroup: FormGroup;
   extensionSlots: number[] = Array.from({length: 16}, (_, i) => i + 1);
