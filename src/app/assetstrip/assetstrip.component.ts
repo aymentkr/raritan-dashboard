@@ -57,12 +57,13 @@ export class AssetstripComponent implements OnInit{
     });
   }
 
-  private async addRowData(asset: Asset) {
-
-      this.data.sendToGo(`assetstrips[1]:setExt(${asset.rackunit}, 16, ${asset.id1}, ${asset.id2}, ${asset.custom})`);
-      this.ap.tags = [...this.ap.tags, asset];
-
-      this.data.sendToGo(`assetstrips[1]:setTag(${asset.rackunit}, ${asset.slot}, ${asset.id1}, ${asset.id2}, ${asset.custom})`);
+  private async addRowData(data: any) {
+    if (data.isExt){
+      this.data.sendToGo(`assetstrips[1]:setExt(${data.asset.rackunit}, 16, ${data.asset.id1}, ${data.asset.id2}, ${data.asset.custom})`);
+    } else {
+      this.data.sendToGo(`assetstrips[1]:setTag(${data.asset.rackunit}, ${data.asset.slot}, ${data.asset.id1}, ${data.asset.id2}, ${data.asset.custom})`);
+    }
+      this.ap.tags = [...this.ap.tags, data.asset];
   }
 
   clearData(isExt: boolean) {/*

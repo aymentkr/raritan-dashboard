@@ -11,7 +11,7 @@
   <mat-step [stepControl]="formGroup2" errorMessage="Slot is required.">
     <form [formGroup]="formGroup2">
       <ng-template matStepLabel>Select the Slot</ng-template>
-      <ng-container  *ngIf="formGroup1.controls['type']?.value === '1' else Ext">
+      <ng-container  *ngIf="formGroup1.get('type')?.value === 1 else Ext">
         <!-- Slot Input (changed to mat-select) -->
         <mat-form-field class="dialog-content">
           <mat-label>Slot</mat-label>
@@ -89,7 +89,7 @@
           *ngIf="stepper.selectedIndex === 2"
           type="submit"
           color="accent"
-          (click)="doAction()"
+          (click)="submit()"
           [disabled]="!formGroup3.valid">
     Done
   </button>
