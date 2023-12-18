@@ -45,10 +45,10 @@ export class AddAssetComponent {
   }
 
   private setupFormGroups() {
-    this.formGroup1 = this._formBuilder.group({ type: [Validators.required] });
+    this.formGroup1 = this._formBuilder.group({ type: [null, Validators.required] });
     this.formGroup1.get('type')?.valueChanges.subscribe((typeValue) => {
       const slotControl = this.formGroup2.get('slot');
-      this.updateValidators(slotControl, typeValue === 1);
+      this.updateValidators(slotControl, typeValue === '1');
     });
 
     this.formGroup2 = this._formBuilder.group({ slot: [null], index: [null] });
