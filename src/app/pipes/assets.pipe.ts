@@ -6,8 +6,6 @@ import {DataService} from "../services/data.service";
   name: 'assets'
 })
 export class AssetsPipe implements PipeTransform {
-  tags:Asset[] = [];
-  rackunit= -1 ;
   controls: SlideToggle[] = [
     {name: '1', isEnabled: true, table: 'ctrls'},
     {name: '2', isEnabled: true, table: 'ctrls'},
@@ -33,7 +31,9 @@ export class AssetsPipe implements PipeTransform {
       }
     }
   }
-  IncRackunit() {
-    return ++this.rackunit;
+
+  convertToAssetId(custom:boolean,msb: number, lsb: number): string {
+    const assetId: string = `${msb.toString(16).padStart(2, '0')}${lsb.toString(16).padStart(2, '0')}`.toUpperCase();
+    return custom ? `CUSTOMID${assetId}  (programmable)` : 'DEADBEEF' + assetId;
   }
 }

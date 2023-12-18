@@ -1,11 +1,12 @@
 import {ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {AssetsPipe} from "../pipes/assets.pipe";
-import {Asset} from "../model/interfaces";
+import {Asset, DeviceNode} from "../model/interfaces";
 import {MatDialog} from "@angular/material/dialog";
 import {AddAssetComponent} from "./add-asset/add-asset.component";
 import {DataService} from "../services/data.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {MatSort} from "@angular/material/sort";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: 'app-assetstrip',
@@ -22,12 +23,13 @@ import {MatSort} from "@angular/material/sort";
 
 export class AssetstripComponent implements OnInit{
   isAvailable: boolean = false;
+  isLoading: boolean = true;
   columns: string[] = ['rackunit', 'AssetID', 'size', 'id1', 'id2', 'custom'];
   innercolumns = ['rackunit', 'AssetID', 'slot', 'id1', 'id2', 'custom'];
   displayedColumns= [...this.columns,'actions'];
   selectedAsset: Asset | null = null;
 
-
+  dataSource = new MatTableDataSource<Asset>;
   @ViewChild('outerSort', { static: true }) sort!: MatSort;
   @ViewChildren('innerTables') innerTables!: QueryList<Asset>;
   @ViewChildren('innerSort') innerSort!: QueryList<MatSort>;
@@ -40,11 +42,44 @@ export class AssetstripComponent implements OnInit{
   ngOnInit(): void {
     this.ap.init().then(() => {
       this.isAvailable = this.ap.connections[0].isEnabled;
+      if (this.isAvailable) {
+        this.fetchAssetStripData().then(() => this.cdRef.detectChanges());
+      }
+      this.isLoading = false;
       this.cdRef.detectChanges();
     });
   }
+
+  async fetchAssetStripData() {
+    try {
+      const tags = await this.data.getResult('assetstrips[1]:getTags', 'print(assetstrips[1]:getTags())');
+      this.dataSource.data = this.convertToAssets(JSON.parse(tags));
+      console.log(this.dataSource.data);
+    } catch (error) {
+      console.error('Error fetching or parsing data:', error);
+    }
+  }
+
+
+  convertToAssets(data: any): Asset[] {
+    return data.map((asset: any) => ({
+      AssetID: this.ap.convertToAssetId(asset.custom, asset.id1, asset.id2),
+      channel: asset.channel,
+      col: asset.col,
+      type: asset.type,
+      id1: asset.id1,
+      id2: asset.id2,
+      custom: asset.custom,
+      slot: asset.slot,
+      size: asset.size,
+      extensions: asset.extensions ? this.convertToAssets(asset.extensions) : [],
+    }));
+  }
+
+
   addAsset() {
     const dialogRef = this.dialog.open(AddAssetComponent, {
+      data: this.dataSource.data,
       width: '800px',
       height: '500px',
     });
@@ -63,7 +98,7 @@ export class AssetstripComponent implements OnInit{
     } else {
       this.data.sendToGo(`assetstrips[1]:setTag(${data.asset.rackunit}, ${data.asset.slot}, ${data.asset.id1}, ${data.asset.id2}, ${data.asset.custom})`);
     }
-      this.ap.tags = [...this.ap.tags, data.asset];
+      this.dataSource.data = [...this.dataSource.data , data.asset];
   }
 
   clearData(isExt: boolean) {/*
@@ -82,5 +117,7 @@ export class AssetstripComponent implements OnInit{
       this.ap.extensions = this.ap.extensions.filter(asset => asset !== item);
     }*/
   }
+
+
 
 }

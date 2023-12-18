@@ -7,11 +7,11 @@
     <mat-card>
       <mat-card-header>
         <mat-card-title>Assetstrips</mat-card-title>
-        <mat-card-subtitle>[ {{ap.tags.length}} ]</mat-card-subtitle>
+        <mat-card-subtitle>[ {{dataSource.data.length}} ]</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
         <mat-divider></mat-divider>
-        <table mat-table [dataSource]="ap.tags" class="my-table mat-elevation-z8" matSort multiTemplateDataRows>
+        <table mat-table [dataSource]="dataSource" class="my-table mat-elevation-z8" matSort multiTemplateDataRows>
 
           <ng-container *ngFor="let column of columns" [matColumnDef]="column">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column }}</th>
