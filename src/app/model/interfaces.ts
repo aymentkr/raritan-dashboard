@@ -115,11 +115,9 @@ export interface Asset {
   col: number,
   AssetID: string,
   type: string,
-  id1: number,
-  id2: number,
+  id1: number | null,
+  id2: number | null,
   custom: boolean,
-  slot?: number,
-  size?: number,
   extensions?: Asset[]
 }
 

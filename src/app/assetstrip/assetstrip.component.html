@@ -51,14 +51,16 @@
               <button mat-icon-button color="primary" (click)="deleteItem(element)" >
                 <mat-icon>delete</mat-icon>
               </button>
+              <button *ngIf="element.extensions" mat-icon-button color="primary" (click)="toggleDeviceDetails(element,$event)">
+                <mat-icon>{{ selectedAsset === element ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
             </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
-              [class.example-expanded-row]="selectedAsset === row"
-              [class.selected-row]="selectedAsset === row"
-              (click)="selectedAsset = selectedAsset === row ? null : row">
+              (click)="selectedAsset = selectedAsset === row ? null : row"
+              [class.has-expanded-details]="row.extensions && row.extensions.length > 0">
           </tr>
           <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
         </table>

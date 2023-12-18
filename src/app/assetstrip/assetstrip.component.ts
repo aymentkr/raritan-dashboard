@@ -24,8 +24,8 @@ import {MatTableDataSource} from "@angular/material/table";
 export class AssetstripComponent implements OnInit{
   isAvailable: boolean = false;
   isLoading: boolean = true;
-  columns: string[] = ['rackunit', 'AssetID', 'size', 'id1', 'id2', 'custom'];
-  innercolumns = ['rackunit', 'AssetID', 'slot', 'id1', 'id2', 'custom'];
+  columns: string[] = ['channel', 'type', 'AssetID', 'id1', 'id2', 'custom'];
+  innercolumns = ['col', 'type', 'AssetID', 'id1', 'id2', 'custom'];
   displayedColumns= [...this.columns,'actions'];
   selectedAsset: Asset | null = null;
 
@@ -53,16 +53,45 @@ export class AssetstripComponent implements OnInit{
   async fetchAssetStripData() {
     try {
       const tags = await this.data.getResult('assetstrips[1]:getTags', 'print(assetstrips[1]:getTags())');
-      this.dataSource.data = this.convertToAssets(JSON.parse(tags));
-      console.log(this.dataSource.data);
+      this.dataSource.data = [... this.convertToAssets(JSON.parse(tags))]
     } catch (error) {
       console.error('Error fetching or parsing data:', error);
     }
   }
 
 
+
   convertToAssets(data: any): Asset[] {
-    return data.map((asset: any) => ({
+    const assetArray: Asset[] = Array.from({ length: 64 }, (_, index) => this.createDefaultAsset(index));
+
+    data.forEach((asset: any) => {
+      const channelIndex = asset.channel;
+      const assetData = this.createAssetData(asset);
+
+      if (asset.type === 'tag' && asset.col !== 0) {
+        assetArray[channelIndex].extensions![asset.col] = assetData;
+      } else {
+        assetArray[channelIndex] = assetData;
+      }
+    });
+
+    return assetArray;
+  }
+
+  private createDefaultAsset(channel: number): Asset {
+    return {
+      channel,
+      col: 0,
+      AssetID: '',
+      type: '',
+      id1: null,
+      id2: null,
+      custom: false,
+    };
+  }
+
+  private createAssetData(asset: any): Asset {
+    const assetData: Asset = {
       AssetID: this.ap.convertToAssetId(asset.custom, asset.id1, asset.id2),
       channel: asset.channel,
       col: asset.col,
@@ -70,10 +99,10 @@ export class AssetstripComponent implements OnInit{
       id1: asset.id1,
       id2: asset.id2,
       custom: asset.custom,
-      slot: asset.slot,
-      size: asset.size,
-      extensions: asset.extensions ? this.convertToAssets(asset.extensions) : [],
-    }));
+    };
+    if (assetData.col>0)
+      assetData.extensions= [];
+    return assetData;
   }
 
 
@@ -93,12 +122,17 @@ export class AssetstripComponent implements OnInit{
   }
 
   private async addRowData(data: any) {
-    if (data.isExt){
+    const channelIndex = data.asset.channel;
+    this.dataSource.data[channelIndex] = data.asset;
+
+    if (data.isExt) {
       this.data.sendToGo(`assetstrips[1]:setExt(${data.asset.rackunit}, 16, ${data.asset.id1}, ${data.asset.id2}, ${data.asset.custom})`);
     } else {
       this.data.sendToGo(`assetstrips[1]:setTag(${data.asset.rackunit}, ${data.asset.slot}, ${data.asset.id1}, ${data.asset.id2}, ${data.asset.custom})`);
     }
-      this.dataSource.data = [...this.dataSource.data , data.asset];
+
+    // Ensure MatTableDataSource reflects the changes
+    this.dataSource.data = [...this.dataSource.data];
   }
 
   clearData(isExt: boolean) {/*
@@ -119,5 +153,9 @@ export class AssetstripComponent implements OnInit{
   }
 
 
-
+  toggleDeviceDetails(element: Asset, event: MouseEvent) {
+    event.stopPropagation();
+    this.selectedAsset = this.selectedAsset === element ? null : element;
+    this.cdRef.detectChanges();
+  }
 }
