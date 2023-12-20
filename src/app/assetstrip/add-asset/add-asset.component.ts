@@ -26,10 +26,6 @@ export class AddAssetComponent {
   formGroup1!: FormGroup;
   formGroup2!: FormGroup;
   formGroup3!: FormGroup;
-
-  EXTINDEX: number[] = this.data
-    .filter((value) => value.Extensions && value.Extensions.length > 0)
-    .map((value) => value.Index);
   TAGINDEX: number[] = Array.from({ length: 64 }, (_, i) => i + 1);
 
   id1 = signal(this.generateRandomBytes());
@@ -47,9 +43,8 @@ export class AddAssetComponent {
   private setupFormGroups() {
     this.formGroup1 = this._formBuilder.group({ type: [null, Validators.required] });
     this.formGroup2 = this._formBuilder.group({
-      slot: [null],
+      slot: [null, Validators.required],
       index: [null, Validators.required],
-      size :[null]
     });
     this.formGroup3 = this._formBuilder.group({
       id1: [null, [Validators.min(0)]],
@@ -57,22 +52,15 @@ export class AddAssetComponent {
       custom: [false],
     });
 
-    this.formGroup1.get('type')?.valueChanges.subscribe((typeValue) => {
+    this.formGroup1.get('index')?.valueChanges.subscribe((index) => {
       const slotControl = this.formGroup2.get('slot');
-      const sizeControl = this.formGroup2.get('size');
-
-      if (typeValue === 'tag') {
+      if (!slotControl?.valid)
         slotControl?.setValidators([Validators.required]);
-        sizeControl?.clearValidators();
-      } else {
-        sizeControl?.setValidators([Validators.required]);
+      else
         slotControl?.clearValidators();
-      }
-
-      // Update validity for both controls
       slotControl?.updateValueAndValidity();
-      sizeControl?.updateValueAndValidity();
     });
+
 
     this.formGroup3.get('id1')?.valueChanges.subscribe((value: number) => {
       this.id1.set(value ?? 0);
@@ -125,6 +113,18 @@ export class AddAssetComponent {
   }
 
 
+  extensionSlots(index: number) {
+    const ext = this.data.find((value) => value.Type.includes('ext') && value.Index === index);
+    // Early return if ext is not found
+    if (!ext) {
+      return [];
+    }
+    console.log(ext);
+    // Use optional chaining for accessing properties
+    const length = ext?.Type ? parseInt(ext.Type.slice(3)) : 0;
+    // Generate array using Array.from
+    return Array.from({ length }, (_, i) => i + 1);
+  }
 
 }
 function isDuplicate(data: Asset[], value: number): boolean {

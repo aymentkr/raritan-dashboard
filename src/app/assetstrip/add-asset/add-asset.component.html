@@ -8,35 +8,32 @@
       </mat-radio-group>
     </form>
   </mat-step>
-  <mat-step [stepControl]="formGroup2" errorMessage="Slot is required.">
+  <mat-step [stepControl]="formGroup2" errorMessage="Index is required.">
     <form [formGroup]="formGroup2">
       <ng-template matStepLabel>Select the Slot/Size</ng-template>
       <ng-container  *ngIf="formGroup1.get('type')?.value === 'tag' else Ext">
-        <!-- Slot select -->
-        <mat-radio-group formControlName="slot" aria-label="Select an option">
-          <mat-radio-button value="0">Main Tag</mat-radio-button>
-          <mat-radio-button value="1">Extension Tag</mat-radio-button>
-        </mat-radio-group>
-        <!-- Additional mat-select for slots 1 to 16 -->
-
         <!-- Additional mat-select for index-->
         <mat-form-field class="dialog-content">
           <mat-label>Index</mat-label>
           <mat-select placeholder="Index" formControlName="index">
-            <ng-container *ngIf="formGroup2.controls['slot'].value === '0'">
-              <mat-option *ngFor="let rackunit of TAGINDEX" [value]="rackunit">{{ rackunit }}</mat-option>
-            </ng-container>
-            <ng-container *ngIf="formGroup2.controls['slot'].value === '1'">
-              <mat-option *ngFor="let rackunit of EXTINDEX" [value]="rackunit">{{ rackunit }}</mat-option>
-            </ng-container>
+            <mat-option *ngFor="let rackunit of TAGINDEX" [value]="rackunit">{{ rackunit }}</mat-option>
           </mat-select>
           <mat-hint align="end">Numeric index of asset strip slot to connect to</mat-hint>
+        </mat-form-field>
+        <!-- Slot Input (changed to mat-select) -->
+        <mat-form-field class="dialog-content">
+          <mat-label>Slot</mat-label>
+          <mat-select placeholder="Slot" formControlName="slot">
+            <mat-option value="0">0 (main tag)</mat-option>
+            <mat-option *ngFor="let slot of extensionSlots(this.formGroup2.controls['index'].value)" [value]="slot">{{ slot }}</mat-option>
+          </mat-select>
         </mat-form-field>
 
         <div style="margin-top: 10px">
           <p> If slot = 0, tag will appear at rackunit (numeric slot index) of this asset strip </p>
           <p> If slot > 0, tag will appear at slot (numeric index, 1~16) of a blade extension. </p>
         </div>
+
       </ng-container>
       <ng-template #Ext>
         <div style="margin-top: 10px">
@@ -53,7 +50,7 @@
         <!-- Slot Input (changed to mat-select) -->
         <mat-form-field class="dialog-content">
           <mat-label>Size</mat-label>
-          <mat-select placeholder="Size" formControlName="size">
+          <mat-select placeholder="Size" formControlName="slot">
             <mat-option value="4">4</mat-option>
             <mat-option value="8">8</mat-option>
             <mat-option value="16">16</mat-option>

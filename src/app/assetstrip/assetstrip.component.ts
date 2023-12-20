@@ -130,28 +130,18 @@ export class AssetstripComponent implements OnInit{
 
   private async addRowData(data: any) {
     const isSizeNull = data.size === null;
-    const index = isSizeNull ? this.generateIndex(this.dataSource.data) : data.index;
-    if (index) {
-      const list = this.dataSource.data[index-1]?.Extensions;
-      if (list) {
-        const slotIndex = isSizeNull ? 0 : this.generateIndex(list);
-        if (slotIndex !== -1 && index !== -1) {
-          let command;
-          if (isSizeNull) {
-            command = `assetstrips[1]:setTag(${index}, ${slotIndex}, ${data.id1}, ${data.id2}, ${data.custom})`;
-          } else {
-            command = `assetstrips[1]:setExt(${index}, ${data.size}, ${data.id1}, ${data.id2}, ${data.custom})`;
-          }
-
-          this.data.sendToGo(command);
-
-          // Ensure MatTableDataSource reflects the changes
-          this.data.removeMap('assetstrips[1]:getTags');
-          await this.fetchAssetStripData();
-        }
-      }
+    let command;
+    if (isSizeNull) {
+      command = `assetstrips[1]:setTag(${data.index}, ${data.slot}, ${data.id1}, ${data.id2}, ${data.custom})`;
+    } else {
+      command = `assetstrips[1]:setExt(${data.index}, ${data.size}, ${data.id1}, ${data.id2}, ${data.custom})`;
     }
 
+    this.data.sendToGo(command);
+
+    // Ensure MatTableDataSource reflects the changes
+    this.data.removeMap('assetstrips[1]:getTags');
+    await this.fetchAssetStripData();
   }
 
 
