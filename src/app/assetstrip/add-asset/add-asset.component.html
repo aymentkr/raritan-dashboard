@@ -18,13 +18,21 @@
           <mat-radio-button value="1">Extension Tag</mat-radio-button>
         </mat-radio-group>
         <!-- Additional mat-select for slots 1 to 16 -->
-        <mat-form-field class="dialog-content" *ngIf="formGroup2.controls['slot'].value === '1'">
+
+        <!-- Additional mat-select for index-->
+        <mat-form-field class="dialog-content">
           <mat-label>Index</mat-label>
           <mat-select placeholder="Index" formControlName="index">
-            <mat-option *ngFor="let rackunit of EXTINDEX" [value]="rackunit">{{ rackunit }}</mat-option>
+            <ng-container *ngIf="formGroup2.controls['slot'].value === '0'">
+              <mat-option *ngFor="let rackunit of TAGINDEX" [value]="rackunit">{{ rackunit }}</mat-option>
+            </ng-container>
+            <ng-container *ngIf="formGroup2.controls['slot'].value === '1'">
+              <mat-option *ngFor="let rackunit of EXTINDEX" [value]="rackunit">{{ rackunit }}</mat-option>
+            </ng-container>
           </mat-select>
-          <mat-hint align="end">Numeric indexof asset strip slot to connect to</mat-hint>
+          <mat-hint align="end">Numeric index of asset strip slot to connect to</mat-hint>
         </mat-form-field>
+
         <div style="margin-top: 10px">
           <p> If slot = 0, tag will appear at rackunit (numeric slot index) of this asset strip </p>
           <p> If slot > 0, tag will appear at slot (numeric index, 1~16) of a blade extension. </p>
@@ -34,6 +42,14 @@
         <div style="margin-top: 10px">
           <p> Blade extension must already be present at slot rackunit of this asset strip.</p>
         </div>
+        <!-- Additional mat-select for index-->
+        <mat-form-field class="dialog-content">
+          <mat-label>Index</mat-label>
+          <mat-select placeholder="Index" formControlName="index">
+            <mat-option *ngFor="let rackunit of TAGINDEX" [value]="rackunit">{{ rackunit }}</mat-option>
+          </mat-select>
+          <mat-hint align="end">Numeric indexof asset strip slot to connect to</mat-hint>
+        </mat-form-field>
         <!-- Slot Input (changed to mat-select) -->
         <mat-form-field class="dialog-content">
           <mat-label>Size</mat-label>

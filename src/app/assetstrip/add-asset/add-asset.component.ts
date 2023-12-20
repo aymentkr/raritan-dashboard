@@ -30,6 +30,7 @@ export class AddAssetComponent {
   EXTINDEX: number[] = this.data
     .filter((value) => value.Extensions && value.Extensions.length > 0)
     .map((value) => value.Index);
+  TAGINDEX: number[] = Array.from({ length: 64 }, (_, i) => i + 1);
 
   id1 = signal(this.generateRandomBytes());
   id2 = signal(this.generateRandomBytes());
@@ -45,7 +46,11 @@ export class AddAssetComponent {
   }
   private setupFormGroups() {
     this.formGroup1 = this._formBuilder.group({ type: [null, Validators.required] });
-    this.formGroup2 = this._formBuilder.group({ slot: [null], index: [null],size :[null] });
+    this.formGroup2 = this._formBuilder.group({
+      slot: [null],
+      index: [null, Validators.required],
+      size :[null]
+    });
     this.formGroup3 = this._formBuilder.group({
       id1: [null, [Validators.min(0)]],
       id2: [null, [Validators.min(0)]],
@@ -55,13 +60,20 @@ export class AddAssetComponent {
     this.formGroup1.get('type')?.valueChanges.subscribe((typeValue) => {
       const slotControl = this.formGroup2.get('slot');
       const sizeControl = this.formGroup2.get('size');
-      this.updateValidators(slotControl, typeValue === 'tag');
-      this.updateValidators(sizeControl, typeValue !== 'tag');
+
+      if (typeValue === 'tag') {
+        slotControl?.setValidators([Validators.required]);
+        sizeControl?.clearValidators();
+      } else {
+        sizeControl?.setValidators([Validators.required]);
+        slotControl?.clearValidators();
+      }
+
+      // Update validity for both controls
+      slotControl?.updateValueAndValidity();
+      sizeControl?.updateValueAndValidity();
     });
-    this.formGroup2.get('slot')?.valueChanges.subscribe((slotValue) => {
-      const indexControl = this.formGroup2.get('index');
-      this.updateValidators(indexControl, slotValue === '1');
-    });
+
     this.formGroup3.get('id1')?.valueChanges.subscribe((value: number) => {
       this.id1.set(value ?? 0);
     });
@@ -69,15 +81,6 @@ export class AddAssetComponent {
     this.formGroup3.get('id2')?.valueChanges.subscribe((value: number) => {
       this.id2.set(value ?? 0);
     });
-  }
-
-  private updateValidators(control: any, condition: boolean) {
-    if (condition) {
-      control?.setValidators([Validators.required]);
-    } else {
-      control?.clearValidators();
-    }
-    control?.updateValueAndValidity();
   }
 
   submit() {
