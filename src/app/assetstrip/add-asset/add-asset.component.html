@@ -3,26 +3,22 @@
     <form [formGroup]="formGroup1">
       <ng-template matStepLabel>Choose the Asset Strip</ng-template>
       <mat-radio-group class="dialog-content" formControlName="type" aria-label="Select an option">
-        <mat-radio-button value="1">Virtual Asset Tag</mat-radio-button>
-        <mat-radio-button value="2">Virtual Blade Extension</mat-radio-button>
+        <mat-radio-button value="tag">Virtual Asset Tag</mat-radio-button>
+        <mat-radio-button value="ext">Virtual Blade Extension</mat-radio-button>
       </mat-radio-group>
     </form>
   </mat-step>
   <mat-step [stepControl]="formGroup2" errorMessage="Slot is required.">
     <form [formGroup]="formGroup2">
       <ng-template matStepLabel>Select the Slot/Size</ng-template>
-      <ng-container  *ngIf="formGroup1.get('type')?.value === '1' else Ext">
-        <!-- Slot Input (changed to mat-select) -->
-        <mat-form-field class="dialog-content">
-          <mat-label>Slot</mat-label>
-          <mat-select placeholder="Slot" formControlName="slot">
-            <mat-option value="0">Main Tag</mat-option>
-            <mat-option value="1">Extension Tag</mat-option>
-          </mat-select>
-          <mat-hint align="end">Main Tag : Slot 0, Extension Tag : Slots 1~16</mat-hint>
-        </mat-form-field>
+      <ng-container  *ngIf="formGroup1.get('type')?.value === 'tag' else Ext">
+        <!-- Slot select -->
+        <mat-radio-group formControlName="slot" aria-label="Select an option">
+          <mat-radio-button value="0">Main Tag</mat-radio-button>
+          <mat-radio-button value="1">Extension Tag</mat-radio-button>
+        </mat-radio-group>
         <!-- Additional mat-select for slots 1 to 16 -->
-        <mat-form-field class="dialog-content" *ngIf="formGroup2.controls['slot'].value>0">
+        <mat-form-field class="dialog-content" *ngIf="formGroup2.controls['slot'].value === '1'">
           <mat-label>Index</mat-label>
           <mat-select placeholder="Index" formControlName="index">
             <mat-option *ngFor="let rackunit of EXTINDEX" [value]="rackunit">{{ rackunit }}</mat-option>

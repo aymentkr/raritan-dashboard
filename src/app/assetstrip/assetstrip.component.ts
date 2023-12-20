@@ -129,18 +129,26 @@ export class AssetstripComponent implements OnInit{
   }
 
   private async addRowData(data: any) {
-    const channelIndex = data.asset.channel;
-    this.dataSource.data[channelIndex] = data.asset;
+    const isSizeNull = data.size === null;
+    const index = isSizeNull ? this.generateMainIndex() : data.index;
+    const slotIndex = isSizeNull ? 0 : this.generateSlotIndex();
+    const customValue = data.custom;
 
-    if (data.isExt) {
-      this.data.sendToGo(`assetstrips[1]:setExt(${data.asset.rackunit}, 16, ${data.asset.id1}, ${data.asset.id2}, ${data.asset.custom})`);
+    let command;
+
+    if (isSizeNull) {
+      command = `assetstrips[1]:setTag(${index}, ${slotIndex}, ${data.id1}, ${data.id2}, ${customValue})`;
     } else {
-      this.data.sendToGo(`assetstrips[1]:setTag(${data.asset.rackunit}, ${data.asset.slot}, ${data.asset.id1}, ${data.asset.id2}, ${data.asset.custom})`);
+      command = `assetstrips[1]:setExt(${index}, ${data.size}, ${data.id1}, ${data.id2}, ${customValue})`;
     }
 
+    this.data.sendToGo(command);
+
     // Ensure MatTableDataSource reflects the changes
-    this.dataSource.data = [...this.dataSource.data];
+    this.data.removeMap('assetstrips[1]:getTags');
+    await this.fetchAssetStripData();
   }
+
 
   clearData(isExt: boolean) {/*
     if (isExt) {
@@ -177,5 +185,13 @@ export class AssetstripComponent implements OnInit{
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  private generateMainIndex() {
+    return 0;
+  }
+
+  private generateSlotIndex() {
+    return 0;
   }
 }

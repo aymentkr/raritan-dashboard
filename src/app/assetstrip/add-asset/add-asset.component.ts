@@ -26,6 +26,7 @@ export class AddAssetComponent {
   formGroup1!: FormGroup;
   formGroup2!: FormGroup;
   formGroup3!: FormGroup;
+
   EXTINDEX: number[] = this.data
     .filter((value) => value.Extensions && value.Extensions.length > 0)
     .map((value) => value.Index);
@@ -42,7 +43,6 @@ export class AddAssetComponent {
   ) {
     this.setupFormGroups();
   }
-
   private setupFormGroups() {
     this.formGroup1 = this._formBuilder.group({ type: [null, Validators.required] });
     this.formGroup2 = this._formBuilder.group({ slot: [null], index: [null],size :[null] });
@@ -55,12 +55,12 @@ export class AddAssetComponent {
     this.formGroup1.get('type')?.valueChanges.subscribe((typeValue) => {
       const slotControl = this.formGroup2.get('slot');
       const sizeControl = this.formGroup2.get('size');
-      this.updateValidators(slotControl, typeValue === '1');
-      this.updateValidators(sizeControl, typeValue === '2');
+      this.updateValidators(slotControl, typeValue === 'tag');
+      this.updateValidators(sizeControl, typeValue !== 'tag');
     });
     this.formGroup2.get('slot')?.valueChanges.subscribe((slotValue) => {
       const indexControl = this.formGroup2.get('index');
-      this.updateValidators(indexControl, slotValue > 0);
+      this.updateValidators(indexControl, slotValue === '1');
     });
     this.formGroup3.get('id1')?.valueChanges.subscribe((value: number) => {
       this.id1.set(value ?? 0);
@@ -81,47 +81,24 @@ export class AddAssetComponent {
   }
 
   submit() {
-    /*
-    if (this.checkSize()) {
-      if (!this.isDuplicate(this.id1()) && !this.isDuplicate(this.id2())) {
-        const isExt = this.formGroup1.get('type')?.value === '2';
-        const slot = this.formGroup2.get('slot')?.value;
-        const rackunit = slot > 0 ? this.formGroup2.get('index')?.value : this.ap.IncRackunit() ;
-
-        const asset: Asset = {
-          rackunit: rackunit,
-          AssetID: this.AssetID(),
-          slot: slot,
+    if (!isDuplicate(this.data,this.id1()) && !isDuplicate(this.data,this.id2())) {
+      this.dialogRef.close({
+        data: {
+          index: this.formGroup2.get('index')?.value,
+          slot : this.formGroup2.get('slot')?.value,
+          size : this.formGroup2.get('size')?.value,
+          custom: this.formGroup3.get('custom')?.value,
           id1: this.id1(),
           id2: this.id2(),
-          custom: this.formGroup3.get('custom')?.value,
-        };
-
-        if (isExt) {
-          asset.extensions = Array(16).fill(null);
-          asset.size = 16;
         }
-
-        this.dialogRef.close({
-          data: {
-            isExt: isExt,
-            asset: asset,
-          },
-        });
-      } else {
-        this.notificationService.openToastr(
-          'Make sure that the IDs are unique. 2 tags with the same ID can be discovered at the same time.',
-          'Adding AssertID',
-          'error'
-        );
-      }
+      });
     } else {
       this.notificationService.openToastr(
-        'You are restricted from exceeding the maximum number of Rack Units (Channels)',
+        'Make sure that the IDs are unique. 2 tags with the same ID can be discovered at the same time.',
         'Adding AssertID',
         'error'
       );
-    }*/
+    }
   }
 
   generateRandomBytes(): number {
@@ -130,7 +107,7 @@ export class AddAssetComponent {
 
     do {
       x = generateRandomByte();
-    } while (this.isDuplicate(x));
+    } while (isDuplicate(this.data,x));
 
     return x;
   }
@@ -144,8 +121,13 @@ export class AddAssetComponent {
     this.id2.set(this.generateRandomBytes());
   }
 
-  isDuplicate(value: number): boolean {
-    // is duplicate in extensions
-    return this.data.some((tag) => tag.ID1 === value || tag.ID2 === value);
-  }
+
+
+}
+function isDuplicate(data: Asset[], value: number): boolean {
+  const checkDuplicates = (asset: Asset): boolean => {
+    return <boolean>(asset.ID1 === value || asset.ID2 === value || (asset.Extensions && isDuplicate(asset.Extensions, value)));
+  };
+
+  return data.some(checkDuplicates);
 }
