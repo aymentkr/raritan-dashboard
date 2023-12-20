@@ -69,7 +69,7 @@ export class AssetstripComponent implements OnInit{
       const assetData = this.createAssetData(asset);
 
       if (asset.type === 'tag' && asset.col !== 0) {
-        assetArray[channelIndex].extensions![asset.col] = assetData;
+        assetArray[channelIndex].extensions![asset.col-1] = assetData;
       } else {
         assetArray[channelIndex] = assetData;
       }
@@ -79,8 +79,8 @@ export class AssetstripComponent implements OnInit{
   }
   private createDefaultAssets(size: number): Asset[] {
     return Array.from({ length: size }, (_, index) => ({
-      channel: index,
-      col: 0,
+      channel: size>16 ? index : 0,
+      col: size <= 16 ? index+1 : 0,
       AssetID: '',
       type: '',
       id1: null,
@@ -100,7 +100,7 @@ export class AssetstripComponent implements OnInit{
       id1: asset.id1,
       id2: asset.id2,
       custom: asset.custom,
-      extensions: asset.type !== 'tag' ? [] : this.createDefaultAssets(parseFloat(asset.type.slice(3)))
+      extensions: asset.type === 'tag' ? [] : this.createDefaultAssets(parseFloat(asset.type.slice(3)))
   };
   }
 
