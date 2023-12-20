@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {AssetsPipe} from "../pipes/assets.pipe";
-import {Asset, DeviceNode} from "../model/interfaces";
+import {Asset} from "../model/interfaces";
 import {MatDialog} from "@angular/material/dialog";
 import {AddAssetComponent} from "./add-asset/add-asset.component";
 import {DataService} from "../services/data.service";
@@ -62,7 +62,7 @@ export class AssetstripComponent implements OnInit{
 
 
   convertToAssets(data: any): Asset[] {
-    const assetArray: Asset[] = Array.from({ length: 64 }, (_, index) => this.createDefaultAsset(index));
+    const assetArray= this.createDefaultAssets(64);
 
     data.forEach((asset: any) => {
       const channelIndex = asset.channel;
@@ -77,21 +77,22 @@ export class AssetstripComponent implements OnInit{
 
     return assetArray;
   }
-
-  private createDefaultAsset(channel: number): Asset {
-    return {
-      channel,
+  private createDefaultAssets(size: number): Asset[] {
+    return Array.from({ length: size }, (_, index) => ({
+      channel: index,
       col: 0,
       AssetID: '',
       type: '',
       id1: null,
       id2: null,
       custom: false,
-    };
+    }));
   }
 
+
+
   private createAssetData(asset: any): Asset {
-    const assetData: Asset = {
+    return {
       AssetID: this.ap.convertToAssetId(asset.custom, asset.id1, asset.id2),
       channel: asset.channel,
       col: asset.col,
@@ -99,10 +100,8 @@ export class AssetstripComponent implements OnInit{
       id1: asset.id1,
       id2: asset.id2,
       custom: asset.custom,
-    };
-    if (assetData.col>0)
-      assetData.extensions= [];
-    return assetData;
+      extensions: asset.type !== 'tag' ? [] : this.createDefaultAssets(parseFloat(asset.type.slice(3)))
+  };
   }
 
 

@@ -51,7 +51,7 @@
               <button mat-icon-button color="primary" (click)="deleteItem(element)" >
                 <mat-icon>delete</mat-icon>
               </button>
-              <button *ngIf="element.extensions" mat-icon-button color="primary" (click)="toggleDeviceDetails(element,$event)">
+              <button *ngIf="element.extensions && element.extensions.length>0" mat-icon-button color="primary" (click)="toggleDeviceDetails(element,$event)">
                 <mat-icon>{{ selectedAsset === element ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
             </td>
