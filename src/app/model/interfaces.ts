@@ -111,14 +111,14 @@ export interface Switch {
 }
 
 export interface Asset {
-  channel: number,
+  Index: number,
   col: number,
   AssetID: string,
-  type: string,
-  id1: number | null,
-  id2: number | null,
-  custom: boolean,
-  extensions?: Asset[]
+  Type: string,
+  ID1: number | null,
+  ID2: number | null,
+  Custom: boolean,
+  Extensions?: Asset[]
 }
 
 export interface AssetInput {

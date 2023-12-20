@@ -24,8 +24,9 @@ import {MatTableDataSource} from "@angular/material/table";
 export class AssetstripComponent implements OnInit{
   isAvailable: boolean = false;
   isLoading: boolean = true;
-  columns: string[] = ['channel', 'type', 'AssetID', 'id1', 'id2', 'custom'];
-  innercolumns = ['col', 'type', 'AssetID', 'id1', 'id2', 'custom'];
+  list = ['Type', 'AssetID', 'ID1', 'ID2', 'Custom'];
+  columns: string[] = ['Index', ...this.list];
+  innercolumns = ['col', ...this.list];
   displayedColumns= [...this.columns,'actions'];
   selectedAsset: Asset | null = null;
 
@@ -65,11 +66,11 @@ export class AssetstripComponent implements OnInit{
     const assetArray= this.createDefaultAssets(64);
 
     data.forEach((asset: any) => {
-      const channelIndex = asset.channel;
+      const channelIndex = asset.channel ;
       const assetData = this.createAssetData(asset);
 
       if (asset.type === 'tag' && asset.col !== 0) {
-        assetArray[channelIndex].extensions![asset.col-1] = assetData;
+        assetArray[channelIndex].Extensions![asset.col-1] = assetData;
       } else {
         assetArray[channelIndex] = assetData;
       }
@@ -79,28 +80,26 @@ export class AssetstripComponent implements OnInit{
   }
   private createDefaultAssets(size: number): Asset[] {
     return Array.from({ length: size }, (_, index) => ({
-      channel: size>16 ? index : 0,
-      col: size <= 16 ? index+1 : 0,
+      Index: size > 16 ? index + 1 : 0,
+      col: size <= 16 ? index + 1 : 0,
       AssetID: '',
-      type: '',
-      id1: null,
-      id2: null,
-      custom: false,
+      Type: '',
+      ID1: null,
+      ID2: null,
+      Custom: false,
     }));
   }
-
-
 
   private createAssetData(asset: any): Asset {
     return {
       AssetID: this.ap.convertToAssetId(asset.custom, asset.id1, asset.id2),
-      channel: asset.channel,
+      Index: asset.channel +1,
       col: asset.col,
-      type: asset.type,
-      id1: asset.id1,
-      id2: asset.id2,
-      custom: asset.custom,
-      extensions: asset.type === 'tag' ? [] : this.createDefaultAssets(parseFloat(asset.type.slice(3)))
+      Type: asset.type,
+      ID1: asset.id1,
+      ID2: asset.id2,
+      Custom: asset.custom,
+      Extensions: asset.type === 'tag' ? [] : this.createDefaultAssets(parseFloat(asset.type.slice(3)))
   };
   }
 

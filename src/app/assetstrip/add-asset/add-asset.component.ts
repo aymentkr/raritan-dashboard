@@ -28,7 +28,7 @@ export class AddAssetComponent {
   formGroup3!: FormGroup;
   extensionSlots: number[] = Array.from({ length: 16 }, (_, i) => i + 1);
   extensionrackunit: number[] = this.data
-    .filter((value) => value.extensions && value.extensions.length > 0)
+    .filter((value) => value.Extensions && value.Extensions.length > 0)
     .map((value) => value.col);
 
   id1 = signal(this.generateRandomBytes());
@@ -147,10 +147,6 @@ export class AddAssetComponent {
 
   isDuplicate(value: number): boolean {
     // is duplicate in extensions
-    return this.data.some((tag) => tag.id1 === value || tag.id2 === value);
-  }
-
-  private checkSize(): boolean {
-    return this.data.length <= 64;
+    return this.data.some((tag) => tag.ID1 === value || tag.ID2 === value);
   }
 }

@@ -20,12 +20,12 @@
 
           <ng-container matColumnDef="expandedDetail">
             <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
-              <div class="example-element-detail" *ngIf="element.extensions && element.extensions.length" [@detailExpand]="element == selectedAsset ? 'expanded' : 'collapsed'">
+              <div class="example-element-detail" *ngIf="element.Extensions && element.Extensions.length" [@detailExpand]="element == selectedAsset ? 'expanded' : 'collapsed'">
                 <div class="inner-table mat-elevation-z8" *ngIf="selectedAsset">
-                  <table #innerTables mat-table [dataSource]="element.extensions" matSort>
+                  <table #innerTables mat-table [dataSource]="element.Extensions" matSort>
                     <!-- Add a new row for the button -->
                     <ng-container *ngFor="let innerColumn of innercolumns" matColumnDef="{{innerColumn}}">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ innerColumn.toUpperCase()  }}</th>
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ innerColumn  }}</th>
                       <td mat-cell *matCellDef="let innerElement">{{ innerElement[innerColumn] }}</td>
                     </ng-container>
                     <tr mat-header-row *matHeaderRowDef="innercolumns"></tr>
@@ -51,7 +51,7 @@
               <button mat-icon-button color="primary" (click)="deleteItem(element)" >
                 <mat-icon>delete</mat-icon>
               </button>
-              <button *ngIf="element.extensions && element.extensions.length>0" mat-icon-button color="primary" (click)="toggleDeviceDetails(element,$event)">
+              <button *ngIf="element.Extensions && element.Extensions.length>0" mat-icon-button color="primary" (click)="toggleDeviceDetails(element,$event)">
                 <mat-icon>{{ selectedAsset === element ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
             </td>
@@ -60,7 +60,7 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
               (click)="selectedAsset = selectedAsset === row ? null : row"
-              [class.has-expanded-details]="row.extensions && row.extensions.length > 0">
+              [class.has-expanded-details]="row.Extensions && row.Extensions.length > 0">
           </tr>
           <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
         </table>
