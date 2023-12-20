@@ -7,6 +7,7 @@ import {DataService} from "../services/data.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {MatSort} from "@angular/material/sort";
 import {MatTableDataSource} from "@angular/material/table";
+import {MatPaginator} from "@angular/material/paginator";
 
 @Component({
   selector: 'app-assetstrip',
@@ -24,13 +25,19 @@ import {MatTableDataSource} from "@angular/material/table";
 export class AssetstripComponent implements OnInit{
   isAvailable: boolean = false;
   isLoading: boolean = true;
+
   list = ['Type', 'AssetID', 'ID1', 'ID2', 'Custom'];
   columns: string[] = ['Index', ...this.list];
   innercolumns = ['col', ...this.list];
   displayedColumns= [...this.columns,'actions'];
+
   selectedAsset: Asset | null = null;
+  size : number = 0;
+  pageSize: number = 10;
+  pageSizeOptions: number[] = [10,20,30,40,50,60];
 
   dataSource = new MatTableDataSource<Asset>;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('outerSort', { static: true }) sort!: MatSort;
   @ViewChildren('innerTables') innerTables!: QueryList<Asset>;
   @ViewChildren('innerSort') innerSort!: QueryList<MatSort>;
@@ -43,9 +50,11 @@ export class AssetstripComponent implements OnInit{
   ngOnInit(): void {
     this.ap.init().then(() => {
       this.isAvailable = this.ap.connections[0].isEnabled;
-      if (this.isAvailable) {
-        this.fetchAssetStripData().then(() => this.cdRef.detectChanges());
-      }
+      if (this.isAvailable)
+        this.fetchAssetStripData().then(() => {
+          this.cdRef.detectChanges()
+          this.dataSource.paginator = this.paginator;
+      });
       this.isLoading = false;
       this.cdRef.detectChanges();
     });
@@ -155,5 +164,18 @@ export class AssetstripComponent implements OnInit{
     event.stopPropagation();
     this.selectedAsset = this.selectedAsset === element ? null : element;
     this.cdRef.detectChanges();
+  }
+
+  onPageSizeChange(event: any) {
+    this.pageSize = event.pageSize;
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 }

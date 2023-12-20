@@ -26,10 +26,9 @@ export class AddAssetComponent {
   formGroup1!: FormGroup;
   formGroup2!: FormGroup;
   formGroup3!: FormGroup;
-  extensionSlots: number[] = Array.from({ length: 16 }, (_, i) => i + 1);
-  extensionrackunit: number[] = this.data
+  EXTINDEX: number[] = this.data
     .filter((value) => value.Extensions && value.Extensions.length > 0)
-    .map((value) => value.col);
+    .map((value) => value.Index);
 
   id1 = signal(this.generateRandomBytes());
   id2 = signal(this.generateRandomBytes());
@@ -46,23 +45,23 @@ export class AddAssetComponent {
 
   private setupFormGroups() {
     this.formGroup1 = this._formBuilder.group({ type: [null, Validators.required] });
-    this.formGroup1.get('type')?.valueChanges.subscribe((typeValue) => {
-      const slotControl = this.formGroup2.get('slot');
-      this.updateValidators(slotControl, typeValue === '1');
-    });
-
-    this.formGroup2 = this._formBuilder.group({ slot: [null], index: [null] });
-    this.formGroup2.get('slot')?.valueChanges.subscribe((slotValue) => {
-      const indexControl = this.formGroup2.get('index');
-      this.updateValidators(indexControl, slotValue > 0);
-    });
-
+    this.formGroup2 = this._formBuilder.group({ slot: [null], index: [null],size :[null] });
     this.formGroup3 = this._formBuilder.group({
       id1: [null, [Validators.min(0)]],
       id2: [null, [Validators.min(0)]],
       custom: [false],
     });
 
+    this.formGroup1.get('type')?.valueChanges.subscribe((typeValue) => {
+      const slotControl = this.formGroup2.get('slot');
+      const sizeControl = this.formGroup2.get('size');
+      this.updateValidators(slotControl, typeValue === '1');
+      this.updateValidators(sizeControl, typeValue === '2');
+    });
+    this.formGroup2.get('slot')?.valueChanges.subscribe((slotValue) => {
+      const indexControl = this.formGroup2.get('index');
+      this.updateValidators(indexControl, slotValue > 0);
+    });
     this.formGroup3.get('id1')?.valueChanges.subscribe((value: number) => {
       this.id1.set(value ?? 0);
     });
