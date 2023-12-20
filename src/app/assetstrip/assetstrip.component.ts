@@ -130,23 +130,28 @@ export class AssetstripComponent implements OnInit{
 
   private async addRowData(data: any) {
     const isSizeNull = data.size === null;
-    const index = isSizeNull ? this.generateMainIndex() : data.index;
-    const slotIndex = isSizeNull ? 0 : this.generateSlotIndex();
-    const customValue = data.custom;
+    const index = isSizeNull ? this.generateIndex(this.dataSource.data) : data.index;
+    if (index) {
+      const list = this.dataSource.data[index-1]?.Extensions;
+      if (list) {
+        const slotIndex = isSizeNull ? 0 : this.generateIndex(list);
+        if (slotIndex !== -1 && index !== -1) {
+          let command;
+          if (isSizeNull) {
+            command = `assetstrips[1]:setTag(${index}, ${slotIndex}, ${data.id1}, ${data.id2}, ${data.custom})`;
+          } else {
+            command = `assetstrips[1]:setExt(${index}, ${data.size}, ${data.id1}, ${data.id2}, ${data.custom})`;
+          }
 
-    let command;
+          this.data.sendToGo(command);
 
-    if (isSizeNull) {
-      command = `assetstrips[1]:setTag(${index}, ${slotIndex}, ${data.id1}, ${data.id2}, ${customValue})`;
-    } else {
-      command = `assetstrips[1]:setExt(${index}, ${data.size}, ${data.id1}, ${data.id2}, ${customValue})`;
+          // Ensure MatTableDataSource reflects the changes
+          this.data.removeMap('assetstrips[1]:getTags');
+          await this.fetchAssetStripData();
+        }
+      }
     }
 
-    this.data.sendToGo(command);
-
-    // Ensure MatTableDataSource reflects the changes
-    this.data.removeMap('assetstrips[1]:getTags');
-    await this.fetchAssetStripData();
   }
 
 
@@ -187,9 +192,11 @@ export class AssetstripComponent implements OnInit{
     }
   }
 
-  private generateMainIndex() {
-    return 0;
+  private generateIndex(list:Asset[]) {
+    const index = list.findIndex((item) => item.AssetID !== '') + 1;
+    return index > 0 ? index : -1;
   }
+
 
   private generateSlotIndex() {
     return 0;
