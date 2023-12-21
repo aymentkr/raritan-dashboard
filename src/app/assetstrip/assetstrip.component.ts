@@ -28,7 +28,7 @@ export class AssetstripComponent implements OnInit{
   isLoading: boolean = true;
   list = ['AssetID','type', 'ID1', 'ID2', 'Custom'];
   columns: string[] = ['Index',...this.list];
-  innercolumns = ['col',...this.list];
+  innercolumns = ['Slot',...this.list];
   displayedColumns= ['Index','state',...this.list,'actions'];
 
   selectedAsset: Asset | null = null;
@@ -97,7 +97,7 @@ export class AssetstripComponent implements OnInit{
     return Array.from({ length: size }, (_, index):Asset => ({
       Index: size > 16 ? index + 1 : 0,
       state : false,
-      col: size <= 16 ? index + 1 : 0,
+      Slot: size <= 16 ? index + 1 : 0,
       AssetID: '',
       type: '',
       ID1: null,
@@ -110,7 +110,7 @@ export class AssetstripComponent implements OnInit{
     return {
       Index: asset.channel +1,
       state: true,
-      col: asset.col,
+      Slot: asset.col,
       AssetID: this.ap.convertToAssetId(asset.custom, asset.id1, asset.id2),
       type: asset.type,
       ID1: asset.id1,

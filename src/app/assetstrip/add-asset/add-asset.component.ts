@@ -74,6 +74,7 @@ export class AddAssetComponent {
     const id2 = this.id2();
     const index = this.formGroup2.get('index')?.value;
     const type = this.formGroup1.get('type')?.value;
+    const slot = this.formGroup2.get('slot')?.value;
 
     if (id1 === id2 || isDuplicate(this.data, id1) || isDuplicate(this.data, id2)) {
       this.notificationService.openToastr(
@@ -85,18 +86,23 @@ export class AddAssetComponent {
     }
 
     // Check if an asset already exists at this location
-    if (this.data[index - 1]?.state) {
-      const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
-        width: '600px',
-        maxHeight: '400px',
-        data: `Asset already exists at Index ${index}. Are you sure you want to replace it?`,
-      });
+    const asset =this.data[index - 1]
+    if (asset.state) {
+      // check if the tag not exists in extension (if not there is no need for replacement alert
+      if (!(type === 'tag' && asset.Extensions && asset?.Extensions?.length>0 && !asset.Extensions[slot - 1].state)) {
+        const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
+          width: '600px',
+          maxHeight: '400px',
+          data: `Asset already exists at Index ${index}. Are you sure you want to replace it?`,
+        });
 
-      const result = await dialogRef.afterClosed().toPromise();
+        const result = await dialogRef.afterClosed().toPromise();
 
-      if (!result) {
-        return; // User canceled, do not proceed
+        if (!result) {
+          return; // User canceled, do not proceed
+        }
       }
+
     }
 
     // Proceed with submission
@@ -104,7 +110,7 @@ export class AddAssetComponent {
       data: {
         isTag: type === 'tag',
         index: index,
-        slot: this.formGroup2.get('slot')?.value,
+        slot: slot,
         custom: this.formGroup3.get('custom')?.value,
         id1: id1,
         id2: id2,
@@ -117,6 +123,7 @@ export class AddAssetComponent {
       'done'
     );
   }
+
 
 
   generateRandomBytes(): number {

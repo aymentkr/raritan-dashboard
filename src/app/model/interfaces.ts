@@ -113,7 +113,7 @@ export interface Switch {
 export interface Asset {
   Index: number,
   state: boolean,
-  col: number,
+  Slot: number,
   AssetID: string,
   type: string,
   ID1: number | null,
