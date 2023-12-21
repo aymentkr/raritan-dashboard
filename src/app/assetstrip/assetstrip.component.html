@@ -82,9 +82,11 @@
                 </button>
               </th>
               <td mat-cell *matCellDef="let element" class="action-link">
-                <button mat-icon-button color="primary" (click)="deleteItem(element,$event)">
-                  <mat-icon>delete</mat-icon>
-                </button>
+                @if (element.state) {
+                  <button mat-icon-button color="primary" (click)="deleteItem(element,$event)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                }
                 <button *ngIf="element.Extensions && element.Extensions.length>0" mat-icon-button color="primary">
                   <mat-icon>{{ selectedAsset === element ? 'visibility_off' : 'visibility' }}</mat-icon>
                 </button>

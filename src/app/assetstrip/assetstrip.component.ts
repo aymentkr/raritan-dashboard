@@ -163,20 +163,22 @@ export class AssetstripComponent implements OnInit{
 
   deleteItem(item: Asset, event: Event): void {
     event.stopPropagation();
-    const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
-      width: '600px',
-      maxHeight: '400px',
-      data: `You want to remove the selected Asset ${item.AssetID}?` ,
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.data.removeMap('assetstrips[1]:getTags');
-        this.removeTag(item);
-        this.fetchAssetStripData().then(() => {
-          this.notificationService.openToastr(`Selected Asset ${item.AssetID} deleted successfully from Assetstrips`, 'Deleting Assets', 'warning');
-        });
-      }
-    });
+    if (item.state) {
+      const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
+        width: '600px',
+        maxHeight: '400px',
+        data: `You want to remove the selected Asset ${item.AssetID}?` ,
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.data.removeMap('assetstrips[1]:getTags');
+          this.removeTag(item);
+          this.fetchAssetStripData().then(() => {
+            this.notificationService.openToastr(`Selected Asset ${item.AssetID} deleted successfully from Assetstrips`, 'Deleting Assets', 'warning');
+          });
+        }
+      });
+    }
   }
 
   private removeTag(item: Asset) {
