@@ -130,7 +130,7 @@ export class SensorportComponent implements OnInit {
         this.data.removeMap('sensorports[1]:getTopology');
         this.sp.removeDevice(device);
         this.fetchSensorPortData().then(() => {
-          this.notificationService.openToastr(`Selected Device ${device.device_id}deleted successfully from Sensorports`, 'Deleting Devices', 'warning');
+          this.notificationService.openToastr(`Selected Device ${device.device_id} deleted successfully from Sensorports`, 'Deleting Devices', 'warning');
         });
       }
     });

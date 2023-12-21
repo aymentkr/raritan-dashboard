@@ -9,6 +9,7 @@ import {MatSort} from "@angular/material/sort";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {NotificationService} from "../services/notification.service";
+import {DeleteDeviceDialogComponent} from "../peripheral/delete-device-dialog/delete-device-dialog.component";
 
 @Component({
   selector: 'app-assetstrip',
@@ -29,6 +30,7 @@ export class AssetstripComponent implements OnInit{
   list = ['AssetID','type', 'ID1', 'ID2', 'Custom'];
   columns: string[] = ['Index',...this.list];
   innercolumns = ['Slot',...this.list];
+  displayedInnerColumns= [...this.innercolumns, 'delete'];
   displayedColumns= ['Index','state',...this.list,'actions'];
 
   selectedAsset: Asset | null = null;
@@ -151,7 +153,7 @@ export class AssetstripComponent implements OnInit{
   }
 
 
-  clearData(isExt: boolean) {/*
+  clearData() {/*
     if (isExt) {
       this.ap.extensions = [];
     } else {
@@ -159,20 +161,29 @@ export class AssetstripComponent implements OnInit{
     }*/
   }
 
-  deleteItem(item: Asset) {/*
-    // Assuming 'item' is in either 'tags' or 'extensions'
-    if (this.ap.tags.includes(item)) {
-      this.ap.tags = this.ap.tags.filter(asset => asset !== item);
-    } else if (this.ap.extensions.includes(item)) {
-      this.ap.extensions = this.ap.extensions.filter(asset => asset !== item);
-    }*/
+  deleteItem(item: Asset, event: Event): void {
+    event.stopPropagation();
+    const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
+      width: '600px',
+      maxHeight: '400px',
+      data: `You want to remove the selected Asset ${item.AssetID}?` ,
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.data.removeMap('assetstrips[1]:getTags');
+        this.removeTag(item);
+        this.fetchAssetStripData().then(() => {
+          this.notificationService.openToastr(`Selected Asset ${item.AssetID} deleted successfully from Assetstrips`, 'Deleting Assets', 'warning');
+        });
+      }
+    });
   }
 
-
-  toggleDeviceDetails(element: Asset, event: MouseEvent) {
-    event.stopPropagation();
-    this.selectedAsset = this.selectedAsset === element ? null : element;
-    this.cdRef.detectChanges();
+  private removeTag(item: Asset) {
+    if (item.type === 'tag')
+      this.data.sendToGo(`assetstrips[1]:clrTag(${item.Index-1}, ${item.Slot})`);
+    else
+      this.data.sendToGo(`assetstrips[1]:clrExt(${item.Index-1})`);
   }
 
   onPageSizeChange(event: any) {
@@ -187,4 +198,5 @@ export class AssetstripComponent implements OnInit{
       this.dataSource.paginator.firstPage();
     }
   }
+
 }
