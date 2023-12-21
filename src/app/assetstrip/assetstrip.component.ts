@@ -8,6 +8,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 import {MatSort} from "@angular/material/sort";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
+import {NotificationService} from "../services/notification.service";
 
 @Component({
   selector: 'app-assetstrip',
@@ -40,6 +41,7 @@ export class AssetstripComponent implements OnInit{
   @ViewChildren('innerTables') innerTables!: QueryList<Asset>;
   @ViewChildren('innerSort') innerSort!: QueryList<MatSort>;
   constructor(
+    private notificationService: NotificationService,
     private data: DataService,
     private dialog: MatDialog,
     private cdRef: ChangeDetectorRef,
@@ -100,7 +102,7 @@ export class AssetstripComponent implements OnInit{
       type: '',
       ID1: null,
       ID2: null,
-      Custom: false,
+      Custom: null,
     }));
   }
 

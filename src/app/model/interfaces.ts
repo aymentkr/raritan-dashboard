@@ -118,7 +118,7 @@ export interface Asset {
   type: string,
   ID1: number | null,
   ID2: number | null,
-  Custom: boolean,
+  Custom: boolean | null,
   Extensions?: Asset[]
 }
 

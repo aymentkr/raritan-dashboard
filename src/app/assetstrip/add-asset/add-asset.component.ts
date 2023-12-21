@@ -1,11 +1,12 @@
 import {Component, computed, Inject, Optional, signal} from '@angular/core';
 import { Asset } from '../../model/interfaces';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AssetsPipe } from '../../pipes/assets.pipe';
 import { NotificationService } from '../../services/notification.service';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { MAT_RADIO_DEFAULT_OPTIONS } from '@angular/material/radio';
+import {DeleteDeviceDialogComponent} from "../../peripheral/delete-device-dialog/delete-device-dialog.component";
 
 @Component({
   selector: 'app-add-asset',
@@ -32,6 +33,7 @@ export class AddAssetComponent {
   id2 = signal(this.generateRandomBytes());
   AssetID = computed(() => this.ap.convertToAssetId(this.formGroup3.get('custom')?.value,this.id1(),this.id2()));
   constructor(
+    private dialog: MatDialog,
     private notificationService: NotificationService,
     private ap: AssetsPipe,
     private _formBuilder: FormBuilder,
@@ -67,33 +69,55 @@ export class AddAssetComponent {
     });
   }
 
-  submit() {
-    if (
-      this.id1() !== this.id2() &&
-      !isDuplicate(this.data, this.id1()) &&
-      !isDuplicate(this.data, this.id2())
-    ) {
-      // If conditions are met, close the dialog and pass data
-      this.dialogRef.close({
-        data: {
-          isTag: this.formGroup1.get('type')?.value === 'tag',
-          index: this.formGroup2.get('index')?.value,
-          slot: this.formGroup2.get('slot')?.value,
-          custom: this.formGroup3.get('custom')?.value,
-          id1: this.id1(),
-          id2: this.id2(),
-        }
-      });
-    } else {
-      // If conditions are not met, show an error notification
+  async submit() {
+    const id1 = this.id1();
+    const id2 = this.id2();
+    const index = this.formGroup2.get('index')?.value;
+    const type = this.formGroup1.get('type')?.value;
+
+    if (id1 === id2 || isDuplicate(this.data, id1) || isDuplicate(this.data, id2)) {
       this.notificationService.openToastr(
         'Make sure that the IDs are unique. 2 tags with the same ID can be discovered at the same time.',
         'Adding AssertID',
         'error'
       );
+      return;
     }
 
+    // Check if an asset already exists at this location
+    if (this.data[index - 1]?.state) {
+      const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
+        width: '600px',
+        maxHeight: '400px',
+        data: `Asset already exists at Index ${index}. Are you sure you want to replace it?`,
+      });
+
+      const result = await dialogRef.afterClosed().toPromise();
+
+      if (!result) {
+        return; // User canceled, do not proceed
+      }
+    }
+
+    // Proceed with submission
+    this.dialogRef.close({
+      data: {
+        isTag: type === 'tag',
+        index: index,
+        slot: this.formGroup2.get('slot')?.value,
+        custom: this.formGroup3.get('custom')?.value,
+        id1: id1,
+        id2: id2,
+      }
+    });
+
+    this.notificationService.openToastr(
+      `New Asset with Type: ${type} and ID ${this.AssetID()} saved successfully`,
+      `Adding Asset at Index ${index}`,
+      'done'
+    );
   }
+
 
   generateRandomBytes(): number {
     const generateRandomByte = (): number => Math.floor(Math.random() * 256);
