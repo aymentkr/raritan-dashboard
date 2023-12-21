@@ -88,21 +88,20 @@ export class AddAssetComponent {
     // Check if an asset already exists at this location
     const asset =this.data[index - 1]
     if (asset.state) {
-      // check if the tag not exists in extension (if not there is no need for replacement alert
-      if (!(type === 'tag' && asset.Extensions && asset?.Extensions?.length>0 && !asset.Extensions[slot - 1].state)) {
+      // check if the tag not exists in extension (if yes there is no need for replacement alert
+      if (!(type === 'tag' && slot > 0 && asset.Extensions && asset?.Extensions?.length>0 && !asset.Extensions[slot - 1].state)){
+        // Open the dialog only if needed
         const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
           width: '600px',
           maxHeight: '400px',
-          data: `Asset already exists at Index ${index}. Are you sure you want to replace it?`,
+          data: `Asset already exists at Index ${index}, you want to replace it?`,
         });
 
-        const result = await dialogRef.afterClosed().toPromise();
-
-        if (!result) {
-          return; // User canceled, do not proceed
+        if (!(await dialogRef.afterClosed().toPromise())) {
+          // User canceled, do not proceed
+          return;
         }
       }
-
     }
 
     // Proceed with submission
