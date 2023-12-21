@@ -35,7 +35,6 @@ export class AssetstripComponent implements OnInit{
   size : number = 0;
   pageSize: number = 10;
   pageSizeOptions: number[] = [10,20,30,40,50,60];
-
   dataSource = new MatTableDataSource<Asset>;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('outerSort', { static: true }) sort!: MatSort;
@@ -50,11 +49,12 @@ export class AssetstripComponent implements OnInit{
   ngOnInit(): void {
     this.ap.init().then(() => {
       this.isAvailable = this.ap.connections[0].isEnabled;
-      if (this.isAvailable)
+      if (this.isAvailable) {
         this.fetchAssetStripData().then(() => {
           this.cdRef.detectChanges()
           this.dataSource.paginator = this.paginator;
-      });
+        });
+      }
       this.isLoading = false;
       this.cdRef.detectChanges();
     });
@@ -62,31 +62,25 @@ export class AssetstripComponent implements OnInit{
 
   async fetchAssetStripData() {
     try {
+      const assetArray = this.createDefaultAssets(64);
       const tags = await this.data.getResult('assetstrips[1]:getTags', 'print(assetstrips[1]:getTags())');
-      this.dataSource.data = [... this.convertToAssets(JSON.parse(tags))]
+      JSON.parse(tags).forEach((asset: any) => {
+        const channelIndex = asset.channel ;
+        const assetData = this.createAssetData(asset);
+
+        if (asset.type === 'tag' && asset.col !== 0) {
+          const extensions = assetArray[channelIndex].Extensions;
+          if (extensions && extensions.length >= 4) extensions[asset.col-1] = assetData;
+        } else {
+          assetArray[channelIndex] = assetData;
+        }
+      });
+      this.dataSource.data = assetArray;
     } catch (error) {
       console.error('Error fetching or parsing data:', error);
     }
   }
 
-
-
-  convertToAssets(data: any): Asset[] {
-    const assetArray= this.createDefaultAssets(64);
-
-    data.forEach((asset: any) => {
-      const channelIndex = asset.channel ;
-      const assetData = this.createAssetData(asset);
-
-      if (asset.type === 'tag' && asset.col !== 0) {
-        assetArray[channelIndex].Extensions![asset.col-1] = assetData;
-      } else {
-        assetArray[channelIndex] = assetData;
-      }
-    });
-
-    return assetArray;
-  }
   private createDefaultAssets(size: number): Asset[] {
     return Array.from({ length: size }, (_, index) => ({
       Index: size > 16 ? index + 1 : 0,
@@ -109,7 +103,7 @@ export class AssetstripComponent implements OnInit{
       ID2: asset.id2,
       Custom: asset.custom,
       Extensions: asset.type === 'tag' ? [] : this.createDefaultAssets(parseFloat(asset.type.slice(3)))
-  };
+    };
   }
 
 
@@ -129,14 +123,12 @@ export class AssetstripComponent implements OnInit{
   }
 
   private async addRowData(data: any) {
-    const isSizeNull = data.size === null;
     let command;
-    if (isSizeNull) {
-      command = `assetstrips[1]:setTag(${data.index}, ${data.slot}, ${data.id1}, ${data.id2}, ${data.custom})`;
+    if (data.isTag) {
+      command = `assetstrips[1]:setTag(${data.index-1}, ${data.slot}, ${data.id1}, ${data.id2}, ${data.custom})`;
     } else {
-      command = `assetstrips[1]:setExt(${data.index}, ${data.size}, ${data.id1}, ${data.id2}, ${data.custom})`;
+      command = `assetstrips[1]:setExt(${data.index-1}, ${data.slot}, ${data.id1}, ${data.id2}, ${data.custom})`;
     }
-
     this.data.sendToGo(command);
 
     // Ensure MatTableDataSource reflects the changes
@@ -180,15 +172,5 @@ export class AssetstripComponent implements OnInit{
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
-  }
-
-  private generateIndex(list:Asset[]) {
-    const index = list.findIndex((item) => item.AssetID !== '') + 1;
-    return index > 0 ? index : -1;
-  }
-
-
-  private generateSlotIndex() {
-    return 0;
   }
 }
