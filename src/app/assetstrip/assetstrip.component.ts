@@ -25,11 +25,10 @@ import {MatPaginator} from "@angular/material/paginator";
 export class AssetstripComponent implements OnInit{
   isAvailable: boolean = false;
   isLoading: boolean = true;
-
-  list = ['Type', 'AssetID', 'ID1', 'ID2', 'Custom'];
-  columns: string[] = ['Index', ...this.list];
-  innercolumns = ['col', ...this.list];
-  displayedColumns= [...this.columns,'actions'];
+  list = ['AssetID','type', 'ID1', 'ID2', 'Custom'];
+  columns: string[] = ['Index',...this.list];
+  innercolumns = ['col',...this.list];
+  displayedColumns= ['Index','state',...this.list,'actions'];
 
   selectedAsset: Asset | null = null;
   size : number = 0;
@@ -63,6 +62,17 @@ export class AssetstripComponent implements OnInit{
   async fetchAssetStripData() {
     try {
       const assetArray = this.createDefaultAssets(64);
+      /*
+      for (const asset of assetArray) {
+        const index = assetArray.indexOf(asset);
+        this.data.sendToGo(`r, g, b, on, slow, fast = assetstrips[1]:getLEDState(${index})`);
+        asset.r = parseFloat(await this.data.getResult(`assetstrips[1]:getLEDState(${index}):r`, 'print(r)'));
+        asset.g = parseFloat(await this.data.getResult(`assetstrips[1]:getLEDState(${index}):g`, 'print(g)'));
+        asset.b = parseFloat(await this.data.getResult(`assetstrips[1]:getLEDState(${index}):b`, 'print(b)'));
+        asset.on = await this.data.getResult(`assetstrips[1]:getLEDState(${index}):on`, 'print(on)') === 'true';
+        asset.fast = await this.data.getResult(`assetstrips[1]:getLEDState(${index}):fast`, 'print(fast)') === 'true';
+        asset.slow = await this.data.getResult(`assetstrips[1]:getLEDState(${index}):slow`, 'print(slow)') === 'true';
+      }*/
       const tags = await this.data.getResult('assetstrips[1]:getTags', 'print(assetstrips[1]:getTags())');
       JSON.parse(tags).forEach((asset: any) => {
         const channelIndex = asset.channel ;
@@ -82,11 +92,12 @@ export class AssetstripComponent implements OnInit{
   }
 
   private createDefaultAssets(size: number): Asset[] {
-    return Array.from({ length: size }, (_, index) => ({
+    return Array.from({ length: size }, (_, index):Asset => ({
       Index: size > 16 ? index + 1 : 0,
+      state : false,
       col: size <= 16 ? index + 1 : 0,
       AssetID: '',
-      Type: '',
+      type: '',
       ID1: null,
       ID2: null,
       Custom: false,
@@ -95,10 +106,11 @@ export class AssetstripComponent implements OnInit{
 
   private createAssetData(asset: any): Asset {
     return {
-      AssetID: this.ap.convertToAssetId(asset.custom, asset.id1, asset.id2),
       Index: asset.channel +1,
+      state: true,
       col: asset.col,
-      Type: asset.type,
+      AssetID: this.ap.convertToAssetId(asset.custom, asset.id1, asset.id2),
+      type: asset.type,
       ID1: asset.id1,
       ID2: asset.id2,
       Custom: asset.custom,

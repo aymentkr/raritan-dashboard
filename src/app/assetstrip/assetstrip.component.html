@@ -21,6 +21,17 @@
           </mat-form-field>
           <table mat-table [dataSource]="dataSource" class="my-table mat-elevation-z8" matSort multiTemplateDataRows>
 
+            <ng-container matColumnDef="state">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by state">
+                State
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <mat-icon class="state-icon" [ngClass]="element.state ? 'on' : 'off'">
+                  {{ element.type ? 'light_on' : 'light_off' }}
+                </mat-icon>
+              </td>
+            </ng-container>
+
             <ng-container *ngFor="let column of columns" [matColumnDef]="column">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column }}</th>
               <td mat-cell *matCellDef="let asset">{{ asset[column] }}</td>

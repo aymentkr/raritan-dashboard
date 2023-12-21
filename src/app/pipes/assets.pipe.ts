@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import {Asset, AssetOutput, SlideToggle} from "../model/interfaces";
+import {SlideToggle} from "../model/interfaces";
 import {DataService} from "../services/data.service";
 
 @Pipe({
@@ -16,12 +16,11 @@ export class AssetsPipe implements PipeTransform {
     {name: 'External Beeper', table: 'extbeeper', isEnabled: false},
     {name: 'Power CIM', table: 'powercim', isEnabled: false}
   ];
-  AssetOut!: AssetOutput;
   constructor(private data: DataService) {}
 
 
-  transform(value: unknown, ...args: unknown[]):  AssetOutput {
-    return this.AssetOut;
+  transform(value: unknown, ...args: unknown[])   {
+    return ;
   }
 
   async init() {

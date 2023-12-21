@@ -84,3 +84,14 @@ tr.example-element-row:not(.example-expanded-row):active {
 .inner-table .action-link button {
   border: none; /* Remove border from action button */
 }
+
+
+.state-icon.on::before {
+  content: "\e8ac";
+  color: darkgreen;
+}
+
+.state-icon.off::before {
+  content: "\e8ac";
+  color: red;
+}

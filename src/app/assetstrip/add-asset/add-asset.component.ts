@@ -53,7 +53,8 @@ export class AddAssetComponent {
     });
 
     this.formGroup2.get('index')?.valueChanges.subscribe(() => {
-      this.formGroup2.get('slot')?.setValue(null);
+      if (this.formGroup1.get('type')?.value === 'tag')
+        this.formGroup2.get('slot')?.setValue(null);
     });
 
 
@@ -67,24 +68,31 @@ export class AddAssetComponent {
   }
 
   submit() {
-    if (!isDuplicate(this.data,this.id1()) && !isDuplicate(this.data,this.id2())) {
+    if (
+      this.id1() !== this.id2() &&
+      !isDuplicate(this.data, this.id1()) &&
+      !isDuplicate(this.data, this.id2())
+    ) {
+      // If conditions are met, close the dialog and pass data
       this.dialogRef.close({
         data: {
           isTag: this.formGroup1.get('type')?.value === 'tag',
           index: this.formGroup2.get('index')?.value,
-          slot : this.formGroup2.get('slot')?.value,
+          slot: this.formGroup2.get('slot')?.value,
           custom: this.formGroup3.get('custom')?.value,
           id1: this.id1(),
           id2: this.id2(),
         }
       });
     } else {
+      // If conditions are not met, show an error notification
       this.notificationService.openToastr(
         'Make sure that the IDs are unique. 2 tags with the same ID can be discovered at the same time.',
         'Adding AssertID',
         'error'
       );
     }
+
   }
 
   generateRandomBytes(): number {
@@ -109,11 +117,11 @@ export class AddAssetComponent {
 
 
   extensionSlots(index: number) {
-    const ext = this.data.find((value) => value.Type.includes('ext') && value.Index === index);
+    const ext = this.data.find((value) => value.type.includes('ext') && value.Index === index);
     // Early return if ext is not found
     if (!ext) return [];
     // Use optional chaining for accessing properties
-    const length = ext?.Type ? parseInt(ext.Type.slice(3)) : 0;
+    const length = ext?.type ? parseInt(ext.type.slice(3)) : 0;
     // Generate array using Array.from
     return Array.from({ length }, (_, i) => i + 1);
   }

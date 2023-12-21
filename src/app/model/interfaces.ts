@@ -112,9 +112,10 @@ export interface Switch {
 
 export interface Asset {
   Index: number,
+  state: boolean,
   col: number,
   AssetID: string,
-  Type: string,
+  type: string,
   ID1: number | null,
   ID2: number | null,
   Custom: boolean,
@@ -127,15 +128,6 @@ export interface AssetInput {
   main_count?: number,
   ext_count?: number,
   max_ext_count?: number,
-}
-
-export interface AssetOutput {
-  r:number;
-  g:number;
-  b:number;
-  on:boolean;
-  slow:boolean;
-  fast:boolean;
 }
 
 export interface SlideToggle {
