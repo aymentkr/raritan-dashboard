@@ -28,7 +28,13 @@
               "node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
-            "scripts": [],
+            "scripts": [
+              {
+                "input": "../install_javascript_noversion/raritan/rpc/raritan-idl-all-min.js",
+                "inject": true,
+                "bundleName": "scripts"
+              }
+            ],
             "allowedCommonJsDependencies": ["sweetalert2"]
           },
           "configurations": {

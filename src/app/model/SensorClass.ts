@@ -21,6 +21,7 @@ export class SensorClass {
     'Leak Distance',
     'Cable Length',
     'Particle Density',
+
   ];
   sensors: SensorElement[] = [
     {
