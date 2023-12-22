@@ -104,7 +104,7 @@
       </mat-card-content>
     </mat-card>
   </div>
-
+<!-- /.mat-card-content
   <div class="card">
     <mat-card>
       <mat-card-header>
@@ -114,7 +114,6 @@
         <mat-divider></mat-divider>
         @if (selectedAsset && selectedAsset.Index && this.dataSource.data.length > 0) {
           <div *ngIf="(selectedAsset.Index-1 | LEDState | async) as ledState">
-            <!-- Display icons for slow and fast using Angular Material icons -->
             <div [style.background-color]="getRGBColor(ledState)" class="led-color"></div>
             <div class="led-status">
               <h2>LED is {{ ledState.on ? 'ON' : 'OFF' }}</h2>
@@ -133,8 +132,6 @@
         }
       </mat-card-content>
     </mat-card>
-  </div>
-
-
+  </div>-->
 
 </ng-template>

@@ -1,10 +1,10 @@
 <h1 mat-dialog-title>Creating and connecting a new sensor </h1>
 <div mat-dialog-content>
   <mat-form-field class="dialog-content">
-    <mat-label>Sensor Name</mat-label>
+    <mat-label>Sensor Type</mat-label>
     <mat-select [(ngModel)]="selectedSensor" name="sensor" >
       <mat-option *ngFor="let sensor of [] | sensors" [value]="sensor">
-        {{sensor.name}}
+        {{sensor.type}}
       </mat-option>
     </mat-select>
   </mat-form-field>
