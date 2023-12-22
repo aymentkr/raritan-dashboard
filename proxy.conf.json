@@ -1,0 +1,6 @@
+{
+  "/api": {
+    "target": "https://admin:raritan@192.168.6.22",
+    "secure": false
+  }
+}

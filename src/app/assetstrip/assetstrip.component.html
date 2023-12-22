@@ -112,7 +112,7 @@
       </mat-card-header>
       <mat-card-content>
         <mat-divider></mat-divider>
-        @if (selectedAsset && selectedAsset.Index && this.dataSource.data.length > 0) {
+        @if (selectedAsset && selectedAsset.Index && !this.isLoading) {
           <div *ngIf="(selectedAsset.Index-1 | LEDState | async) as ledState">
             <div [style.background-color]="getRGBColor(ledState)" class="led-color"></div>
             <div class="led-status">
