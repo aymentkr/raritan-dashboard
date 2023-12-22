@@ -62,7 +62,6 @@
                       <tr mat-header-row *matHeaderRowDef="displayedInnerColumns"></tr>
                       <tr mat-row *matRowDef="let row; columns: displayedInnerColumns"></tr>
 
-
                     </table>
                   </div>
                 </div>
@@ -105,4 +104,38 @@
       </mat-card-content>
     </mat-card>
   </div>
+
+  <div class="card">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title> Selected Asset LED Mode</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-divider></mat-divider>
+        @if (selectedAsset && selectedAsset.Index && this.dataSource.data.length > 0) {
+          <div *ngIf="(selectedAsset.Index-1 | LEDState | async) as ledState">
+            <!-- Display icons for slow and fast using Angular Material icons -->
+            <div [style.background-color]="getRGBColor(ledState)" class="led-color"></div>
+
+            <div class="led-status">
+              <mat-icon *ngIf="ledState.slow" class="icon">hourglass_empty</mat-icon>
+              <p>Slow is {{ ledState.slow ? 'ON' : 'OFF' }}</p>
+            </div>
+
+            <div class="led-status">
+              <mat-icon *ngIf="ledState.fast" class="icon">flash_on</mat-icon>
+              <p>Fast is {{ ledState.fast ? 'ON' : 'OFF' }}</p>
+            </div>
+
+            <div class="led-status">
+              <p>LED is {{ ledState.on ? 'ON' : 'OFF' }}</p>
+            </div>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+
+
 </ng-template>

@@ -28,7 +28,7 @@ export class AssetstripComponent implements OnInit{
   isAvailable: boolean = false;
   isLoading: boolean = true;
   list = ['AssetID','type', 'ID1', 'ID2', 'Custom'];
-  columns: string[] = ['Index',...this.list];
+  columns: string[] = ['Index',...this.list, 'LED Mode'];
   innercolumns = ['Slot',...this.list];
   displayedInnerColumns= [...this.innercolumns, 'delete'];
   displayedColumns= ['Index','state',...this.list,'actions'];
@@ -43,6 +43,7 @@ export class AssetstripComponent implements OnInit{
   @ViewChild('outerSort', { static: true }) sort!: MatSort;
   @ViewChildren('innerTables') innerTables!: QueryList<Asset>;
   @ViewChildren('innerSort') innerSort!: QueryList<MatSort>;
+  rackunit = 1;
   constructor(
     private notificationService: NotificationService,
     private data: DataService,
@@ -67,17 +68,6 @@ export class AssetstripComponent implements OnInit{
   async fetchAssetStripData() {
     try {
       const assetArray = this.createDefaultAssets(64);
-      /*
-      for (const asset of assetArray) {
-        const index = assetArray.indexOf(asset);
-        this.data.sendToGo(`r, g, b, on, slow, fast = assetstrips[1]:getLEDState(${index})`);
-        asset.r = parseFloat(await this.data.getResult(`assetstrips[1]:getLEDState(${index}):r`, 'print(r)'));
-        asset.g = parseFloat(await this.data.getResult(`assetstrips[1]:getLEDState(${index}):g`, 'print(g)'));
-        asset.b = parseFloat(await this.data.getResult(`assetstrips[1]:getLEDState(${index}):b`, 'print(b)'));
-        asset.on = await this.data.getResult(`assetstrips[1]:getLEDState(${index}):on`, 'print(on)') === 'true';
-        asset.fast = await this.data.getResult(`assetstrips[1]:getLEDState(${index}):fast`, 'print(fast)') === 'true';
-        asset.slow = await this.data.getResult(`assetstrips[1]:getLEDState(${index}):slow`, 'print(slow)') === 'true';
-      }*/
       this.tags = await this.data.getResult('assetstrips[1]:getTags', 'print(assetstrips[1]:getTags())');
       JSON.parse(this.tags).forEach((asset: any) => {
         const channelIndex = asset.channel ;
@@ -158,18 +148,21 @@ export class AssetstripComponent implements OnInit{
     const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
       width: '600px',
       maxHeight: '400px',
-      data: 'You  want to remove all assets' ,
+      data: 'You want to disconnect all assets from this asset strip' ,
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         JSON.parse(this.tags).forEach((asset: any) => {
+          this.ap.removeLEDFromMap(asset.channel);
           if (asset.type === 'tag')
             this.data.sendToGo(`assetstrips[1]:clrTag(${asset.channel}, ${asset.col})`);
           else
             this.data.sendToGo(`assetstrips[1]:clrExt(${asset.channel})`);
         });
+        this.data.removeMap('assetstrips[1]:getTags');
         this.dataSource.data = this.createDefaultAssets(64);
-        this.notificationService.openToastr('All assets deleted successfully from assetstrips', 'Deleting Assets', 'warning');
+        this.cdRef.detectChanges();
+        this.notificationService.openToastr('All assets are successfully disconnected from assetstrips', 'Disconnecting Assets', 'warning');
       }
     });
   }
@@ -180,14 +173,16 @@ export class AssetstripComponent implements OnInit{
       const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
         width: '600px',
         maxHeight: '400px',
-        data: `You want to remove the selected Asset ${item.AssetID}?` ,
+        data: `You want to disconnect the selected virtual ${item.type} asset ${item.AssetID}? from this asset strip` ,
       });
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
+          this.ap.removeLEDFromMap(item.Index-1);
           this.data.removeMap('assetstrips[1]:getTags');
           this.removeTag(item);
           this.fetchAssetStripData().then(() => {
-            this.notificationService.openToastr(`Selected Asset ${item.AssetID} deleted successfully from Assetstrips`, 'Deleting Assets', 'warning');
+            this.cdRef.detectChanges();
+            this.notificationService.openToastr(`Selected Asset ${item.AssetID} is successfully disconnected from Assetstrips`, 'Disconnecting an Asset', 'warning');
           });
         }
       });
@@ -214,4 +209,7 @@ export class AssetstripComponent implements OnInit{
     }
   }
 
+  getRGBColor(ledState: any) {
+    return `rgb(${ledState.r}, ${ledState.g}, ${ledState.b})`;
+  }
 }

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {DataService} from "../services/data.service";
 import {NotificationService} from "../services/notification.service";
-import {AssetInput, Notification, SlideToggle} from "../model/interfaces";
+import {Notification, SlideToggle} from "../model/interfaces";
 import {AssetsPipe} from "../pipes/assets.pipe";
 
 @Component({

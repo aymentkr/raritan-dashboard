@@ -122,14 +122,6 @@ export interface Asset {
   Extensions?: Asset[]
 }
 
-export interface AssetInput {
-  version?: number,
-  topconnector?: number,
-  main_count?: number,
-  ext_count?: number,
-  max_ext_count?: number,
-}
-
 export interface SlideToggle {
   name: string;
   table: string;

@@ -76,7 +76,7 @@ export class AddAssetComponent {
     const type = this.formGroup1.get('type')?.value;
     const slot = this.formGroup2.get('slot')?.value;
 
-    if (id1 === id2 || isDuplicate(this.data, id1) || isDuplicate(this.data, id2)) {
+    if (id1 === id2 || this.ap.isDuplicate(this.data, id1) || this.ap.isDuplicate(this.data, id2)) {
       this.notificationService.openToastr(
         'Make sure that the IDs are unique. 2 tags with the same ID can be discovered at the same time.',
         'Adding AssertID',
@@ -131,7 +131,7 @@ export class AddAssetComponent {
 
     do {
       x = generateRandomByte();
-    } while (isDuplicate(this.data,x));
+    } while (this.ap.isDuplicate(this.data,x));
 
     return x;
   }
@@ -156,11 +156,4 @@ export class AddAssetComponent {
     return Array.from({ length }, (_, i) => i + 1);
   }
 
-}
-function isDuplicate(data: Asset[], value: number): boolean {
-  const checkDuplicates = (asset: Asset): boolean => {
-    return <boolean>(asset.ID1 === value || asset.ID2 === value || (asset.Extensions && isDuplicate(asset.Extensions, value)));
-  };
-
-  return data.some(checkDuplicates);
 }
