@@ -33,6 +33,7 @@ export class AssetstripComponent implements OnInit{
   displayedInnerColumns= [...this.innercolumns, 'delete'];
   displayedColumns= ['Index','state',...this.list,'actions'];
 
+  tags:string ='';
   selectedAsset: Asset | null = null;
   size : number = 0;
   pageSize: number = 10;
@@ -77,8 +78,8 @@ export class AssetstripComponent implements OnInit{
         asset.fast = await this.data.getResult(`assetstrips[1]:getLEDState(${index}):fast`, 'print(fast)') === 'true';
         asset.slow = await this.data.getResult(`assetstrips[1]:getLEDState(${index}):slow`, 'print(slow)') === 'true';
       }*/
-      const tags = await this.data.getResult('assetstrips[1]:getTags', 'print(assetstrips[1]:getTags())');
-      JSON.parse(tags).forEach((asset: any) => {
+      this.tags = await this.data.getResult('assetstrips[1]:getTags', 'print(assetstrips[1]:getTags())');
+      JSON.parse(this.tags).forEach((asset: any) => {
         const channelIndex = asset.channel ;
         const assetData = this.createAssetData(asset);
 
@@ -153,12 +154,24 @@ export class AssetstripComponent implements OnInit{
   }
 
 
-  clearData() {/*
-    if (isExt) {
-      this.ap.extensions = [];
-    } else {
-      this.ap.tags = [];
-    }*/
+  clearData() {
+    const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
+      width: '600px',
+      maxHeight: '400px',
+      data: 'You  want to remove all assets' ,
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        JSON.parse(this.tags).forEach((asset: any) => {
+          if (asset.type === 'tag')
+            this.data.sendToGo(`assetstrips[1]:clrTag(${asset.channel}, ${asset.col})`);
+          else
+            this.data.sendToGo(`assetstrips[1]:clrExt(${asset.channel})`);
+        });
+        this.dataSource.data = this.createDefaultAssets(64);
+        this.notificationService.openToastr('All assets deleted successfully from assetstrips', 'Deleting Assets', 'warning');
+      }
+    });
   }
 
   deleteItem(item: Asset, event: Event): void {

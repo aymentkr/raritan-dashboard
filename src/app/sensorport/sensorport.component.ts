@@ -161,7 +161,7 @@ export class SensorportComponent implements OnInit {
     const dialogRef = this.dialog.open(DeleteDeviceDialogComponent, {
       width: '600px',
       maxHeight: '400px',
-      data: 'you want to remove all devices?',
+      data: 'You want to remove all devices?',
     });
 
     dialogRef.afterClosed().subscribe(result => {
