@@ -116,20 +116,19 @@
           <div *ngIf="(selectedAsset.Index-1 | LEDState | async) as ledState">
             <!-- Display icons for slow and fast using Angular Material icons -->
             <div [style.background-color]="getRGBColor(ledState)" class="led-color"></div>
-
+            <div class="led-status">
+              <h2>LED is {{ ledState.on ? 'ON' : 'OFF' }}</h2>
+            </div>
             <div class="led-status">
               <mat-icon *ngIf="ledState.slow" class="icon">hourglass_empty</mat-icon>
-              <p>Slow is {{ ledState.slow ? 'ON' : 'OFF' }}</p>
+              <p>Slow blinking is {{ ledState.slow ? 'ON' : 'OFF' }}</p>
             </div>
 
             <div class="led-status">
               <mat-icon *ngIf="ledState.fast" class="icon">flash_on</mat-icon>
-              <p>Fast is {{ ledState.fast ? 'ON' : 'OFF' }}</p>
+              <p>Fast blinking is {{ ledState.fast ? 'ON' : 'OFF' }}</p>
             </div>
 
-            <div class="led-status">
-              <p>LED is {{ ledState.on ? 'ON' : 'OFF' }}</p>
-            </div>
           </div>
         }
       </mat-card-content>
