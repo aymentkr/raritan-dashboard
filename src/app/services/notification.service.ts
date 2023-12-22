@@ -52,4 +52,5 @@ export class NotificationService {
     this.notifications = [];
     this.notificationsSubject.next(this.notifications);
   }
+
 }

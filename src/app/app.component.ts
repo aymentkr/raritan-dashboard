@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {Notification} from "./model/interfaces";
 import {DataService} from "./services/data.service";
 import {MatDialog} from "@angular/material/dialog";
+import {JsonRpcService} from "./services/json-rpc.service";
 
 @Component({
   selector: 'app-root',
@@ -21,7 +22,8 @@ export class AppComponent implements OnInit,OnDestroy {
   constructor(
     private notificationService: NotificationService,
     private data: DataService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private raritan: JsonRpcService,
   ) {
     this.notifications = this.notificationService.getNotifications();
     setTimeout(() => {
@@ -31,6 +33,7 @@ export class AppComponent implements OnInit,OnDestroy {
 
   ngOnInit() {
     this.data.open();
+    this.raritan.createSession();
   }
 
   ngOnDestroy(): void {

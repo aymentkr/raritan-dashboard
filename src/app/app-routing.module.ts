@@ -22,7 +22,7 @@ const routes: Routes= [
   {path: 'sensorport', component:SensorportComponent,canDeactivate: [DeactivateGuard]},
   {path: 'envhub', component:EnvhubComponent,canDeactivate: [DeactivateGuard]},
   {path: 'smartlock', component:SmartlockComponent,canDeactivate: [DeactivateGuard]},
-  {path: 'assetstrip', component:AssetstripComponent},
+  {path: 'assetstrip', component:AssetstripComponent,canDeactivate: [DeactivateGuard]},
   {path: 'settings', component:SettingsComponent},
   {path: 'help', component:InfoComponent},
 ];
