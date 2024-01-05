@@ -12,6 +12,7 @@ import {BottomSheetDetailsComponent} from "./bottom-sheet-details/bottom-sheet-d
   styleUrls: ['./transfer-switch.component.css']
 })
 export class TransferSwitchComponent implements OnInit{
+
   @Input() inputFromParent = 0 ;
   formData: Switch = {
     preferredInlet: null,

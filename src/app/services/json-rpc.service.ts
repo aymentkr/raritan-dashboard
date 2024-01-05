@@ -5,11 +5,11 @@ import {Observable} from "rxjs";
   providedIn: 'root'
 })
 export class JsonRpcService {
-  private apiUrl = '/api/model/pdu/0';
+  private apiUrl = 'https://admin:raritan@192.168.6.22/model/pdu/0';
     constructor(private http: HttpClient) {}
 
     getPduMetaData(): Observable<any> {
-      const payload = {
+      const body = {
         jsonrpc: '2.0',
         method: 'getMetaData',
         params: '2.0',
@@ -18,9 +18,9 @@ export class JsonRpcService {
 
       // Define the headers
       const headers = new HttpHeaders({
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       });
 
-      return this.http.post(this.apiUrl, payload, { headers });
+      return this.http.post(this.apiUrl, body, { headers });
     }
 }

@@ -15,7 +15,7 @@ import {NotificationService} from "../../services/notification.service";
 export class InletTableComponent implements OnInit{
   @Input() inputFromParent = 0 ;
   dataSource = new MatTableDataSource<Inlet>();
-  Columns: string[] = ['select', 'name','frequency', 'voltage', 'current', 'act_power', 'app_power','act_energy','app_energy', 'edit'];
+  Columns: string[] = ['select', 'name','voltage','frequency', 'current','react_power','act_power', 'app_power','act_energy', 'edit'];
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatSort) sort!: MatSort;
   editableRowIndex: number = -1;
@@ -40,13 +40,13 @@ export class InletTableComponent implements OnInit{
     for (let i = 1; i <= this.inputFromParent; i++) {
       const inletData: Inlet={
         id: i,
-        frequency:  parseFloat(await this.data.getResult(`inlets[${i}]:frequency`, `print(inlets[${i}]:getFrequency())`)),
         voltage: parseFloat(await this.data.getResult(`inlets[${i}]:voltage`, `print(inlets[${i}]:getVoltage())`)),
+        frequency:  parseFloat(await this.data.getResult(`inlets[${i}]:frequency`, `print(inlets[${i}]:getFrequency())`)),
         current: parseFloat(await this.data.getResult(`inlets[${i}]:current`, `print(inlets[${i}]:getCurrent())`)),
+        react_power: parseFloat(await this.data.getResult(`inlets[${i}]:react_power`, `print(inlets[${i}]:getReactivePower())`)),
         act_power: parseFloat(await this.data.getResult(`inlets[${i}]:act_power`, `print(inlets[${i}]:getActivePower())`)),
         app_power: parseFloat(await this.data.getResult(`inlets[${i}]:app_power`, `print(inlets[${i}]:getApparentPower())`)),
         act_energy: parseFloat(await this.data.getResult(`inlets[${i}]:act_energy`, `print(inlets[${i}]:getActiveEnergy())`)),
-        app_energy: parseFloat(await this.data.getResult(`inlets[${i}]:app_energy`, `print(inlets[${i}]:getApparentEnergy())`)),
       }
       inlets.push(inletData);
     }
@@ -71,22 +71,22 @@ export class InletTableComponent implements OnInit{
     if (inlet!=null) {
       const {
         id,
-        frequency,
         voltage,
+        frequency,
         current,
+        react_power,
         act_power,
         app_power,
         act_energy,
-        app_energy
       } = inlet;
       this.data.sendToGo(`
-        inlets[${id}]:setFrequency(${frequency})
         inlets[${id}]:setVoltage(${voltage});
+        inlets[${id}]:setFrequency(${frequency});
         inlets[${id}]:setCurrent(${current});
+        inlets[${id}]:setReactivePower(${react_power});
         inlets[${id}]:setActivePower(${act_power});
         inlets[${id}]:setApparentPower(${app_power});
         inlets[${id}]:setActiveEnergy(${act_energy});
-        inlets[${id}]:setApparentEnergy(${app_energy});
         `);
       Object.entries(inlet).forEach(([key, value]) => this.data.editMap(`inlets[${inlet.id}]:${key}`, value as number | boolean));
     } else {

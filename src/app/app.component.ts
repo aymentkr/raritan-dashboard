@@ -33,12 +33,12 @@ export class AppComponent implements OnInit,OnDestroy {
 
   ngOnInit() {
     this.data.open();
-    // Call the method to send the POST request
+    /* Call the method to send the POST request
     this.raritan.getPduMetaData().subscribe(response => {
       console.log('Response:', response);
     }, error => {
       console.error('Error:', error);
-    });
+    });*/
   }
 
   ngOnDestroy(): void {

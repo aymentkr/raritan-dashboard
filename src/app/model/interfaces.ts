@@ -23,13 +23,13 @@ export interface Pole {
 
 export interface Inlet {
   id: number;
-  frequency: number;
   voltage: number;
+  frequency: number;
   current: number;
+  react_power : number;
   act_power: number;
   app_power: number;
   act_energy: number;
-  app_energy: number;
 }
 
 export interface InletP {
