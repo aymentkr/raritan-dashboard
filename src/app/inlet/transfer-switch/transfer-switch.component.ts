@@ -12,7 +12,7 @@ import {BottomSheetDetailsComponent} from "./bottom-sheet-details/bottom-sheet-d
   styleUrls: ['./transfer-switch.component.css']
 })
 export class TransferSwitchComponent implements OnInit{
-
+  bypass = false;
   @Input() inputFromParent = 0 ;
   formData: Switch = {
     preferredInlet: null,
@@ -34,28 +34,30 @@ export class TransferSwitchComponent implements OnInit{
   ) {}
 
   ngOnInit(): void {
-    this.fetchSwitchData();
+    this.data.getResult('bypass','print(switches[1])').then(async (result) => {
+      if (result.includes('Bypass')) {
+        this.bypass = true;
+        this.formData.BypassSelectedInlet = parseFloat(await this.data.getResult('BypassSelectedInlet', `print(switches[1]:getBypassSelectedInlet())`));
+        this.formData.BypassActiveInlet = parseFloat(await this.data.getResult('BypassActiveInlet', `print(switches[1]:getBypassActiveInlet())`));
+      }
+      this.formData.preferredInlet = parseFloat(await this.data.getResult('preferredInlet', `print(switches[1]:getPreferredInlet())`));
+    })
   }
-
-  async fetchSwitchData() {
-    this.formData.preferredInlet = parseFloat(await this.data.getResult('preferredInlet', `print(switches[1]:getPreferredInlet())`));
-    this.formData.BypassSelectedInlet = parseFloat(await this.data.getResult('BypassSelectedInlet', `print(switches[1]:getBypassSelectedInlet())`));
-    this.formData.BypassActiveInlet = parseFloat(await this.data.getResult('BypassActiveInlet', `print(switches[1]:getBypassActiveInlet())`));
-  }
-
 
   async submitForm(formData: Switch) {
     const propertyMap: Record<string, (value: any) => void> = {
+      preferredInlet: value => this.data.sendToGo(`switches[1]:setPreferredInlet(${value});`),
+      InletPhaseAngle: value => this.data.sendToGo(`switches[1]:setInletPhaseAngle(${value});`),
       FaultFlags: value => this.data.sendToGo(`switches[1]:setFaultFlags(${value});`),
       Inlet1FaultFlags: value => this.data.sendToGo(`switches[1]:setInlet1FaultFlags(${value});`),
       Inlet2FaultFlags: value => this.data.sendToGo(`switches[1]:setInlet2FaultFlags(${value});`),
-      InletPhaseAngle: value => this.data.sendToGo(`switches[1]:setInletPhaseAngle(${value});`),
-      preferredInlet: value => this.data.sendToGo(`switches[1]:setPreferredInlet(${value});`),
-      BypassSelectedInlet: value => this.data.sendToGo(`switches[1]:setBypassSelectedInlet(${value});`),
       PowerFailDetectTime: value => this.data.sendToGo(`switches[1]:setPowerFailDetectTime(${value});`),
       RelayOpenTime: value => this.data.sendToGo(`switches[1]:setRelayOpenTime(${value});`),
       TotalTransferTime: value => this.data.sendToGo(`switches[1]:setTotalTransferTime(${value});`),
     };
+    if (this.bypass) propertyMap['BypassSelectedInlet'] = value => this.data.sendToGo(`switches[1]:setBypassSelectedInlet(${value});`);
+
+
     const list: string[] = [];
 
     for (const [property, value] of Object.entries(formData)) {
@@ -65,8 +67,10 @@ export class TransferSwitchComponent implements OnInit{
       }
     }
     if (list.length > 0) {
-      this.data.removeMap('BypassActiveInlet');
-      this.formData.BypassActiveInlet = parseFloat(await this.data.getResult('BypassActiveInlet', `print(switches[1]:getBypassActiveInlet())`));
+      if (this.bypass) {
+        this.data.removeMap('BypassActiveInlet');
+        this.formData.BypassActiveInlet = parseFloat(await this.data.getResult('BypassActiveInlet', `print(switches[1]:getBypassActiveInlet())`));
+      }
       this.notificationService.openToastr(`Successfully updated: ${list.join(', ')}`, 'Switches Modification ', 'done')
     }
   }
