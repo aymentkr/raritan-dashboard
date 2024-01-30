@@ -8,7 +8,7 @@
     <div class="form-fields">
       <mat-form-field>
         <mat-label>Preferred Inlet</mat-label>
-        <mat-select [(ngModel)]="formData.preferredInlet" name="preferredInlet" disableRipple>
+        <mat-select [(ngModel)]="formData.preferredInlet" name="preferredInlet" >
           <mat-option *ngFor="let index of generateInletRange()" [value]="index">
             Inlet {{ index }}
           </mat-option>
@@ -17,8 +17,7 @@
 
       <mat-form-field>
         <mat-label>Inlet Phase Angle:</mat-label>
-        <input matInput type="number" id="InletPhaseAngle" name="InletPhaseAngle"
-               [(ngModel)]="formData.InletPhaseAngle">
+        <input matInput type="number" id="InletPhaseAngle" name="InletPhaseAngle" [(ngModel)]="formData.InletPhaseAngle">
       </mat-form-field>
     </div>
   </div>
@@ -35,7 +34,7 @@
     <div class="form-fields">
       <mat-form-field>
         <mat-label>Bypass Selected Inlet</mat-label>
-        <mat-select [(ngModel)]="formData.BypassSelectedInlet" name="BypassSelectedInlet" disableRipple>
+        <mat-select [(ngModel)]="formData.BypassSelectedInlet" name="BypassSelectedInlet" >
           <!-- Default option for 0 -->
           <mat-option value="0">0</mat-option>
           <!-- Options generated from the range -->
@@ -57,7 +56,7 @@
     <div class="form-fields">
       <mat-form-field>
         <mat-label>Fault Flags</mat-label>
-        <mat-select [(ngModel)]="formData.FaultFlags" name="FaultFlags" disableRipple>
+        <mat-select [(ngModel)]="formData.FaultFlags" name="FaultFlags" >
           <mat-option value="1">phase</mat-option>
           <mat-option value="2">overload</mat-option>
         </mat-select>
@@ -65,7 +64,7 @@
 
       <mat-form-field>
         <mat-label>Inlet 1 Fault Flags</mat-label>
-        <mat-select [(ngModel)]="formData.Inlet1FaultFlags" name="Inlet1FaultFlags" disableRipple>
+        <mat-select [(ngModel)]="formData.Inlet1FaultFlags" name="Inlet1FaultFlags" [disableRipple]="true">
           <mat-option value="0">none</mat-option>
           <mat-option value="1">SMPS</mat-option>
           <mat-option value="2">MOV</mat-option>
@@ -76,7 +75,7 @@
 
       <mat-form-field>
         <mat-label>Inlet 2 Fault Flags</mat-label>
-        <mat-select [(ngModel)]="formData.Inlet2FaultFlags" name="Inlet2FaultFlags" disableRipple>
+        <mat-select [(ngModel)]="formData.Inlet2FaultFlags" name="Inlet2FaultFlags">
           <mat-option value="0">none</mat-option>
           <mat-option value="1">SMPS</mat-option>
           <mat-option value="2">MOV</mat-option>
